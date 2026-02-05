@@ -3,21 +3,26 @@ import { defineConfig, defineCollection, s } from 'velite'
 const platforms = defineCollection({
   name: 'Platform',
   pattern: 'platforms/**/*.mdx',
-  schema: s.object({
-    slug: s.slug('platforms'),
-    title: s.string().max(99),
-    description: s.string().max(999),
-    lastVerified: s.isodate(),
-    tier: s.enum(['enterprise-os', 'ipaas-agent', 'developer-first', 'vertical']),
-    capabilities: s.array(s.string()),
-    pricing: s.object({
-      model: s.string(),
-      details: s.string(),
-    }),
-    officialDocs: s.string().url(),
-    pricingPage: s.string().url().optional(),
-    body: s.mdx(),
-  })
+  schema: s
+    .object({
+      slug: s.path(),
+      title: s.string().max(99),
+      description: s.string().max(999),
+      lastVerified: s.isodate(),
+      tier: s.enum(['enterprise-os', 'ipaas-agent', 'developer-first', 'vertical']),
+      capabilities: s.array(s.string()),
+      pricing: s.object({
+        model: s.string(),
+        details: s.string(),
+      }),
+      officialDocs: s.string().url(),
+      pricingPage: s.string().url().optional(),
+      body: s.mdx(),
+    })
+    .transform((data) => ({
+      ...data,
+      slug: data.slug.replace(/^platforms\//, '').replace(/\.mdx$/, ''),
+    })),
 })
 
 const policies = defineCollection({
