@@ -87,30 +87,30 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ASSM-01 | TBD | Pending |
-| ASSM-02 | TBD | Pending |
-| ASSM-03 | TBD | Pending |
-| RECC-01 | TBD | Pending |
-| RECC-02 | TBD | Pending |
-| RECC-03 | TBD | Pending |
-| RECC-04 | TBD | Pending |
-| PLAT-01 | TBD | Pending |
-| PLAT-02 | TBD | Pending |
-| COST-01 | TBD | Pending |
-| COST-02 | TBD | Pending |
-| COST-03 | TBD | Pending |
-| COST-04 | TBD | Pending |
-| BLPR-01 | TBD | Pending |
-| BLPR-02 | TBD | Pending |
-| BLPR-03 | TBD | Pending |
-| EXPRT-01 | TBD | Pending |
-| EXPRT-02 | TBD | Pending |
+| ASSM-01 | Phase 2 | Pending |
+| ASSM-02 | Phase 2 | Pending |
+| ASSM-03 | Phase 2 | Pending |
+| RECC-01 | Phase 3 | Pending |
+| RECC-02 | Phase 3 | Pending |
+| RECC-03 | Phase 3 | Pending |
+| RECC-04 | Phase 3 | Pending |
+| PLAT-01 | Phase 1 | Pending |
+| PLAT-02 | Phase 1 | Pending |
+| COST-01 | Phase 4 | Pending |
+| COST-02 | Phase 4 | Pending |
+| COST-03 | Phase 4 | Pending |
+| COST-04 | Phase 4 | Pending |
+| BLPR-01 | Phase 5 | Pending |
+| BLPR-02 | Phase 5 | Pending |
+| BLPR-03 | Phase 5 | Pending |
+| EXPRT-01 | Phase 6 | Pending |
+| EXPRT-02 | Phase 6 | Pending |
 
 **Coverage:**
 - v1 requirements: 18 total
-- Mapped to phases: 0 (pending roadmap)
-- Unmapped: 18
+- Mapped to phases: 18
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-05*
-*Last updated: 2026-02-05 after initial definition*
+*Last updated: 2026-02-05 after roadmap creation*

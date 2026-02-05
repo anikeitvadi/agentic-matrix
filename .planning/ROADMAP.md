@@ -1,0 +1,136 @@
+# Roadmap: Agentic Decisions
+
+## Overview
+
+Build a vendor-neutral AI agent platform decision toolkit that helps enterprise IT leaders select the right platform for their needs. Starting with foundational infrastructure and platform data, we'll progressively add interactive assessment, recommendation logic, cost analysis, implementation blueprints, and sharing capabilities. Each phase delivers complete, verifiable functionality that builds toward a comprehensive self-serve decision support system.
+
+## Phases
+
+**Phase Numbering:**
+- Integer phases (1, 2, 3): Planned milestone work
+- Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
+
+Decimal phases appear between their surrounding integers in numeric order.
+
+- [ ] **Phase 1: Foundation & Platform Data** - Setup project infrastructure and initial platform coverage
+- [ ] **Phase 2: Assessment Engine** - Interactive questionnaire with save/resume capability
+- [ ] **Phase 3: Recommendation & Comparison** - Scoring system with filtering and decision audit trail
+- [ ] **Phase 4: Cost Analysis** - ROI calculator and total cost of ownership projections
+- [ ] **Phase 5: Blueprint Library** - Implementation guidance with architecture diagrams
+- [ ] **Phase 6: Export & Sharing** - PDF export and email functionality
+
+## Phase Details
+
+### Phase 1: Foundation & Platform Data
+**Goal**: Establish maintainable technical foundation with structured platform data for 5 core platforms
+**Depends on**: Nothing (first phase)
+**Requirements**: PLAT-01, PLAT-02
+**Success Criteria** (what must be TRUE):
+  1. User can view structured profiles for 5 agent platforms with capabilities, pricing, and official documentation links
+  2. Each platform profile displays last-verified timestamp indicating data freshness
+  3. Project runs locally with TypeScript compilation, linting, and hot reload working
+  4. Editorial Independence Policy is published and accessible to users
+**Plans**: TBD
+
+Plans:
+- [ ] 01-01: TBD during planning
+- [ ] 01-02: TBD during planning
+- [ ] 01-03: TBD during planning
+
+### Phase 2: Assessment Engine
+**Goal**: Users can complete interactive questionnaire with progress saving
+**Depends on**: Phase 1
+**Requirements**: ASSM-01, ASSM-02, ASSM-03
+**Success Criteria** (what must be TRUE):
+  1. User can complete multi-step questionnaire answering 10-15 questions about their situation
+  2. User can save their assessment progress at any point and resume later from the same browser
+  3. User receives AI-powered follow-up questions that adapt based on their previous answers
+  4. User sees conditional branching where irrelevant questions are skipped based on context
+**Plans**: TBD
+
+Plans:
+- [ ] 02-01: TBD during planning
+- [ ] 02-02: TBD during planning
+- [ ] 02-03: TBD during planning
+
+### Phase 3: Recommendation & Comparison
+**Goal**: Users receive scored platform recommendations with transparent reasoning
+**Depends on**: Phase 2
+**Requirements**: RECC-01, RECC-02, RECC-03, RECC-04
+**Success Criteria** (what must be TRUE):
+  1. User receives weighted platform scores (0-100) based on their questionnaire responses
+  2. User can view side-by-side comparison matrix showing how platforms stack up across key criteria
+  3. User can filter platforms by budget constraints, compliance requirements, and existing stack compatibility
+  4. User can read decision audit trail explaining exactly why platform X scored higher than platform Y for their situation
+  5. Scoring methodology is transparent and explainable (no black-box algorithms)
+**Plans**: TBD
+
+Plans:
+- [ ] 03-01: TBD during planning
+- [ ] 03-02: TBD during planning
+- [ ] 03-03: TBD during planning
+
+### Phase 4: Cost Analysis
+**Goal**: Users understand total cost implications of each platform recommendation
+**Depends on**: Phase 3
+**Requirements**: COST-01, COST-02, COST-03, COST-04
+**Success Criteria** (what must be TRUE):
+  1. User can input expected usage volume and see estimated token costs for each recommended platform
+  2. User can compare platform subscription and licensing fees side-by-side with pricing tier details
+  3. User can view total cost of ownership projections over 12, 24, and 36 month timeframes
+  4. User can see engineering time estimates for implementing each platform option
+  5. Cost calculator shows complete picture including infrastructure, platform fees, and personnel costs
+**Plans**: TBD
+
+Plans:
+- [ ] 04-01: TBD during planning
+- [ ] 04-02: TBD during planning
+
+### Phase 5: Blueprint Library
+**Goal**: Users access implementation-ready guidance for their selected platform and use case
+**Depends on**: Phase 4
+**Requirements**: BLPR-01, BLPR-02, BLPR-03
+**Success Criteria** (what must be TRUE):
+  1. User can view architecture diagrams for their specific use case with their recommended platform
+  2. User can access implementation checklist breaking down the deployment into actionable steps
+  3. User can read common pitfalls and warnings specific to their use case and platform combination
+  4. Blueprint library covers 3-5 common enterprise use cases (customer support, data extraction, workflow automation, etc.)
+**Plans**: TBD
+
+Plans:
+- [ ] 05-01: TBD during planning
+- [ ] 05-02: TBD during planning
+- [ ] 05-03: TBD during planning
+
+### Phase 6: Export & Sharing
+**Goal**: Users can export and share their recommendations with stakeholders
+**Depends on**: Phase 5
+**Requirements**: EXPRT-01, EXPRT-02
+**Success Criteria** (what must be TRUE):
+  1. User can export their complete recommendation report (comparison, costs, blueprints) as a formatted PDF
+  2. User can email results directly to stakeholders with customizable message
+  3. Exported PDF is presentation-ready with branding and professional formatting
+  4. Email delivery works reliably without landing in spam
+**Plans**: TBD
+
+Plans:
+- [ ] 06-01: TBD during planning
+- [ ] 06-02: TBD during planning
+
+## Progress
+
+**Execution Order:**
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
+
+| Phase | Plans Complete | Status | Completed |
+|-------|----------------|--------|-----------|
+| 1. Foundation & Platform Data | 0/TBD | Not started | - |
+| 2. Assessment Engine | 0/TBD | Not started | - |
+| 3. Recommendation & Comparison | 0/TBD | Not started | - |
+| 4. Cost Analysis | 0/TBD | Not started | - |
+| 5. Blueprint Library | 0/TBD | Not started | - |
+| 6. Export & Sharing | 0/TBD | Not started | - |
+
+---
+*Roadmap created: 2026-02-05*
+*Last updated: 2026-02-05*
