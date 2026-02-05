@@ -30,12 +30,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. Each platform profile displays last-verified timestamp indicating data freshness
   3. Project runs locally with TypeScript compilation, linting, and hot reload working
   4. Editorial Independence Policy is published and accessible to users
-**Plans**: TBD
+**Plans**: 4 plans in 3 waves
 
 Plans:
-- [ ] 01-01: TBD during planning
-- [ ] 01-02: TBD during planning
-- [ ] 01-03: TBD during planning
+- [ ] 01-01-PLAN.md — Initialize Next.js 16 project with TypeScript, Tailwind v4, and Velite
+- [ ] 01-02-PLAN.md — Create 5 platform MDX content files and platform pages
+- [ ] 01-03-PLAN.md — Create Editorial Policy page and site navigation
+- [ ] 01-04-PLAN.md — Human verification of Phase 1 success criteria
 
 ### Phase 2: Assessment Engine
 **Goal**: Users can complete interactive questionnaire with progress saving
@@ -124,7 +125,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Platform Data | 0/TBD | Not started | - |
+| 1. Foundation & Platform Data | 0/4 | Planned | - |
 | 2. Assessment Engine | 0/TBD | Not started | - |
 | 3. Recommendation & Comparison | 0/TBD | Not started | - |
 | 4. Cost Analysis | 0/TBD | Not started | - |
