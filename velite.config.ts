@@ -17,7 +17,7 @@ const platforms = defineCollection({
       }),
       officialDocs: s.string().url(),
       pricingPage: s.string().url().optional(),
-      body: s.mdx(),
+      body: s.markdown(),
     })
     .transform((data) => ({
       ...data,
@@ -32,7 +32,7 @@ const policies = defineCollection({
     slug: s.slug('policies'),
     title: s.string().max(99),
     lastUpdated: s.isodate(),
-    body: s.mdx(),
+    body: s.markdown(),
   })
 })
 

@@ -21,7 +21,7 @@ export default function EditorialPolicyPage() {
   })
 
   return (
-    <main className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+    <div className="py-12 px-4 sm:px-6 lg:px-8">
       <article className="max-w-3xl mx-auto">
         <header className="mb-8">
           <h1 className="text-4xl font-bold text-neutral-900 mb-2">
@@ -32,16 +32,17 @@ export default function EditorialPolicyPage() {
           </p>
         </header>
 
-        <div className="prose prose-neutral prose-lg max-w-none
+        <div
+          className="prose prose-neutral prose-lg max-w-none
           prose-headings:font-bold prose-headings:text-neutral-900
           prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4
           prose-p:text-neutral-700 prose-p:leading-relaxed
           prose-a:text-brand-600 prose-a:no-underline hover:prose-a:underline
           prose-strong:text-neutral-900 prose-strong:font-semibold
-          prose-ul:my-4 prose-li:text-neutral-700">
-          {policy.body}
-        </div>
+          prose-ul:my-4 prose-li:text-neutral-700"
+          dangerouslySetInnerHTML={{ __html: policy.body }}
+        />
       </article>
-    </main>
+    </div>
   )
 }
