@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import useFormPersist from 'react-hook-form-persist'
 import { StepIndicator } from './StepIndicator'
+import { AIFollowUp } from './AIFollowUp'
 import { steps, stepLabels, validateStep } from '../steps'
 import type { AssessmentData } from '../schemas/assessment-schema'
 import type { AssessmentContext } from '@/lib/assessment/conditional-logic'
@@ -159,6 +160,19 @@ export function AssessmentForm() {
             assessmentContext={assessmentContext}
           />
         </div>
+
+        {/* AI-powered follow-up questions (appears after Step 2) */}
+        {currentStep >= 2 && (
+          <AIFollowUp
+            context={{
+              ...watchedValues,
+              currentStep,
+            }}
+            register={register}
+            errors={errors}
+            control={control}
+          />
+        )}
 
         {/* Navigation buttons */}
         <div className="flex items-center justify-between pt-4">
