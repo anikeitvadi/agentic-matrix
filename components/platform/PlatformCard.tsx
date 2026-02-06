@@ -5,71 +5,49 @@ interface PlatformCardProps {
   platform: Platform
 }
 
-const tierStyles = {
-  "enterprise-os": "bg-brand-100 text-brand-800 border-brand-300",
-  "ipaas-agent": "bg-green-100 text-green-800 border-green-300",
-  "developer-first": "bg-purple-100 text-purple-800 border-purple-300",
-  vertical: "bg-orange-100 text-orange-800 border-orange-300",
+const tierColors = {
+  "enterprise-os": "bg-blue-500",
+  "ipaas-agent": "bg-green-500",
+  "developer-first": "bg-purple-500",
+  vertical: "bg-orange-500",
 }
 
 const tierLabels = {
-  "enterprise-os": "Enterprise OS",
-  "ipaas-agent": "iPaaS + Agent",
-  "developer-first": "Developer-First",
+  "enterprise-os": "Enterprise",
+  "ipaas-agent": "iPaaS",
+  "developer-first": "Dev-First",
   vertical: "Vertical",
 }
 
 export function PlatformCard({ platform }: PlatformCardProps) {
   const formattedDate = new Date(platform.lastVerified).toLocaleDateString(
     "en-US",
-    {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    },
+    { month: "short", day: "numeric" },
   )
 
   return (
     <Link
       href={`/platforms/${platform.slug}`}
-      className="block group bg-white rounded-lg border border-neutral-200 shadow-sm hover:shadow-md hover:border-brand-300 transition-all duration-200"
+      className="block group bg-white rounded-lg border border-neutral-200 hover:border-neutral-300 transition-colors"
     >
-      <div className="p-6">
-        <div className="flex items-start justify-between gap-4 mb-3">
-          <h3 className="text-xl font-semibold text-neutral-900 group-hover:text-brand-700 transition-colors">
+      <div className="p-4">
+        <div className="flex items-center gap-3 mb-2">
+          <div className={`w-2 h-2 rounded-full ${tierColors[platform.tier]}`} />
+          <h3 className="font-medium text-neutral-900 group-hover:text-brand-600 transition-colors truncate">
             {platform.title}
           </h3>
-          <span
-            className={`px-3 py-1 text-xs font-medium rounded-full border ${tierStyles[platform.tier]}`}
-          >
+          <span className="ml-auto text-xs text-neutral-400 shrink-0">
             {tierLabels[platform.tier]}
           </span>
         </div>
 
-        <p className="text-neutral-600 text-sm mb-4 line-clamp-2">
+        <p className="text-sm text-neutral-600 line-clamp-2 mb-3">
           {platform.description}
         </p>
 
-        <div className="space-y-2">
-          <div className="flex flex-wrap gap-2">
-            {platform.capabilities.slice(0, 3).map((capability) => (
-              <span
-                key={capability}
-                className="px-2 py-1 text-xs bg-neutral-100 text-neutral-700 rounded"
-              >
-                {capability}
-              </span>
-            ))}
-            {platform.capabilities.length > 3 && (
-              <span className="px-2 py-1 text-xs text-neutral-500">
-                +{platform.capabilities.length - 3} more
-              </span>
-            )}
-          </div>
-
-          <p className="text-xs text-neutral-500">
-            Last verified: {formattedDate}
-          </p>
+        <div className="flex items-center justify-between text-xs text-neutral-400">
+          <span>{platform.pricing.model}</span>
+          <span>Verified {formattedDate}</span>
         </div>
       </div>
     </Link>

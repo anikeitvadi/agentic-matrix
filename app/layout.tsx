@@ -1,18 +1,10 @@
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
 import "./globals.css"
-import { Navigation } from "@/components/ui/Navigation"
-import { Footer } from "@/components/ui/Footer"
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-})
+import { Sidebar } from "@/components/ui/Sidebar"
 
 export const metadata: Metadata = {
   title: "Agentic Decisions",
-  description: "Vendor-neutral AI agent platform guidance for IT leaders. Get honest, actionable recommendations based on your specific requirements — not vendor pitches.",
+  description: "AI agent platform decision toolkit for enterprise IT leaders.",
 }
 
 export default function RootLayout({
@@ -22,12 +14,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} flex flex-col min-h-screen`}>
-        <Navigation />
-        <main className="flex-grow">
+      <body className="bg-neutral-50 font-sans">
+        <Sidebar />
+        <main className="ml-56 min-h-screen">
           {children}
         </main>
-        <Footer />
       </body>
     </html>
   )

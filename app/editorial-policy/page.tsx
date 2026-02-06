@@ -3,8 +3,8 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
 export const metadata: Metadata = {
-  title: 'Editorial Independence Policy | Agentic Decisions',
-  description: 'Our commitment to vendor-neutral AI agent platform guidance. Learn how we evaluate platforms, what we don\'t do, and how we handle conflicts of interest.',
+  title: 'Editorial Policy | Agentic Decisions',
+  description: 'Our commitment to vendor-neutral AI agent platform guidance.',
 }
 
 export default function EditorialPolicyPage() {
@@ -20,30 +20,28 @@ export default function EditorialPolicyPage() {
     day: 'numeric'
   })
 
-  const Content = policy.body
-
   return (
-    <div className="py-12 px-4 sm:px-6 lg:px-8">
-      <article className="max-w-3xl mx-auto">
-        <header className="mb-8">
-          <h1 className="text-4xl font-bold text-neutral-900 mb-2">
-            {policy.title}
-          </h1>
-          <p className="text-sm text-neutral-500">
-            Last updated: {formattedDate}
-          </p>
-        </header>
+    <div className="p-8 max-w-3xl">
+      <header className="mb-8">
+        <h1 className="text-2xl font-semibold text-neutral-900 mb-2">
+          {policy.title}
+        </h1>
+        <p className="text-sm text-neutral-500">
+          Last updated: {formattedDate}
+        </p>
+      </header>
 
-        <div className="prose prose-neutral prose-lg max-w-none
-          prose-headings:font-bold prose-headings:text-neutral-900
-          prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4
-          prose-p:text-neutral-700 prose-p:leading-relaxed
-          prose-a:text-brand-600 prose-a:no-underline hover:prose-a:underline
-          prose-strong:text-neutral-900 prose-strong:font-semibold
-          prose-ul:my-4 prose-li:text-neutral-700">
-          <Content />
-        </div>
-      </article>
+      <div className="bg-white rounded-lg border border-neutral-200 p-6">
+        <div
+          className="prose prose-neutral max-w-none
+            prose-headings:font-semibold prose-headings:text-neutral-900
+            prose-h2:text-lg prose-h2:mt-6 prose-h2:mb-3
+            prose-p:text-neutral-700 prose-p:leading-relaxed
+            prose-strong:text-neutral-900
+            prose-ul:my-3 prose-li:text-neutral-700"
+          dangerouslySetInnerHTML={{ __html: policy.body }}
+        />
+      </div>
     </div>
   )
 }
