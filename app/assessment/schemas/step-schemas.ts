@@ -21,6 +21,18 @@ export const step1Schema = z.object({
 
 export type Step1Data = z.infer<typeof step1Schema>
 
+// Helper to transform comma-separated string to array
+const commaSeparatedToArray = z.preprocess(
+  (val) => {
+    if (typeof val === 'string') {
+      return val.split(',').map(s => s.trim()).filter(Boolean)
+    }
+    if (Array.isArray(val)) return val
+    return []
+  },
+  z.array(z.string())
+)
+
 /**
  * Step 2 - Current State: What do you have?
  */
@@ -28,11 +40,11 @@ export const step2Schema = z.object({
   hasExistingPlatform: z.boolean({
     errorMap: () => ({ message: 'Please indicate if you have an existing platform' })
   }),
-  existingPlatforms: z.array(z.string()).optional(),
+  existingPlatforms: commaSeparatedToArray.optional(),
   currentStack: z.array(
     z.enum(['aws', 'azure', 'gcp', 'on-premise', 'hybrid'])
   ).min(1, 'Please select at least one infrastructure option'),
-  integrationNeeds: z.array(z.string()).optional()
+  integrationNeeds: commaSeparatedToArray.optional()
 })
 
 export type Step2Data = z.infer<typeof step2Schema>
