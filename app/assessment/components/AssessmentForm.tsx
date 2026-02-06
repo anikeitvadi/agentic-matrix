@@ -1,16 +1,26 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
+import useFormPersist from 'react-hook-form-persist'
 import { StepIndicator } from './StepIndicator'
 import { steps, stepLabels, validateStep } from '../steps'
 import type { AssessmentData } from '../schemas/assessment-schema'
+import {
+  saveCurrentStep,
+  loadCurrentStep,
+  clearProgress,
+  hasSavedProgress,
+  getFormStorageKey,
+} from '@/lib/assessment/progress-storage'
 
 const TOTAL_STEPS = 4
 
 export function AssessmentForm() {
-  const [currentStep, setCurrentStep] = useState(1)
+  // Use lazy initialization to avoid hydration mismatch
+  const [currentStep, setCurrentStep] = useState(() => 1)
   const [formData, setFormData] = useState<Partial<AssessmentData>>({})
+  const [showResumeNotice, setShowResumeNotice] = useState(false)
 
   const {
     register,
@@ -19,10 +29,32 @@ export function AssessmentForm() {
     getValues,
     setError,
     clearErrors,
+    watch,
+    setValue,
   } = useForm<any>({
     mode: 'onBlur',
     defaultValues: formData,
   })
+
+  // Persist form data to localStorage
+  useFormPersist(getFormStorageKey(), {
+    watch,
+    setValue,
+    storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+  })
+
+  // Restore current step on mount (client-side only)
+  useEffect(() => {
+    if (hasSavedProgress()) {
+      const savedStep = loadCurrentStep()
+      setCurrentStep(savedStep)
+      setShowResumeNotice(true)
+
+      // Auto-hide notice after 5 seconds
+      const timer = setTimeout(() => setShowResumeNotice(false), 5000)
+      return () => clearTimeout(timer)
+    }
+  }, [])
 
   const handleNext = () => {
     const currentValues = getValues()
@@ -45,7 +77,9 @@ export function AssessmentForm() {
 
     // Move to next step
     if (currentStep < TOTAL_STEPS) {
-      setCurrentStep((prev) => prev + 1)
+      const nextStep = currentStep + 1
+      setCurrentStep(nextStep)
+      saveCurrentStep(nextStep)
     }
   }
 
@@ -56,7 +90,9 @@ export function AssessmentForm() {
       const stepKey = `step${currentStep}`
       setFormData((prev) => ({ ...prev, [stepKey]: currentValues }))
 
-      setCurrentStep((prev) => prev - 1)
+      const prevStep = currentStep - 1
+      setCurrentStep(prevStep)
+      saveCurrentStep(prevStep)
     }
   }
 
@@ -79,6 +115,10 @@ export function AssessmentForm() {
       ...formData,
       [`step${currentStep}`]: currentValues,
     }
+
+    // Clear saved progress after successful submission
+    clearProgress()
+
     // Placeholder for Phase 3 - will handle final submission
     console.log('Assessment submitted:', completeData)
   }
@@ -88,6 +128,15 @@ export function AssessmentForm() {
   return (
     <div className="max-w-3xl mx-auto">
       <StepIndicator current={currentStep} total={TOTAL_STEPS} stepLabels={stepLabels} />
+
+      {/* Resume notice */}
+      {showResumeNotice && (
+        <div className="mb-6 p-4 bg-brand-900/20 border border-brand-700 rounded-lg text-brand-200">
+          <p className="text-sm">
+            <strong>Progress restored:</strong> We found your saved assessment and resumed from where you left off.
+          </p>
+        </div>
+      )}
 
       <div className="space-y-6">
         {/* Render current step component */}
