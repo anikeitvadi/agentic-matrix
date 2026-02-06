@@ -37,7 +37,7 @@ const commaSeparatedToArray = z.preprocess(
  * Step 2 - Current State: What do you have?
  */
 export const step2Schema = z.object({
-  hasExistingPlatform: z.boolean({
+  hasExistingPlatform: z.enum(['true', 'false'], {
     errorMap: () => ({ message: 'Please indicate if you have an existing platform' })
   }),
   existingPlatforms: commaSeparatedToArray.optional(),

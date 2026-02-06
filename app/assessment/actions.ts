@@ -6,13 +6,14 @@ import { z } from 'zod'
 import { FOLLOW_UP_SYSTEM_PROMPT, buildFollowUpPrompt } from '@/lib/assessment/ai-prompts'
 
 // Schema for AI-generated follow-up questions
+// Note: OpenAI structured outputs require all fields to be required, so options is always an array (empty if not needed)
 const followUpSchema = z.object({
   questions: z.array(z.object({
     id: z.string().describe('Unique identifier for the question'),
     text: z.string().describe('The question text to display'),
     rationale: z.string().describe('Brief explanation of why this question matters'),
     fieldType: z.enum(['text', 'textarea', 'select', 'multi-select', 'scale']).describe('Input type for the answer'),
-    options: z.array(z.string()).optional().describe('Options for select/multi-select fields'),
+    options: z.array(z.string()).describe('Options for select/multi-select fields. Empty array for text/textarea/scale fields.'),
   })).min(1).max(2),
 })
 
@@ -32,15 +33,18 @@ export async function generateFollowUp(
     return { questions: result.object.questions }
   } catch (error) {
     console.error('AI follow-up generation failed:', error)
+    console.error('Error details:', JSON.stringify(error, Object.getOwnPropertyNames(error), 2))
 
     // Handle specific error types
     if (error instanceof Error) {
       if (error.message.includes('rate limit')) {
         return { error: 'Too many requests. Please wait a moment and try again.' }
       }
-      if (error.message.includes('API key')) {
+      if (error.message.includes('API key') || error.message.includes('401')) {
         return { error: 'AI service configuration error. Please try again later.' }
       }
+      // Return actual error message for debugging
+      return { error: `AI error: ${error.message}` }
     }
 
     return { error: 'Unable to generate follow-up questions. You can continue without them.' }

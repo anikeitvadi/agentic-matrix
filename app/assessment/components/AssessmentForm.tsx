@@ -161,8 +161,8 @@ export function AssessmentForm() {
           />
         </div>
 
-        {/* AI-powered follow-up questions (appears after Step 2) */}
-        {currentStep >= 2 && (
+        {/* AI-powered follow-up questions (appears on final step only) */}
+        {currentStep === TOTAL_STEPS && (
           <AIFollowUp
             context={{
               ...watchedValues,

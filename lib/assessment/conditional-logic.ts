@@ -22,6 +22,13 @@ export function shouldShowField(
   // Convert string boolean to actual boolean for hasExistingPlatform
   const hasExisting = context.hasExistingPlatform === true || context.hasExistingPlatform === 'true'
 
+  // Normalize complianceRequirements to always be an array (checkboxes can return string or array)
+  const compliance = Array.isArray(context.complianceRequirements)
+    ? context.complianceRequirements
+    : context.complianceRequirements
+      ? [context.complianceRequirements]
+      : []
+
   switch (fieldId) {
     // Rule 1: Existing Platform Details
     case 'existingPlatforms':
@@ -43,10 +50,10 @@ export function shouldShowField(
 
     // Rule 3: Compliance Details
     case 'healthcareDataTypes':
-      return context.complianceRequirements?.includes('hipaa') ?? false
+      return compliance.includes('hipaa')
 
     case 'governmentAgency':
-      return context.complianceRequirements?.includes('fedramp') ?? false
+      return compliance.includes('fedramp')
 
     // Default: show all non-conditional fields
     default:
