@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-02-05)
 ## Current Position
 
 Phase: 2 of 6 (Assessment Engine) 🚧 IN PROGRESS
-Plan: 3 of 6 (completed)
-Status: Phase 2 progressing - conditional branching complete
-Last activity: 2026-02-06 — Completed 02-03-PLAN.md (Conditional branching logic)
+Plan: 5 of 6 (completed)
+Status: Phase 2 progressing - AI follow-up questions complete
+Last activity: 2026-02-06 — Completed 02-05-PLAN.md (AI follow-up questions)
 
-Progress: [███░░░] 50% (Phase 2: 3/6 plans)
+Progress: [█████░] 83% (Phase 2: 5/6 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 7
-- Average duration: 35 min
-- Total execution time: 4h 13min
+- Total plans completed: 9
+- Average duration: 30 min
+- Total execution time: 4h 17min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation-platform-data | 4 | 242 min | 61 min |
-| 02-assessment-engine | 3 | 11 min | 3.7 min |
+| 02-assessment-engine | 5 | 15 min | 3 min |
 
 **Recent Trend:**
-- Last 5 plans: [01-04: 45min, 02-01: 2min, 02-02: 5min, 02-03: 4min, 02-04: 2min]
+- Last 5 plans: [02-01: 2min, 02-02: 5min, 02-03: 4min, 02-04: 2min, 02-05: 2min]
 - Phase 2 moving very fast (good schemas + clear UI requirements)
 
 *Updated after each plan completion*
@@ -64,6 +64,9 @@ Recent decisions affecting current work:
 - Lazy state initialization for currentStep (02-04: prevents hydration mismatch with SSR)
 - Auto-hide resume notice after 5 seconds (02-04: non-intrusive UX feedback)
 - Separate step persistence from form data (02-04: independent tracking and restoration)
+- generateObject for structured AI output (02-05: ensures Zod schema compliance)
+- useTransition over useActionState (02-05: simpler for non-form Server Action calls)
+- AI follow-up after Step 2 (02-05: requires sufficient context before generating)
 
 ### Pending Todos
 
@@ -83,11 +86,11 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-06T02:31:25Z
-Stopped at: Completed 02-03-PLAN.md (Conditional branching: form fields show/hide based on previous answers)
+Last session: 2026-02-06T02:37:16Z
+Stopped at: Completed 02-05-PLAN.md (AI follow-up questions with OpenAI and generateObject)
 Resume file: None
-Next action: Continue with remaining Phase 2 plans (02-05: AI follow-up questions, 02-06: results generation)
+Next action: Continue with 02-06 (results generation) to complete Phase 2
 
 ---
 *State initialized: 2026-02-05*
-*Last updated: 2026-02-06T02:31:25Z*
+*Last updated: 2026-02-06T02:37:16Z*
