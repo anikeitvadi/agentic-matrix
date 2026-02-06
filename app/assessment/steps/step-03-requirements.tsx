@@ -3,14 +3,16 @@
 import { UseFormRegister, FieldErrors, Control } from 'react-hook-form'
 import { QuestionField } from '../components/QuestionStep'
 import type { AssessmentData } from '../schemas/assessment-schema'
+import { shouldShowField, type AssessmentContext } from '@/lib/assessment/conditional-logic'
 
 interface Step3Props {
   register: UseFormRegister<AssessmentData>
   errors: FieldErrors<AssessmentData>
   control: Control<AssessmentData>
+  assessmentContext: AssessmentContext
 }
 
-export function Step3Requirements({ register, errors, control }: Step3Props) {
+export function Step3Requirements({ register, errors, control, assessmentContext }: Step3Props) {
   return (
     <div>
       <h2 className="text-2xl font-bold mb-2">Requirements</h2>
@@ -56,6 +58,36 @@ export function Step3Requirements({ register, errors, control }: Step3Props) {
           ],
         }}
       />
+
+      {shouldShowField('healthcareDataTypes', assessmentContext) && (
+        <QuestionField
+          register={register}
+          errors={errors}
+          control={control}
+          field={{
+            name: 'healthcareDataTypes',
+            label: 'What types of healthcare data will you process?',
+            type: 'text',
+            placeholder: 'e.g., PHI, patient records, clinical notes',
+            description: 'Describe the healthcare data types',
+          }}
+        />
+      )}
+
+      {shouldShowField('governmentAgency', assessmentContext) && (
+        <QuestionField
+          register={register}
+          errors={errors}
+          control={control}
+          field={{
+            name: 'governmentAgency',
+            label: 'Which government agency or department?',
+            type: 'text',
+            placeholder: 'e.g., DoD, VA, HHS',
+            description: 'Specify your government organization',
+          }}
+        />
+      )}
 
       <QuestionField
         register={register}

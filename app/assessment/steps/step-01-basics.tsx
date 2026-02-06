@@ -3,11 +3,13 @@
 import { UseFormRegister, FieldErrors, Control } from 'react-hook-form'
 import { QuestionField } from '../components/QuestionStep'
 import type { AssessmentData } from '../schemas/assessment-schema'
+import type { AssessmentContext } from '@/lib/assessment/conditional-logic'
 
 interface Step1Props {
   register: UseFormRegister<AssessmentData>
   errors: FieldErrors<AssessmentData>
   control: Control<AssessmentData>
+  assessmentContext: AssessmentContext
 }
 
 export function Step1Basics({ register, errors, control }: Step1Props) {

@@ -3,14 +3,16 @@
 import { UseFormRegister, FieldErrors, Control } from 'react-hook-form'
 import { QuestionField } from '../components/QuestionStep'
 import type { AssessmentData } from '../schemas/assessment-schema'
+import { shouldShowField, type AssessmentContext } from '@/lib/assessment/conditional-logic'
 
 interface Step2Props {
   register: UseFormRegister<AssessmentData>
   errors: FieldErrors<AssessmentData>
   control: Control<AssessmentData>
+  assessmentContext: AssessmentContext
 }
 
-export function Step2CurrentState({ register, errors, control }: Step2Props) {
+export function Step2CurrentState({ register, errors, control, assessmentContext }: Step2Props) {
   return (
     <div>
       <h2 className="text-2xl font-bold mb-2">Current State</h2>
@@ -32,18 +34,20 @@ export function Step2CurrentState({ register, errors, control }: Step2Props) {
         }}
       />
 
-      <QuestionField
-        register={register}
-        errors={errors}
-        control={control}
-        field={{
-          name: 'existingPlatforms',
-          label: 'What platforms are you currently using? (Optional)',
-          type: 'text',
-          placeholder: 'e.g., Salesforce Einstein, AWS Bedrock Agents',
-          description: 'Comma-separated list of platforms',
-        }}
-      />
+      {shouldShowField('existingPlatforms', assessmentContext) && (
+        <QuestionField
+          register={register}
+          errors={errors}
+          control={control}
+          field={{
+            name: 'existingPlatforms',
+            label: 'What platforms are you currently using?',
+            type: 'text',
+            placeholder: 'e.g., Salesforce Einstein, AWS Bedrock Agents',
+            description: 'Comma-separated list of platforms',
+          }}
+        />
+      )}
 
       <QuestionField
         register={register}

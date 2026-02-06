@@ -1,11 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import useFormPersist from 'react-hook-form-persist'
 import { StepIndicator } from './StepIndicator'
 import { steps, stepLabels, validateStep } from '../steps'
 import type { AssessmentData } from '../schemas/assessment-schema'
+import type { AssessmentContext } from '@/lib/assessment/conditional-logic'
 import {
   saveCurrentStep,
   loadCurrentStep,
@@ -42,6 +43,16 @@ export function AssessmentForm() {
     setValue,
     storage: typeof window !== 'undefined' ? window.localStorage : undefined,
   })
+
+  // Watch form values for conditional logic (React 19 compatible)
+  const watchedValues = useWatch({ control })
+
+  // Create assessment context for conditional field rendering
+  const assessmentContext: AssessmentContext = {
+    useCase: watchedValues?.useCase,
+    hasExistingPlatform: watchedValues?.hasExistingPlatform,
+    complianceRequirements: watchedValues?.complianceRequirements,
+  }
 
   // Restore current step on mount (client-side only)
   useEffect(() => {
@@ -141,7 +152,12 @@ export function AssessmentForm() {
       <div className="space-y-6">
         {/* Render current step component */}
         <div className="bg-neutral-900 rounded-lg p-6 border border-neutral-800">
-          <CurrentStepComponent register={register} errors={errors} control={control} />
+          <CurrentStepComponent
+            register={register}
+            errors={errors}
+            control={control}
+            assessmentContext={assessmentContext}
+          />
         </div>
 
         {/* Navigation buttons */}
