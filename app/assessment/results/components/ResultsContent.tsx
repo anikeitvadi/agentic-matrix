@@ -10,6 +10,7 @@ import { getFormStorageKey } from '@/lib/assessment/progress-storage'
 import { PlatformScores } from './PlatformScores'
 import { FilterPanel, type FilterValues } from './FilterPanel'
 import { ComparisonMatrix } from './ComparisonMatrix'
+import { AuditTrail } from './AuditTrail'
 
 interface ResultsContentProps {
   platforms: Platform[]
@@ -112,6 +113,9 @@ export function ResultsContent({ platforms }: ResultsContentProps) {
           />
         </div>
       </div>
+
+      {/* Decision Audit Trail */}
+      <AuditTrail scores={scores} />
     </div>
   )
 }
