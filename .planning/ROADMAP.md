@@ -67,12 +67,14 @@ Plans:
   3. User can filter platforms by budget constraints, compliance requirements, and existing stack compatibility
   4. User can read decision audit trail explaining exactly why platform X scored higher than platform Y for their situation
   5. Scoring methodology is transparent and explainable (no black-box algorithms)
-**Plans**: TBD
+**Plans**: 5 plans in 4 waves
 
 Plans:
-- [ ] 03-01: TBD during planning
-- [ ] 03-02: TBD during planning
-- [ ] 03-03: TBD during planning
+- [ ] 03-01-PLAN.md — Create scoring types and normalization utilities
+- [ ] 03-02-PLAN.md — Implement SAW scoring engine with TDD
+- [ ] 03-03-PLAN.md — Build results UI with comparison matrix and filtering
+- [ ] 03-04-PLAN.md — Add decision audit trail and wire form submission
+- [ ] 03-05-PLAN.md — Human verification of Phase 3 success criteria
 
 ### Phase 4: Cost Analysis
 **Goal**: Users understand total cost implications of each platform recommendation
@@ -130,11 +132,11 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 |-------|----------------|--------|-----------|
 | 1. Foundation & Platform Data | 4/4 | Complete | 2026-02-05 |
 | 2. Assessment Engine | 6/6 | Complete | 2026-02-06 |
-| 3. Recommendation & Comparison | 0/TBD | Not started | - |
+| 3. Recommendation & Comparison | 0/5 | Planned | - |
 | 4. Cost Analysis | 0/TBD | Not started | - |
 | 5. Blueprint Library | 0/TBD | Not started | - |
 | 6. Export & Sharing | 0/TBD | Not started | - |
 
 ---
 *Roadmap created: 2026-02-05*
-*Last updated: 2026-02-06*
+*Last updated: 2026-02-08*
