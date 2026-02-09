@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { useForm, useWatch } from 'react-hook-form'
 import useFormPersist from 'react-hook-form-persist'
 import { StepIndicator } from './StepIndicator'
@@ -19,6 +20,8 @@ import {
 const TOTAL_STEPS = 4
 
 export function AssessmentForm() {
+  const router = useRouter()
+
   // Use lazy initialization to avoid hydration mismatch
   const [currentStep, setCurrentStep] = useState(() => 1)
   const [formData, setFormData] = useState<Partial<AssessmentData>>({})
@@ -128,11 +131,12 @@ export function AssessmentForm() {
       [`step${currentStep}`]: currentValues,
     }
 
-    // Clear saved progress after successful submission
+    // Clear step progress tracking (NOT form data - results page needs it)
     clearProgress()
 
-    // Placeholder for Phase 3 - will handle final submission
-    console.log('Assessment submitted:', completeData)
+    // Navigate to results page - form data is preserved in localStorage
+    // by useFormPersist and will be read by the results page
+    router.push('/assessment/results')
   }
 
   const CurrentStepComponent = steps[currentStep - 1]
