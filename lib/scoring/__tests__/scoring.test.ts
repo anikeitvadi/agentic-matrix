@@ -264,4 +264,127 @@ describe('SAW Scoring', () => {
       expect(results).toEqual([])
     })
   })
+
+  describe('Audit Trail', () => {
+    it('should generate audit trail with reasoning for each criterion', () => {
+      const context: ScoringContext = {
+        allPlatforms: mockPlatforms,
+        userAssessment: {
+          integrationNeeds: ['slack', 'github'],
+        },
+        weightConfig: DEFAULT_WEIGHTS,
+      }
+
+      const result = scorePlatform(mockPlatforms[0], context)
+
+      expect(result.auditTrail).toHaveLength(5)
+
+      // Each audit entry should have all required fields
+      for (const entry of result.auditTrail) {
+        expect(entry).toHaveProperty('criterionName')
+        expect(entry).toHaveProperty('rawValue')
+        expect(entry).toHaveProperty('normalizedValue')
+        expect(entry).toHaveProperty('weight')
+        expect(entry).toHaveProperty('weightedScore')
+        expect(entry).toHaveProperty('reasoning')
+
+        // Reasoning should be a non-empty string
+        expect(typeof entry.reasoning).toBe('string')
+        expect(entry.reasoning.length).toBeGreaterThan(0)
+      }
+    })
+
+    it('should include platform name in reasoning strings', () => {
+      const context: ScoringContext = {
+        allPlatforms: mockPlatforms,
+        userAssessment: {},
+        weightConfig: DEFAULT_WEIGHTS,
+      }
+
+      const result = scorePlatform(mockPlatforms[0], context)
+
+      // All reasoning strings should include the platform name
+      for (const entry of result.auditTrail) {
+        expect(entry.reasoning).toContain('Zapier')
+      }
+    })
+
+    it('should calculate weightedScore correctly in audit entries', () => {
+      const context: ScoringContext = {
+        allPlatforms: mockPlatforms,
+        userAssessment: {},
+        weightConfig: DEFAULT_WEIGHTS,
+      }
+
+      const result = scorePlatform(mockPlatforms[0], context)
+
+      for (const entry of result.auditTrail) {
+        const expectedWeightedScore = entry.weight * entry.normalizedValue
+        expect(entry.weightedScore).toBeCloseTo(expectedWeightedScore, 10)
+      }
+    })
+  })
+
+  describe('Criterion Calculations', () => {
+    it('should score developer-first platforms higher for stack compatibility', () => {
+      const context: ScoringContext = {
+        allPlatforms: mockPlatforms,
+        userAssessment: {},
+        weightConfig: {
+          integrationFit: 0,
+          complianceMatch: 0,
+          budgetFit: 0,
+          featureMatch: 0,
+          stackCompatibility: 1.0, // Only stack compatibility matters
+        },
+      }
+
+      const results = scoreAllPlatforms(mockPlatforms, context)
+
+      // n8n (developer-first) should have high stack compatibility
+      const n8nScore = results.find((r) => r.platformId === 'n8n')
+      expect(n8nScore).toBeDefined()
+      expect(n8nScore!.totalScore).toBeGreaterThan(0)
+    })
+
+    it('should score enterprise platforms higher for compliance', () => {
+      const context: ScoringContext = {
+        allPlatforms: mockPlatforms,
+        userAssessment: {
+          complianceRequirements: ['soc2', 'hipaa'],
+        },
+        weightConfig: {
+          integrationFit: 0,
+          complianceMatch: 1.0, // Only compliance matters
+          budgetFit: 0,
+          featureMatch: 0,
+          stackCompatibility: 0,
+        },
+      }
+
+      const results = scoreAllPlatforms(mockPlatforms, context)
+
+      // Workato (enterprise with soc2/hipaa) should score highest
+      expect(results[0].platformId).toBe('workato')
+    })
+
+    it('should favor lower cost platforms for budget fit', () => {
+      const context: ScoringContext = {
+        allPlatforms: mockPlatforms,
+        userAssessment: {},
+        weightConfig: {
+          integrationFit: 0,
+          complianceMatch: 0,
+          budgetFit: 1.0, // Only budget matters
+          featureMatch: 0,
+          stackCompatibility: 0,
+        },
+      }
+
+      const results = scoreAllPlatforms(mockPlatforms, context)
+
+      // n8n (open-source, free) should have best budget score
+      expect(results[0].platformId).toBe('n8n')
+    })
+  })
 })
