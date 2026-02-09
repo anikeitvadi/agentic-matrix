@@ -12,6 +12,7 @@
   "dependencies": {
     "@ai-sdk/openai": "^3.0.25",
     "@hookform/resolvers": "^5.2.2",
+    "@tanstack/react-table": "^8.21.3",
     "ai": "^6.0.73",
     "next": "^15.1.4",
     "react": "^19.0.0",
