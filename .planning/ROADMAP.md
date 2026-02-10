@@ -86,11 +86,15 @@ Plans:
   3. User can view total cost of ownership projections over 12, 24, and 36 month timeframes
   4. User can see engineering time estimates for implementing each platform option
   5. Cost calculator shows complete picture including infrastructure, platform fees, and personnel costs
-**Plans**: TBD
+**Plans**: 6 plans in 3 waves
 
 Plans:
-- [ ] 04-01: TBD during planning
-- [ ] 04-02: TBD during planning
+- [ ] 04-01-PLAN.md — Install dependencies, create cost types, extend pricing schema
+- [ ] 04-02-PLAN.md — Implement cost calculators with TDD (token, subscription, TCO, engineering)
+- [ ] 04-03-PLAN.md — Create usage input panel and cost comparison chart
+- [ ] 04-04-PLAN.md — Create TCO projection chart and platform cost cards
+- [ ] 04-05-PLAN.md — Create CostCalculator container and integrate into results page
+- [ ] 04-06-PLAN.md — Human verification of Phase 4 success criteria
 
 ### Phase 5: Blueprint Library
 **Goal**: Users access implementation-ready guidance for their selected platform and use case
@@ -133,10 +137,10 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 1. Foundation & Platform Data | 4/4 | Complete | 2026-02-05 |
 | 2. Assessment Engine | 6/6 | Complete | 2026-02-06 |
 | 3. Recommendation & Comparison | 5/5 | Complete | 2026-02-09 |
-| 4. Cost Analysis | 0/TBD | Not started | - |
+| 4. Cost Analysis | 0/6 | Planned | - |
 | 5. Blueprint Library | 0/TBD | Not started | - |
 | 6. Export & Sharing | 0/TBD | Not started | - |
 
 ---
 *Roadmap created: 2026-02-05*
-*Last updated: 2026-02-09*
+*Last updated: 2026-02-08*
