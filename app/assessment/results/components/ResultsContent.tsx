@@ -11,6 +11,7 @@ import { PlatformScores } from './PlatformScores'
 import { FilterPanel, type FilterValues } from './FilterPanel'
 import { ComparisonMatrix } from './ComparisonMatrix'
 import { AuditTrail } from './AuditTrail'
+import { CostCalculator } from './CostCalculator'
 
 interface ResultsContentProps {
   platforms: Platform[]
@@ -116,6 +117,14 @@ export function ResultsContent({ platforms }: ResultsContentProps) {
 
       {/* Decision Audit Trail */}
       <AuditTrail scores={scores} />
+
+      {/* Cost Analysis */}
+      <div className="pt-4 border-t border-neutral-800">
+        <CostCalculator
+          platforms={platforms}
+          topPlatformIds={scores.slice(0, 5).map((s) => s.platformId)}
+        />
+      </div>
     </div>
   )
 }
