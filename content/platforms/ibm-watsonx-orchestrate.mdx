@@ -11,8 +11,21 @@ capabilities:
   - Hybrid cloud deployment
   - Enterprise governance and lineage
 pricing:
-  model: SaaS subscription
+  model: hybrid
   details: Per-user licensing with usage-based AI consumption, enterprise agreements available
+  tokenPricing:
+    inputPricePerMillion: 0.6
+    outputPricePerMillion: 0.6
+  tiers:
+    - name: Standard
+      monthlyPrice: 100
+      includedUnits: 1
+      unitType: users
+    - name: Enterprise
+      monthlyPrice: 250
+      includedUnits: 1
+      unitType: users
+  enterpriseContact: true
 officialDocs: https://www.ibm.com/docs/en/watsonx-orchestrate
 pricingPage: https://www.ibm.com/products/watsonx-orchestrate/pricing
 lastVerified: 2026-02-09

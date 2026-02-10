@@ -11,8 +11,18 @@ capabilities:
   - Workflow automation
   - CMDB and knowledge base integration
 pricing:
-  model: Platform subscription
+  model: subscription
   details: AI capabilities included in Pro/Enterprise tiers, Now Assist add-on available
+  tiers:
+    - name: Pro
+      monthlyPrice: 100
+      includedUnits: 1
+      unitType: users
+    - name: Enterprise
+      monthlyPrice: 175
+      includedUnits: 1
+      unitType: users
+  enterpriseContact: true
 officialDocs: https://docs.servicenow.com/bundle/now-platform/page/administer/now-assist/concept/now-assist.html
 pricingPage: https://www.servicenow.com/products/now-platform/pricing.html
 lastVerified: 2026-02-09

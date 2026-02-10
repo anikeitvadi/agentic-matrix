@@ -11,8 +11,19 @@ capabilities:
   - Workflow orchestration
   - Function calling and structured outputs
 pricing:
-  model: Pay-per-use
+  model: pay-per-use
   details: Token-based pricing with volume discounts, enterprise agreements available
+  tokenPricing:
+    inputPricePerMillion: 2.5
+    outputPricePerMillion: 10
+    modelVariants:
+      - name: GPT-4o
+        inputPrice: 2.5
+        outputPrice: 10
+      - name: GPT-4.5 Turbo
+        inputPrice: 5
+        outputPrice: 15
+  enterpriseContact: true
 officialDocs: https://platform.openai.com/docs
 pricingPage: https://openai.com/pricing
 lastVerified: 2026-02-05

@@ -11,8 +11,19 @@ capabilities:
   - Enterprise data connectors
   - Agent evaluation and monitoring
 pricing:
-  model: Pay-per-use
+  model: pay-per-use
   details: Vertex AI pricing with agent-specific charges
+  tokenPricing:
+    inputPricePerMillion: 1.25
+    outputPricePerMillion: 5
+    modelVariants:
+      - name: Gemini 1.5 Pro
+        inputPrice: 1.25
+        outputPrice: 5
+      - name: Gemini 1.5 Flash
+        inputPrice: 0.075
+        outputPrice: 0.3
+  enterpriseContact: true
 officialDocs: https://cloud.google.com/vertex-ai/docs
 pricingPage: https://cloud.google.com/vertex-ai/pricing
 lastVerified: 2026-02-05

@@ -11,8 +11,17 @@ capabilities:
   - Enterprise identity management (Entra ID)
   - Multi-channel deployment
 pricing:
-  model: Subscription + usage
+  model: hybrid
   details: Per-user licensing plus Azure consumption
+  tokenPricing:
+    inputPricePerMillion: 1
+    outputPricePerMillion: 4
+  tiers:
+    - name: Base
+      monthlyPrice: 200
+      includedUnits: 25000
+      unitType: conversations
+  enterpriseContact: true
 officialDocs: https://learn.microsoft.com/en-us/microsoft-copilot-studio/
 pricingPage: https://www.microsoft.com/en-us/microsoft-copilot/microsoft-copilot-studio
 lastVerified: 2026-02-05

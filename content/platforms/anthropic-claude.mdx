@@ -11,8 +11,19 @@ capabilities:
   - Tool use and function calling
   - Extended thinking mode
 pricing:
-  model: Pay-per-use
+  model: pay-per-use
   details: Token-based with API credits, enterprise plans available
+  tokenPricing:
+    inputPricePerMillion: 3
+    outputPricePerMillion: 15
+    modelVariants:
+      - name: Claude 3.5 Sonnet
+        inputPrice: 3
+        outputPrice: 15
+      - name: Claude Opus 4.5
+        inputPrice: 5
+        outputPrice: 25
+  enterpriseContact: true
 officialDocs: https://docs.anthropic.com
 pricingPage: https://www.anthropic.com/pricing
 lastVerified: 2026-02-05

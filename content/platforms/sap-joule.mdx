@@ -11,8 +11,18 @@ capabilities:
   - Role-based personalization
   - SAP Business AI foundation
 pricing:
-  model: Embedded
+  model: subscription
   details: Included with SAP cloud subscriptions, premium AI features may require add-ons
+  tiers:
+    - name: Standard (with SAP Cloud)
+      monthlyPrice: 0
+      includedUnits: 1
+      unitType: users
+    - name: Premium AI Add-on
+      monthlyPrice: 75
+      includedUnits: 1
+      unitType: users
+  enterpriseContact: true
 officialDocs: https://help.sap.com/docs/joule
 pricingPage: https://www.sap.com/products/artificial-intelligence/ai-assistant.html
 lastVerified: 2026-02-09

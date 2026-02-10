@@ -11,8 +11,23 @@ capabilities:
   - AWS service integration (Lambda, S3, DynamoDB)
   - Fine-tuning and continued pre-training
 pricing:
-  model: Pay-per-use
+  model: pay-per-use
   details: Token-based pricing varies by model, plus inference and storage costs
+  tokenPricing:
+    inputPricePerMillion: 3
+    outputPricePerMillion: 15
+    modelVariants:
+      - name: Claude 3.5 Sonnet (Bedrock)
+        inputPrice: 3
+        outputPrice: 15
+      - name: Llama 3.1 70B
+        inputPrice: 0.72
+        outputPrice: 0.72
+      - name: Amazon Titan Text
+        inputPrice: 0.5
+        outputPrice: 1.5
+  enterpriseContact: true
+  infrastructureCosts: Additional charges for Knowledge Bases storage and retrieval
 officialDocs: https://docs.aws.amazon.com/bedrock/
 pricingPage: https://aws.amazon.com/bedrock/pricing/
 lastVerified: 2026-02-09

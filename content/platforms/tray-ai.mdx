@@ -11,8 +11,18 @@ capabilities:
   - Low-code/no-code interface
   - Real-time data synchronization
 pricing:
-  model: Subscription
+  model: subscription
   details: Tiered plans based on tasks and connectors
+  tiers:
+    - name: Professional
+      monthlyPrice: 995
+      includedUnits: 5000
+      unitType: tasks
+    - name: Enterprise
+      monthlyPrice: 3495
+      includedUnits: 25000
+      unitType: tasks
+  enterpriseContact: true
 officialDocs: https://tray.io/documentation
 pricingPage: https://tray.io/pricing
 lastVerified: 2026-02-05

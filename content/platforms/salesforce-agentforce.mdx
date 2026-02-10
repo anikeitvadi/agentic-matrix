@@ -11,8 +11,23 @@ capabilities:
   - Slack and omnichannel deployment
   - Industry-specific agents (Financial Services, Healthcare, Manufacturing)
 pricing:
-  model: Per-conversation
+  model: per-conversation
   details: $2 per conversation, included conversations vary by Salesforce edition
+  perConversationRate: 2
+  tiers:
+    - name: Starter
+      monthlyPrice: 0
+      includedUnits: 1000
+      unitType: conversations
+    - name: Professional
+      monthlyPrice: 150
+      includedUnits: 5000
+      unitType: conversations
+    - name: Enterprise
+      monthlyPrice: 300
+      includedUnits: 10000
+      unitType: conversations
+  enterpriseContact: true
 officialDocs: https://help.salesforce.com/s/articleView?id=sf.agentforce.htm
 pricingPage: https://www.salesforce.com/agentforce/pricing/
 lastVerified: 2026-02-09

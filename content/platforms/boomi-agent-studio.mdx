@@ -11,8 +11,18 @@ capabilities:
   - Master data hub connectivity
   - Event-driven automation
 pricing:
-  model: Platform subscription
+  model: subscription
   details: Enterprise licensing based on connections and volume, contact sales
+  tiers:
+    - name: Professional
+      monthlyPrice: 750
+      includedUnits: 50
+      unitType: tasks
+    - name: Enterprise
+      monthlyPrice: 2500
+      includedUnits: 250
+      unitType: tasks
+  enterpriseContact: true
 officialDocs: https://boomi.com/platform/agent-studio/
 pricingPage: https://boomi.com/pricing/
 lastVerified: 2026-02-09
