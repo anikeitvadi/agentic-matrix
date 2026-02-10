@@ -230,3 +230,41 @@ export const DEFAULT_TCO_CONFIG: TcoConfig = {
   infrastructureMarkup: 0.15,
   contingencyBuffer: 0.20,
 }
+
+/**
+ * Token usage for a billing period.
+ *
+ * Separates input and output tokens because they are priced differently
+ * (output tokens typically cost 3-5x more than input tokens).
+ */
+export interface TokenUsage {
+  monthlyInputTokens: number
+  monthlyOutputTokens: number
+}
+
+/**
+ * A data point in the TCO timeline.
+ *
+ * Used for generating cumulative cost charts over time.
+ * Each point represents the total accumulated cost up to that month.
+ *
+ * @property month - The month number (1-indexed)
+ * @property platformFees - Cumulative platform/subscription fees
+ * @property tokenCosts - Cumulative token/usage costs
+ * @property infrastructure - Cumulative infrastructure costs
+ * @property personnel - Cumulative engineering/personnel costs
+ * @property total - Total cumulative cost
+ */
+export interface TCODataPoint {
+  month: number
+  platformFees: number
+  tokenCosts: number
+  infrastructure: number
+  personnel: number
+  total: number
+}
+
+/**
+ * Platform tier categories that determine base engineering estimates.
+ */
+export type PlatformTier = 'enterprise-os' | 'ipaas-agent' | 'developer-first' | 'vertical'
