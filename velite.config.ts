@@ -12,8 +12,46 @@ const platforms = defineCollection({
       tier: s.enum(['enterprise-os', 'ipaas-agent', 'developer-first', 'vertical']),
       capabilities: s.array(s.string()),
       pricing: s.object({
-        model: s.string(),
+        model: s.enum(['pay-per-use', 'subscription', 'per-conversation', 'hybrid']),
         details: s.string(),
+
+        // Token pricing (for pay-per-use and hybrid models)
+        tokenPricing: s
+          .object({
+            inputPricePerMillion: s.number(),
+            outputPricePerMillion: s.number(),
+            cachedInputDiscount: s.number().optional(),
+            modelVariants: s
+              .array(
+                s.object({
+                  name: s.string(),
+                  inputPrice: s.number(),
+                  outputPrice: s.number(),
+                })
+              )
+              .optional(),
+          })
+          .optional(),
+
+        // Subscription tiers
+        tiers: s
+          .array(
+            s.object({
+              name: s.string(),
+              monthlyPrice: s.number(),
+              includedUnits: s.number().optional(),
+              unitType: s.enum(['conversations', 'users', 'tasks', 'tokens']).optional(),
+            })
+          )
+          .optional(),
+
+        // Per-conversation pricing
+        perConversationRate: s.number().optional(),
+        includedConversations: s.number().optional(),
+
+        // Flags
+        enterpriseContact: s.boolean().optional(),
+        infrastructureCosts: s.string().optional(),
       }),
       officialDocs: s.string().url(),
       pricingPage: s.string().url().optional(),
