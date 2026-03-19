@@ -1,0 +1,394 @@
+---
+title: Data Extraction Agent Blueprint
+useCase: data-extraction
+description: Build agents that extract structured data from unstructured documents including PDFs, emails, invoices, and forms with validation and human review workflows.
+lastVerified: 2026-03-19
+applicablePlatforms:
+  - anthropic-claude
+  - openai-frontier
+  - amazon-bedrock-agents
+  - google-vertex-ai
+recommendedPlatforms:
+  - anthropic-claude
+  - amazon-bedrock-agents
+complexity: moderate
+estimatedDuration:
+  foundation: "1-2 weeks"
+  build: "2-4 weeks"
+  test: "1-2 weeks"
+  deploy: "3-5 days"
+prerequisites:
+  - Document storage system (S3, Azure Blob, GCS)
+  - Target database or API for extracted data
+  - Sample documents for schema definition (minimum 20-30)
+  - OCR capability for scanned documents (if applicable)
+---
+
+import Mermaid from 'mdx-mermaid'
+
+## Overview
+
+Data extraction agents transform unstructured documents into structured, validated data—automating manual data entry for invoices, forms, emails, contracts, and receipts. This blueprint focuses on **validation-first architecture** where schema definition precedes extraction, enabling confidence scoring and human review workflows.
+
+**Best suited for:** Organizations processing high volumes of documents with consistent structure but variable formatting (AP automation, loan applications, insurance claims, HR onboarding).
+
+**Key business value:** 70-80% reduction in manual data entry time, improved accuracy over human transcription, audit trail for compliance.
+
+## Architecture
+
+<Mermaid chart={`
+sequenceDiagram
+    participant User
+    participant Agent
+    participant Parser as Document Parser
+    participant Validator
+    participant Review as Human Review
+    participant DB as Database
+
+    User->>Agent: Upload document
+    Agent->>Parser: Extract raw text/fields
+    Parser-->>Agent: Raw data + confidence
+    Agent->>Validator: Validate against schema
+    alt Validation passes & high confidence
+        Validator-->>Agent: Valid data
+        Agent->>DB: Store extracted data
+        Agent-->>User: Confirmation + preview
+    else Low confidence or validation fails
+        Validator-->>Agent: Needs review
+        Agent->>Review: Queue for human review
+        Review-->>Agent: Corrected data
+        Agent->>DB: Store with corrections
+        Agent-->>User: Confirmation after review
+    end
+`} />
+
+**Key patterns:**
+
+- **Schema-first design:** Define Zod schemas for extracted data before building extraction logic
+- **Confidence scoring:** Track per-field confidence (0-1 scale), trigger human review when below threshold
+- **Multi-stage validation:** Format validation (regex, enums) → Business rules (totals match, dates logical) → Human review (if low confidence)
+- **Batch processing:** Queue documents for async processing to handle volume spikes
+
+## Platform-Specific Considerations
+
+**Anthropic Claude (Recommended):** Vision API natively handles PDFs with text and layout understanding—no separate OCR step for native PDFs. Extended thinking mode valuable for complex documents (multi-page invoices with line items). Prompt caching reduces cost for repeated schema definitions across batches.
+
+**Amazon Bedrock Agents (Recommended):** Integrates with Amazon Textract for OCR (handles scanned documents, handwriting). Built-in guardrails prevent hallucination in extraction. Natural S3 integration for document storage and batch processing via SQS.
+
+**OpenAI Frontier:** Vision API supports document analysis. Function calling with structured outputs enforces schema compliance. Consider GPT-4o for complex layouts, GPT-4 mini for simple forms (cost optimization).
+
+**Google Vertex AI:** Document AI has pre-trained parsers for common document types (invoices, receipts, forms)—faster than training custom models. Vision API for general documents. Natural integration with GCS for storage.
+
+## Document Processing Patterns
+
+### Pattern 1: PDF Layout Understanding (Native PDFs)
+
+For digitally-created PDFs (not scanned):
+
+- **Claude Vision / OpenAI Vision:** Send PDF directly to vision-enabled model with schema in prompt
+- **Advantage:** Understands table structure, multi-column layouts, headers/footers
+- **Chunking strategy:** Multi-page documents—extract by page, then merge data (specify page context in prompts)
+- **Limitation:** Max 32 pages per call (Claude), may need page sampling for very long documents
+
+### Pattern 2: OCR Pipeline (Scanned Documents)
+
+For scanned documents or images:
+
+1. **Preprocessing:** Deskew, denoise, increase contrast (OpenCV, ImageMagick)
+2. **OCR extraction:** Amazon Textract, Google Document AI, Tesseract
+3. **Post-OCR validation:** Check for common OCR errors (O→0, I→1), confidence scores per word
+4. **Agent extraction:** Feed OCR text + bounding boxes to LLM for structured extraction
+
+**Warning:** OCR quality degrades with handwriting, low-resolution scans, complex backgrounds. Always include confidence scoring and human review for OCR pipelines.
+
+### Pattern 3: Multi-Page Document Handling
+
+For documents spanning multiple pages (invoices with line items, contracts):
+
+- **Page-by-page extraction:** Process each page independently, track page metadata
+- **Hierarchical schemas:** Top-level document fields (invoice number, date) + array of line items (description, amount, quantity)
+- **Cross-page validation:** Verify totals match across pages, flag inconsistencies for review
+- **Example schema:**
+
+```typescript
+const InvoiceSchema = z.object({
+  metadata: z.object({
+    invoiceNumber: z.string(),
+    date: z.string().date(),
+    vendorName: z.string(),
+    totalAmount: z.number(),
+  }),
+  lineItems: z.array(
+    z.object({
+      description: z.string(),
+      quantity: z.number(),
+      unitPrice: z.number(),
+      amount: z.number(),
+      page: z.number(), // Track which page item came from
+    })
+  ),
+  confidence: z.object({
+    overall: z.number().min(0).max(1),
+    perField: z.record(z.number()),
+  }),
+})
+```
+
+### Pattern 4: Batch Processing for High Volume
+
+For processing hundreds or thousands of documents daily:
+
+- **Queue architecture:** S3 upload triggers Lambda/Cloud Function → publishes to SQS/Pub Sub → workers process batch
+- **Parallel processing:** Multiple workers pull from queue, process independently
+- **Dead letter queue:** Failed extractions (malformed documents, timeouts) routed to DLQ for manual review
+- **Monitoring:** Track queue depth, processing time per document, error rates
+
+## Schema Design
+
+**Validation-first approach:** Define your data schema before building extraction logic. Prevents scope creep and enables automatic validation.
+
+### Field-Level Confidence Tracking
+
+```typescript
+type ExtractedField<T> = {
+  value: T
+  confidence: number // 0-1 scale
+  source: 'extracted' | 'inferred' | 'defaulted'
+  boundingBox?: { page: number; x: number; y: number; width: number; height: number }
+}
+
+type ExtractedInvoice = {
+  invoiceNumber: ExtractedField<string>
+  date: ExtractedField<Date>
+  totalAmount: ExtractedField<number>
+  vendorName: ExtractedField<string>
+  // ... other fields
+}
+```
+
+**Confidence thresholds:**
+
+- 0.9+: Auto-approve (high confidence)
+- 0.7-0.9: Automatic extraction, flag for spot-check review
+- Below 0.7: Queue for human review before database insert
+
+**Calibration:** Test thresholds on sample dataset, adjust based on false positive/negative rates.
+
+### Business Rule Validation
+
+Beyond format validation, encode business logic:
+
+```typescript
+const InvoiceBusinessRules = z.object({
+  invoiceNumber: z.string().regex(/^INV-\d{6}$/),
+  date: z.string().date().refine((date) => {
+    const invoiceDate = new Date(date)
+    const today = new Date()
+    const sixMonthsAgo = new Date()
+    sixMonthsAgo.setMonth(today.getMonth() - 6)
+    return invoiceDate >= sixMonthsAgo && invoiceDate <= today
+  }, "Invoice date must be within last 6 months"),
+  lineItems: z.array(z.object({
+    quantity: z.number().positive(),
+    unitPrice: z.number().positive(),
+    amount: z.number(),
+  })).refine((items) => {
+    // Validate line item amounts match quantity * unitPrice
+    return items.every(item =>
+      Math.abs(item.amount - (item.quantity * item.unitPrice)) < 0.01
+    )
+  }, "Line item amounts must match quantity × unit price"),
+  totalAmount: z.number().positive(),
+}).refine((invoice) => {
+  // Validate total matches sum of line items
+  const lineItemTotal = invoice.lineItems.reduce((sum, item) => sum + item.amount, 0)
+  return Math.abs(invoice.totalAmount - lineItemTotal) < 0.01
+}, "Total amount must match sum of line items")
+```
+
+## Implementation Checklist
+
+### Foundation (1-2 weeks)
+
+- [ ] **Sample document collection**
+  - [ ] Gather 20-30 representative documents covering format variations
+  - [ ] Annotate expected outputs (ground truth dataset)
+  - [ ] Identify edge cases (multi-page, handwritten, poor quality)
+- [ ] **Schema definition**
+  - [ ] Define data model with Zod schemas (recommended)
+  - [ ] Document business rules and validation logic
+  - [ ] Set confidence thresholds based on use case criticality
+- [ ] **Document storage setup**
+  - [ ] Configure S3/Azure Blob/GCS bucket with lifecycle policies
+  - [ ] Set up access controls (least privilege for agent)
+  - [ ] Enable versioning for audit trail
+- [ ] **Target system integration**
+  - [ ] Authenticate to target database/API
+  - [ ] Test write permissions and error handling
+  - [ ] Define data mapping (extracted fields → database columns)
+
+### Build (2-4 weeks)
+
+- [ ] **Document preprocessing pipeline**
+  - [ ] PDF to image conversion (if using OCR)
+  - [ ] Image quality checks (resolution, skew detection)
+  - [ ] OCR integration if handling scanned documents
+    - [ ] Configure Textract/Document AI/Tesseract
+    - [ ] Test OCR accuracy on sample documents (target 95%+ for clean scans)
+    - [ ] Handle OCR confidence scores
+- [ ] **Extraction logic**
+  - [ ] Build prompts with clear schema descriptions
+  - [ ] For multi-page docs: page-by-page extraction with context
+  - [ ] Extract confidence scores per field
+  - [ ] Handle missing fields (nullable vs required)
+- [ ] **Validation pipeline**
+  - [ ] Format validation (Zod schema parse)
+  - [ ] Business rule validation (totals match, dates logical)
+  - [ ] Cross-field consistency checks
+  - [ ] Generate validation error messages for review queue
+- [ ] **Human review workflow**
+  - [ ] Build review UI showing original document + extracted data
+  - [ ] Display confidence scores and validation errors
+  - [ ] Allow field-level corrections with audit log
+  - [ ] Re-run validation after corrections before database insert
+
+### Test (1-2 weeks)
+
+- [ ] **Extraction accuracy testing**
+  - [ ] Test on 50+ documents not in training set
+  - [ ] Measure field-level accuracy vs ground truth
+  - [ ] Target: 95%+ accuracy for high-confidence extractions
+  - [ ] Calculate precision/recall for confidence thresholds
+- [ ] **Edge case validation**
+  - [ ] Multi-page documents (line items across pages)
+  - [ ] Poor quality scans (low resolution, skewed, noisy)
+  - [ ] Handwritten fields (if applicable)
+  - [ ] Missing required fields (incomplete documents)
+  - [ ] Invalid data (negative amounts, future dates)
+- [ ] **Performance testing**
+  - [ ] Measure processing time per document type
+  - [ ] Test batch processing throughput
+  - [ ] Verify queue handling under load
+  - [ ] Check memory usage for large PDF processing
+- [ ] **Confidence calibration**
+  - [ ] Plot accuracy vs confidence scores
+  - [ ] Adjust thresholds to balance automation vs review load
+  - [ ] Target: Less than 20% human review rate for well-formatted documents
+
+### Deploy (3-5 days)
+
+- [ ] **Production environment setup**
+  - [ ] Configure production API keys and secrets
+  - [ ] Set up monitoring and alerting
+  - [ ] Enable error tracking (Sentry, Datadog, etc.)
+  - [ ] Configure rate limits and quotas
+- [ ] **Batch processing infrastructure**
+  - [ ] Deploy queue workers (Lambda, Cloud Functions, etc.)
+  - [ ] Configure auto-scaling based on queue depth
+  - [ ] Set up dead letter queue for failed extractions
+  - [ ] Test queue throughput and error handling
+- [ ] **Human review workflow**
+  - [ ] Deploy review UI to production
+  - [ ] Train review team on interface and validation rules
+  - [ ] Set SLAs for review turnaround time
+  - [ ] Configure escalation for blocked extractions
+- [ ] **Monitoring and observability**
+  - [ ] Log all extractions with document ID, confidence, timestamp
+  - [ ] Track metrics: processing time, accuracy, review rate
+  - [ ] Alert on: high error rate (>5%), queue backlog (>1 hour), low confidence spike
+  - [ ] Dashboard: daily volume, automation rate, cost per document
+
+### Production Readiness
+
+- [ ] **Governance and auditability**
+  - [ ] Maintain extraction logs for compliance (retention policy)
+  - [ ] Document decision thresholds and business rules
+  - [ ] Version control prompt templates and schemas
+  - [ ] Define rollback procedure for degraded accuracy
+- [ ] **Security**
+  - [ ] Encrypt documents at rest (S3 encryption, database encryption)
+  - [ ] Sanitize extracted data before logging (mask PII)
+  - [ ] Access controls for review queue (role-based)
+  - [ ] Prompt injection defenses (validate document sources)
+- [ ] **Continuous improvement**
+  - [ ] Weekly accuracy review (first month)
+  - [ ] Collect human corrections as training data
+  - [ ] Refine prompts based on common errors
+  - [ ] Add new document variations to test suite
+
+## Common Mistakes to Avoid
+
+**Extraction before validation:** Building extraction logic without defining schemas leads to inconsistent outputs and scope creep. Define Zod schemas first, then build extraction to match.
+
+**Ignoring confidence scores:** Treating all extractions as equally reliable causes downstream errors. Always track per-field confidence and implement review thresholds.
+
+**Poor chunking for multi-page documents:** Processing entire 50-page contracts as single prompt hits token limits and loses context. Extract page-by-page with explicit page numbers, merge structured data afterward.
+
+**No OCR quality checks:** Scanned documents have variable quality—processing without checking OCR confidence leads to garbage-in-garbage-out. Validate OCR confidence per word, flag low-confidence documents for manual processing.
+
+**Missing business rule validation:** Format validation (is this a number?) isn't enough. Encode domain logic (invoice total = sum of line items, dates are logical, amounts are positive) to catch extraction errors.
+
+**Over-reliance on examples:** Few-shot prompting with 5-10 examples works for simple cases but doesn't scale to document variations. Use schema-driven extraction with clear field descriptions instead of example-heavy prompts.
+
+**No human review workflow:** Even 95% accuracy means 1 in 20 documents has errors. For business-critical data (AP automation, compliance), always include human review for low-confidence extractions.
+
+## Expected Outcomes
+
+After deployment:
+
+- **Automation rate:** 70-85% of documents processed without human review (for well-formatted document types)
+- **Extraction accuracy:** 95%+ for high-confidence fields (confidence ≥ 0.9)
+- **Processing time:** 10-30 seconds per page (native PDFs), 30-60 seconds per page (OCR required)
+- **Human review rate:** 15-30% in first month, decreasing to 10-15% as prompts refine
+- **Cost per document:** $0.01-0.10 depending on document complexity and platform (batch API reduces costs)
+- **ROI timeline:** 3-6 months for high-volume use cases (100+ documents/day)
+
+## Document Type Guidance
+
+### Invoices
+
+**Characteristics:** Structured layout, tables with line items, totals require cross-validation
+
+**Key fields:** Invoice number, date, vendor, line items (description, quantity, price), subtotal, tax, total
+
+**Challenges:** Multi-page invoices, nested line items, currency variations
+
+**Recommended approach:** Hierarchical schema with line item array, validate totals match, confidence threshold 0.85+
+
+### Emails
+
+**Characteristics:** Unstructured text, variable formatting, embedded signatures/disclaimers
+
+**Key fields:** Sender, recipient, subject, date, body text, extracted intent, entities (names, dates, amounts)
+
+**Challenges:** Email threads (multiple responses), forwarded messages, HTML formatting
+
+**Recommended approach:** Extract structured data (metadata) + classify intent + entity extraction, confidence threshold 0.75+ for classification
+
+### Forms
+
+**Characteristics:** Fixed layout, labeled fields, checkboxes/radio buttons, handwritten entries (sometimes)
+
+**Key fields:** Varies by form type—personal info, dates, selections, signatures
+
+**Challenges:** Handwritten text (low OCR accuracy), checkboxes (hard to detect), incomplete forms
+
+**Recommended approach:** Layout-based extraction (field labels as anchors), OCR confidence per field, human review for handwritten sections
+
+### Contracts
+
+**Characteristics:** Long documents (20-100 pages), legal language, defined sections, key terms scattered
+
+**Key fields:** Parties, effective date, termination date, payment terms, obligations, renewal clauses
+
+**Challenges:** Length (token limits), variable structure, legalese interpretation
+
+**Recommended approach:** Multi-pass extraction (metadata first, then section-by-section for key terms), summarization for context, confidence threshold 0.9+ for legal commitments
+
+## Further Reading
+
+- [Anthropic: Building Effective Agents](https://www.anthropic.com/research/building-effective-agents) - Tool design and simplicity principles
+- [Amazon Textract Documentation](https://docs.aws.amazon.com/textract/) - OCR and document analysis patterns
+- [Google Document AI](https://cloud.google.com/document-ai/docs) - Pre-trained document parsers
+- [Zod Schema Validation](https://zod.dev/) - TypeScript-first schema validation
+- Platform-specific: See official docs for chosen platform in [platforms comparison](/platforms)
