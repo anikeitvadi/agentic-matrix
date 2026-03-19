@@ -1,4 +1,6 @@
 import { defineConfig, defineCollection, s } from 'velite'
+// @ts-ignore - mdx-mermaid works correctly but has TypeScript issues
+import mdxMermaid from 'mdx-mermaid'
 
 const platforms = defineCollection({
   name: 'Platform',
@@ -85,7 +87,7 @@ export default defineConfig({
   },
   collections: { platforms, policies },
   mdx: {
+    remarkPlugins: [mdxMermaid],
     rehypePlugins: [],
-    remarkPlugins: [],
   },
 })
