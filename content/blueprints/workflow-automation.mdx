@@ -1,0 +1,329 @@
+---
+title: Workflow Automation Agent Blueprint
+useCase: workflow-automation
+description: Build agents that orchestrate cross-system business processes with conditional logic, approval workflows, and intelligent routing - knowing when agents add value vs simple automation.
+lastVerified: 2026-03-19
+applicablePlatforms:
+  - anthropic-claude
+  - openai-frontier
+  - tray-ai
+  - workato
+  - microsoft-copilot-studio
+  - langchain-langgraph
+recommendedPlatforms:
+  - tray-ai
+  - workato
+complexity: moderate
+estimatedDuration:
+  foundation: "1-2 weeks"
+  build: "2-3 weeks"
+  test: "1-2 weeks"
+  deploy: "3-5 days"
+prerequisites:
+  - API access to systems being orchestrated (CRM, ERP, HRIS, etc.)
+  - Documented business process with decision points
+  - Stakeholder approval for automated decisions
+  - Error handling and notification infrastructure
+---
+
+import Mermaid from 'mdx-mermaid'
+
+## Overview
+
+Workflow automation agents orchestrate cross-system business processes, making intelligent decisions about routing, validating data, and coordinating multiple tools. They excel at handling exceptions, adapting to context, and managing approval workflows that traditional automation struggles with.
+
+**Critical distinction:** Not every workflow needs an agent. The key is identifying where intelligence adds value versus where simple automation suffices.
+
+## When NOT to Use an Agent
+
+Start here. Agents add complexity, latency, and cost. Avoid them when:
+
+**Single-step operations**
+- Simple API calls or data transfers
+- No branching logic or exceptions
+- Example: "When Stripe payment succeeds, add row to Google Sheet"
+- Solution: Use Zapier/Make webhook
+
+**Single-system workflows**
+- All steps happen in one platform
+- Native automation features exist
+- Example: "When Salesforce lead score changes, update owner and send email"
+- Solution: Use Salesforce Flow/Process Builder
+
+**Fully deterministic rules**
+- All decision paths can be expressed as if/then statements
+- No ambiguity in data interpretation
+- Example: "If invoice > $10K, route to VP approval; else auto-approve"
+- Solution: Use iPaaS conditional logic (Tray, Workato, Integromat)
+
+**Real-time latency requirements**
+- Sub-second response needed
+- No tolerance for LLM inference time
+- Example: Payment fraud detection in checkout flow
+- Solution: Use rules engine or ML model, not generative AI
+
+## When Agents Add Value
+
+Deploy agents for these scenarios:
+
+**Cross-system unstructured data**
+- Orchestrating 3+ systems with variable data formats
+- Natural language inputs requiring interpretation
+- Example: "Parse vendor email, extract invoice details, validate against PO in ERP, route based on approval matrix"
+
+**Context-dependent routing**
+- Decision logic depends on nuanced interpretation
+- Exceptions require understanding intent
+- Example: "Route customer inquiry based on sentiment, complexity, and account history - escalate if angry AND high-value AND unresolved issue"
+
+**Adaptive workflows**
+- Process steps vary based on runtime discoveries
+- Need to handle previously unseen edge cases
+- Example: "Employee onboarding workflow adapts based on role, department, location, and IT access requirements discovered during provisioning"
+
+**Approval workflows with explanations**
+- Human approvers need context summarized from multiple sources
+- Justification required for routing decisions
+- Example: "Compile contract summary from 5 documents, flag non-standard clauses, route to appropriate legal reviewer with explanation"
+
+## Architecture Pattern: Orchestrator-Worker
+
+Use a single orchestrator agent coordinating specialized workers, not multiple agents negotiating with each other.
+
+<Mermaid chart={`
+graph TD
+    Trigger[Workflow Trigger] --> Orch[Orchestrator Agent]
+    Orch --> Classify{Classify Request}
+
+    Classify -->|Standard| WorkerA[Data Validation Worker]
+    Classify -->|Exception| WorkerB[Exception Handler]
+    Classify -->|Priority| WorkerC[Fast-Track Worker]
+
+    WorkerA --> Gate{Approval Required?}
+    WorkerB --> Human[Human Review Queue]
+    WorkerC --> Gate
+
+    Gate -->|Yes| Approval[Approval Workflow]
+    Gate -->|No| Execute[Execute Action]
+
+    Approval -->|Approved| Execute
+    Approval -->|Rejected| Notify[Notify Requester]
+    Human -->|Resolved| Gate
+
+    Execute --> Audit[Audit Log]
+    Execute --> Complete[Workflow Complete]
+`} />
+
+**Why this pattern works:**
+
+- **Single source of truth**: Orchestrator maintains state across all steps
+- **Clear failure boundaries**: Each worker fails independently, orchestrator handles retries
+- **Testable components**: Workers are simple functions with clear inputs/outputs
+- **Observable**: Orchestrator logs all routing decisions and context
+
+**Anti-pattern to avoid:** Multi-agent coordination where agents negotiate with each other creates unpredictable behavior, debugging nightmares, and exponential state spaces.
+
+## Human-in-the-Loop Patterns
+
+Agents should pause for human input at critical decision points, not attempt full autonomy.
+
+### Approval Gates
+
+**Confidence-based thresholds:**
+```
+if (orchestrator.confidence < 0.85) {
+  await requestHumanApproval({
+    context: orchestrator.reasoning,
+    recommendation: orchestrator.suggestedAction,
+    timeout: '24h'
+  })
+}
+```
+
+**Dollar-amount thresholds:**
+```
+if (invoice.amount > approvalMatrix.getThreshold(employee.level)) {
+  await routeToApprover({
+    approver: approvalMatrix.getApprover(invoice.amount),
+    deadline: new Date(invoice.dueDate.getTime() - 3 * 24 * 60 * 60 * 1000),
+    escalationChain: approvalMatrix.getEscalationChain()
+  })
+}
+```
+
+**Timeout handling:**
+- Default approvers for time-sensitive workflows
+- Escalation chains for missed deadlines
+- Automatic approval with notification for low-risk items
+
+### Exception Handling
+
+**Graceful degradation:**
+1. Agent attempts resolution
+2. If confidence low or failure, queue for human review
+3. Workflow pauses, not fails
+4. Human resolves, workflow resumes from checkpoint
+
+**Example - Invoice processing:**
+- Agent extracts vendor, amount, line items
+- Fails to match PO number (ambiguous reference)
+- Creates review task: "PO matching failed - please confirm PO-12345 or PO-12454"
+- Human selects correct PO
+- Agent continues with payment routing
+
+## iPaaS vs Developer-First Tradeoffs
+
+### iPaaS-Native Platforms (Tray.ai, Workato)
+
+**Strengths:**
+- Pre-built connectors for 500+ enterprise systems
+- Visual workflow builder for non-developers
+- Built-in error handling, retries, rate limiting
+- Compliance certifications (SOC2, GDPR) out-of-box
+
+**Weaknesses:**
+- Limited customization of AI behavior
+- Vendor lock-in (workflows not portable)
+- Higher cost at scale (per-workflow pricing)
+- Less control over model selection and prompting
+
+**Best for:**
+- Teams without dedicated AI engineers
+- Workflows with mostly structured data and simple logic
+- Organizations prioritizing speed-to-market over customization
+- Scenarios where pre-built connectors cover 80%+ of requirements
+
+### Developer-First Platforms (LangGraph, Claude API)
+
+**Strengths:**
+- Full control over agent logic and prompting
+- Custom error handling and observability
+- Model flexibility (switch providers, use multiple models)
+- Version control for agent behavior
+
+**Weaknesses:**
+- Build all system integrations yourself
+- Responsible for auth, rate limiting, retries
+- Longer time-to-market
+- Require AI engineering expertise
+
+**Best for:**
+- Organizations with AI/ML teams
+- Complex workflows with nuanced decision logic
+- Cases where existing iPaaS connectors insufficient
+- Workflows handling sensitive data requiring custom security
+
+**Hybrid approach:** Use iPaaS for system orchestration, call out to custom agent via API for intelligent decision points. Example: Workato workflow handles data movement, calls Claude API for approval routing logic.
+
+## Platform-Specific Considerations
+
+### Tray.ai / Workato
+- Start with workflow builder to map process visually
+- Add AI steps for unstructured data interpretation
+- Use built-in approval connectors for human gates
+- Monitor workflow execution times to identify bottlenecks
+
+### LangGraph (LangChain)
+- Define state schema for entire workflow
+- Each node is a worker function
+- Use checkpointing for long-running workflows
+- Implement compensation transactions for rollback
+
+### Microsoft Copilot Studio
+- Best for workflows within Microsoft 365 ecosystem
+- Leverage existing Teams channels for approvals
+- Power Automate for system orchestration
+- Copilot handles natural language interface
+
+### Anthropic Claude
+- Use extended thinking for complex routing decisions
+- MCP for connecting to enterprise data sources
+- Structured outputs for deterministic next-step routing
+- Claude Code for building custom orchestration logic
+
+## Implementation Checklist
+
+### Foundation (Week 1 to 2)
+- [ ] Map complete workflow with decision points
+- [ ] Identify approval authorities and escalation chains
+- [ ] Document exception scenarios and handling procedures
+- [ ] Confirm API access to all systems
+- [ ] Define success metrics (cycle time, error rate, manual intervention rate)
+
+### Build (Week 2 to 4)
+- [ ] Implement orchestrator with state management
+- [ ] Build worker functions for each subprocess
+- [ ] Create approval workflow with timeout handling
+- [ ] Add exception queue and human review interface
+- [ ] Implement audit logging for all decisions
+
+### Test (Week 1 to 2)
+- [ ] Test happy path with real data
+- [ ] Simulate exceptions and edge cases
+- [ ] Verify timeout and escalation logic
+- [ ] Load test at expected volume
+- [ ] Security review of data handling
+
+### Deploy (3 to 5 days)
+- [ ] Deploy to staging with subset of workflows
+- [ ] Run parallel with existing process for validation
+- [ ] Monitor error rates and intervention frequency
+- [ ] Train approvers on new interface
+- [ ] Gradual rollout to full volume
+
+## Common Mistakes
+
+**Over-automation**
+- Problem: Automating workflows humans handle better
+- Example: Complex contract negotiations requiring nuanced judgment
+- Fix: Start with agent-assisted (agent drafts, human finalizes) not fully autonomous
+
+**Missing rollback mechanisms**
+- Problem: Agent makes bad decision, no way to undo
+- Example: Agent archives critical records based on misunderstood policy
+- Fix: Implement compensation transactions, soft deletes, approval for destructive actions
+
+**Ignoring edge cases**
+- Problem: Agent handles majority of cases well, fails catastrophically on edge cases
+- Example: Invoice processing assumes US formats, breaks on international vendors
+- Fix: Detect unfamiliar patterns, queue for review instead of guessing
+
+**No audit trail**
+- Problem: Can't explain why agent made decision 6 months later
+- Example: Compliance audit asks why vendor was auto-approved
+- Fix: Log reasoning, confidence scores, and data used for every decision
+
+**Insufficient testing of approval paths**
+- Problem: Approval workflow tested with fast responses, breaks on timeouts
+- Example: Workflow deadlocks when approver on vacation
+- Fix: Test timeout, escalation, and auto-approval paths explicitly
+
+## Expected Outcomes
+
+**Cycle time reduction: 60 to 80 percent**
+- Baseline: 3-day approval cycle with manual routing
+- With agent: 8-hour cycle with intelligent routing and parallel approvals
+
+**Error rate: Under 2 percent**
+- Errors requiring manual correction (data extraction, routing mistakes)
+- Should be lower than human baseline if properly designed
+
+**Manual intervention rate: 10 to 20 percent**
+- Workflows requiring human review at approval gates or exceptions
+- Higher is okay - agents should be conservative, not reckless
+
+**Cost per workflow**
+- Factor LLM inference cost + platform fees + engineering maintenance
+- Compare to fully manual labor cost
+- Target: 70 percent or greater cost reduction including build amortization
+
+## Next Steps
+
+1. Review your current workflow - map decision points and exception handling
+2. Apply "When NOT to use an agent" checklist first
+3. If agent appropriate, choose iPaaS vs developer-first based on team capabilities
+4. Start with orchestrator-worker architecture, single workflow
+5. Instrument for observability from day one
+6. Plan approval gates and human review from the start, not as afterthought
+
+**Remember:** The goal is augmenting human judgment with automation, not replacing it. Best workflow agents make humans more effective by handling routine orchestration and surfacing exceptions that need attention.
