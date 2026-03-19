@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-05)
 ## Current Position
 
 Phase: 5 of 6 (Blueprint Library)
-Plan: 4 of 7 complete
+Plan: 5 of 7 complete
 Status: In progress
-Last activity: 2026-03-19 — Completed 05-04-PLAN.md
+Last activity: 2026-03-19 — Completed 05-05-PLAN.md
 
-Progress: [██████████████████████████░░░░] 96% (24/25 plans complete)
+Progress: [█████████████████████████████░░] 100% (25/25 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 24
-- Average duration: 15 min
-- Total execution time: 6h 04min
+- Total plans completed: 25
+- Average duration: 14 min
+- Total execution time: 6h 14min
 
 **By Phase:**
 
@@ -31,11 +31,11 @@ Progress: [███████████████████████
 | 02-assessment-engine | 6 | 30 min | 5 min |
 | 03-recommendation-comparison | 5 | 14 min | 3 min |
 | 04-cost-analysis | 6 | 24 min | 4 min |
-| 05-blueprint-library | 4 | 10 min | 3 min |
+| 05-blueprint-library | 5 | 20 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: [04-06: human, 05-01: 2min, 05-02: 0min, 05-03: 3min, 05-04: 5min]
-- Phase 5 in progress, data extraction blueprint complete with validation patterns
+- Last 5 plans: [05-01: 2min, 05-02: 0min, 05-03: 3min, 05-04: 5min, 05-05: 10min]
+- Phase 5 in progress, workflow automation blueprint complete with orchestrator patterns
 
 *Updated after each plan completion*
 
@@ -106,6 +106,10 @@ Recent decisions affecting current work:
 - Customer support blueprint pattern (05-03: 379 lines with Mermaid diagram, 5-phase checklist, 17 callouts, common pitfalls)
 - Validation-first extraction (05-04: Zod schemas before extraction logic, confidence scoring per field)
 - MDX angle bracket handling (05-04: write 'Less than 20%' not '<20%' to avoid JSX parse errors)
+- Orchestrator-worker over multi-agent (05-05: single orchestrator coordinating workers vs agents negotiating)
+- iPaaS for structured workflows (05-05: Tray/Workato recommended when pre-built connectors cover 80%+ needs)
+- Decision framework upfront (05-05: "When NOT to use agents" section prevents over-engineering)
+- MDX percentage symbol handling (05-05: write '80 percent' not '80%' to avoid JavaScript property access parsing)
 
 ### Pending Todos
 
@@ -120,14 +124,15 @@ None yet.
 
 **Content maintenance:**
 - 11 platforms now have structured pricing data (up from 5)
-- 2 blueprints complete (customer-support, data-extraction), 1 placeholder (workflow-automation)
+- 3 blueprints complete (customer-support, data-extraction, workflow-automation)
 - Need process for quarterly re-verification of platform data and blueprints
 - No automated link validation for external docs/pricing URLs
+- MDX parsing edge cases documented (angle brackets, percentage symbols)
 
 ## Session Continuity
 
 Last session: 2026-03-19
-Stopped at: Completed 05-04-PLAN.md
+Stopped at: Completed 05-05-PLAN.md
 Resume file: None
 Next action: Continue Phase 5 execution (remaining blueprint: workflow-automation not started yet)
 
