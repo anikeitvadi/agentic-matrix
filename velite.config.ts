@@ -76,6 +76,44 @@ const policies = defineCollection({
   })
 })
 
+const blueprints = defineCollection({
+  name: 'Blueprint',
+  pattern: 'blueprints/**/*.mdx',
+  schema: s.object({
+    slug: s.path(),
+    title: s.string().max(99),
+    useCase: s.enum([
+      'customer-support',
+      'data-extraction',
+      'workflow-automation',
+      'knowledge-base',
+      'approval-workflows'
+    ]),
+    description: s.string().max(999),
+    lastVerified: s.isodate(),
+
+    // Platform relationships
+    applicablePlatforms: s.array(s.string()), // Slugs from platforms collection
+    recommendedPlatforms: s.array(s.string()).optional(),
+
+    // Metadata
+    complexity: s.enum(['simple', 'moderate', 'complex']),
+    estimatedDuration: s.object({
+      foundation: s.string(), // "1-2 weeks"
+      build: s.string(),
+      test: s.string(),
+      deploy: s.string(),
+    }),
+    prerequisites: s.array(s.string()),
+
+    // Content
+    body: s.mdx(),
+  }).transform((data) => ({
+    ...data,
+    slug: data.slug.replace(/^blueprints\//, ''),
+  })),
+})
+
 export default defineConfig({
   root: 'content',
   output: {
@@ -85,7 +123,7 @@ export default defineConfig({
     name: '[name]-[hash:6].[ext]',
     clean: true,
   },
-  collections: { platforms, policies },
+  collections: { platforms, policies, blueprints },
   mdx: {
     remarkPlugins: [mdxMermaid],
     rehypePlugins: [],
