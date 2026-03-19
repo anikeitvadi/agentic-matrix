@@ -105,12 +105,16 @@ Plans:
   2. User can access implementation checklist breaking down the deployment into actionable steps
   3. User can read common pitfalls and warnings specific to their use case and platform combination
   4. Blueprint library covers 3-5 common enterprise use cases (customer support, data extraction, workflow automation, etc.)
-**Plans**: TBD
+**Plans**: 7 plans in 4 waves
 
 Plans:
-- [ ] 05-01: TBD during planning
-- [ ] 05-02: TBD during planning
-- [ ] 05-03: TBD during planning
+- [ ] 05-01-PLAN.md — Configure mdx-mermaid and blueprint Velite schema
+- [ ] 05-02-PLAN.md — Create Admonition and blueprint MDX components
+- [ ] 05-03-PLAN.md — Create Customer Support blueprint content
+- [ ] 05-04-PLAN.md — Create Data Extraction blueprint content
+- [ ] 05-05-PLAN.md — Create Workflow Automation blueprint content
+- [ ] 05-06-PLAN.md — Create blueprint pages and navigation
+- [ ] 05-07-PLAN.md — Human verification of Phase 5 success criteria
 
 ### Phase 6: Export & Sharing
 **Goal**: Users can export and share their recommendations with stakeholders
@@ -138,9 +142,9 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 2. Assessment Engine | 6/6 | Complete | 2026-02-06 |
 | 3. Recommendation & Comparison | 5/5 | Complete | 2026-02-09 |
 | 4. Cost Analysis | 6/6 | Complete | 2026-02-16 |
-| 5. Blueprint Library | 0/TBD | Not started | - |
+| 5. Blueprint Library | 0/7 | Planned | - |
 | 6. Export & Sharing | 0/TBD | Not started | - |
 
 ---
 *Roadmap created: 2026-02-05*
-*Last updated: 2026-02-16*
+*Last updated: 2026-03-19*
