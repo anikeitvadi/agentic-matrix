@@ -10,9 +10,33 @@ capabilities:
   - Power Platform connectivity
   - Enterprise identity management (Entra ID)
   - Multi-channel deployment
+  - SOC2 compliance
+  - HIPAA eligible
+  - GDPR compliant
+  - ISO27001 certified
+structuredCapabilities:
+  hasRAG: true
+  hasMultiModal: false
+  hasLowCode: true
+  hasSelfHosted: false
+  hasMultiAgent: false
+  cloudNative: [azure]
+  complianceCerts: [soc2, hipaa, gdpr, iso27001, fedramp]
+  supportedIntegrations: [teams, sharepoint, dynamics365, salesforce, slack, jira, servicenow]
+  useCaseStrengths: [customer-support, knowledge-qa, it-ticketing, workflow-automation]
+  zeroDataRetention: true
+  bringYourOwnKey: true
+  deploymentOptions: [saas, vpc]
+evaluationContext:
+  modelFlexibility: multi-provider
+  ecosystemMaturity: dominant
+  observability: comprehensive
+  vendorViability: big-tech
+  dataResidency: [us, eu, ap, gov]
+  documentationQuality: comprehensive
 pricing:
   model: hybrid
-  details: Per-user licensing plus Azure consumption
+  details: "Standalone: $200/month tenant license with 25,000 Copilot Credits. Overages ~$0.01/credit via Azure. Internal agents included in Microsoft 365 Copilot ($30/user/month)."
   tokenPricing:
     inputPricePerMillion: 1
     outputPricePerMillion: 4
@@ -20,11 +44,12 @@ pricing:
     - name: Base
       monthlyPrice: 200
       includedUnits: 25000
-      unitType: conversations
+      unitType: tasks
   enterpriseContact: true
+  infrastructureCosts: "Internal agents included free with M365 Copilot ($30/user/month). Standalone requires $200/month tenant license. Azure pay-as-you-go for overages at ~$0.01 per Copilot Credit."
 officialDocs: https://learn.microsoft.com/en-us/microsoft-copilot-studio/
 pricingPage: https://www.microsoft.com/en-us/microsoft-copilot/microsoft-copilot-studio
-lastVerified: 2026-02-05
+lastVerified: 2026-03-30
 ---
 
 Microsoft Copilot Studio represents the convergence of Power Virtual Agents and Azure AI capabilities, offering a low-code environment for building enterprise copilots. The platform's deep integration with Microsoft 365 ecosystem—SharePoint, Teams, Dynamics 365—makes it a natural choice for organizations already standardized on Microsoft technologies.

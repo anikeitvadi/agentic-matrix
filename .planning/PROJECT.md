@@ -18,7 +18,7 @@ IT leaders can input their situation (stack, use cases, budget, compliance) and 
 
 - [ ] Decision framework with classification logic (task complexity, existing stack, cross-system vs single, regulated vs unregulated)
 - [ ] Interactive web-based assessment tool where users input their situation
-- [ ] Platform comparison covering 10-12 agent platforms (Frontier, Tray, LangGraph, Copilot Studio, ServiceNow, Workato, CrewAI, n8n, Vertex AI, UiPath, Agentforce, OpenAI Agents SDK)
+- [ ] Platform comparison covering the curated platform catalog (currently 19 platforms across 4 tiers)
 - [ ] 5-6 implementation-ready use case blueprints (IT ticketing, customer support, data pipeline monitoring, sales lead routing, knowledge base Q&A, procurement approval)
 - [ ] Cost calculator with token costs + platform fees + engineering time estimates
 - [ ] Architecture diagrams for each recommendation path
@@ -77,9 +77,9 @@ IT leaders can input their situation (stack, use cases, budget, compliance) and 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
 | Web app over static content | Interactive assessment provides more value than a PDF/blog | — Pending |
-| 10-12 platforms in v1 | Cover full landscape to be comprehensive, not just top 5 | — Pending |
+| 10-12 platforms in v1 | Cover full landscape to be comprehensive, not just top 5 | Original target exceeded; catalog now at 19 platforms |
 | 5-6 blueprints in v1 | Most common enterprise use cases; can expand based on demand | — Pending |
 | Vendor-neutral positioning | Core differentiator; sacrificing this would kill the value prop | — Pending |
 
 ---
-*Last updated: 2026-02-05 after initialization*
+*Last updated: 2026-03-28*

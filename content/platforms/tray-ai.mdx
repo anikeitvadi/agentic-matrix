@@ -10,22 +10,44 @@ capabilities:
   - Enterprise iPaaS foundation
   - Low-code/no-code interface
   - Real-time data synchronization
+  - SOC2 compliance
+  - GDPR compliant
+structuredCapabilities:
+  hasRAG: false
+  hasMultiModal: false
+  hasLowCode: true
+  hasSelfHosted: false
+  hasMultiAgent: false
+  cloudNative: []
+  complianceCerts: [soc2, gdpr]
+  supportedIntegrations: [slack, salesforce, hubspot, jira, github, zendesk, sap, oracle]
+  useCaseStrengths: [workflow-automation, customer-support]
+  zeroDataRetention: false
+  bringYourOwnKey: false
+  deploymentOptions: [saas]
+evaluationContext:
+  modelFlexibility: single-provider
+  ecosystemMaturity: established
+  observability: basic
+  vendorViability: established
+  dataResidency: [us, eu]
+  documentationQuality: adequate
 pricing:
   model: subscription
-  details: Tiered plans based on tasks and connectors
+  details: "Custom sales-led pricing based on plan, usage, and add-ons."
   tiers:
-    - name: Professional
-      monthlyPrice: 995
+    - name: Standard
+      monthlyPrice: 695
       includedUnits: 5000
       unitType: tasks
-    - name: Enterprise
-      monthlyPrice: 3495
+    - name: Professional
+      monthlyPrice: 2450
       includedUnits: 25000
       unitType: tasks
   enterpriseContact: true
 officialDocs: https://tray.io/documentation
 pricingPage: https://tray.io/pricing
-lastVerified: 2026-02-05
+lastVerified: 2026-03-31
 ---
 
 Tray.ai represents the iPaaS-first approach to agent platforms, building AI capabilities on top of a mature integration infrastructure. With 600+ pre-built connectors spanning enterprise SaaS, databases, and APIs, Tray.ai excels at use cases where agent intelligence needs to orchestrate complex workflows across multiple systems.

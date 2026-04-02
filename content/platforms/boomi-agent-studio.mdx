@@ -10,22 +10,40 @@ capabilities:
   - API management integration
   - Master data hub connectivity
   - Event-driven automation
+  - SOC2 compliance
+structuredCapabilities:
+  hasRAG: false
+  hasMultiModal: false
+  hasLowCode: true
+  hasSelfHosted: false
+  hasMultiAgent: false
+  cloudNative: []
+  complianceCerts: [soc2]
+  supportedIntegrations: [salesforce, sap, oracle, workday, slack, jira]
+  useCaseStrengths: [workflow-automation, data-extraction]
+  zeroDataRetention: false
+  bringYourOwnKey: false
+  deploymentOptions: [saas]
+evaluationContext:
+  modelFlexibility: single-provider
+  ecosystemMaturity: established
+  observability: basic
+  vendorViability: established
+  dataResidency: [us, eu]
+  documentationQuality: adequate
 pricing:
-  model: subscription
-  details: Enterprise licensing based on connections and volume, contact sales
+  model: hybrid
+  details: "Entry-level at $99/month plus $0.05 per Boomi Message. Separate licensing required for Dev, QA, Staging, and Production environments."
   tiers:
-    - name: Professional
-      monthlyPrice: 750
-      includedUnits: 50
-      unitType: tasks
-    - name: Enterprise
-      monthlyPrice: 2500
-      includedUnits: 250
+    - name: Pay-as-you-go
+      monthlyPrice: 99
+      includedUnits: 2000
       unitType: tasks
   enterpriseContact: true
+  infrastructureCosts: "Requires separate environment licensing (Dev, QA, Staging, Production). Base cost multiplied across environments significantly increases total deployment cost."
 officialDocs: https://boomi.com/platform/agent-studio/
 pricingPage: https://boomi.com/pricing/
-lastVerified: 2026-02-09
+lastVerified: 2026-03-31
 ---
 
 Boomi Agent Studio leverages Boomi's decades of enterprise integration expertise to deliver AI agents that can orchestrate complex multi-system workflows. With over 1,500 pre-built connectors, agents can interact with virtually any enterprise application out of the box—from SAP and Salesforce to legacy mainframe systems.

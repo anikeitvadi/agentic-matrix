@@ -16,7 +16,7 @@ export function Step1Basics({ register, errors, control }: Step1Props) {
   return (
     <div>
       <h2 className="text-2xl font-bold mb-2">The Basics</h2>
-      <p className="text-neutral-400 mb-6">Let's start with understanding what you're trying to do.</p>
+      <p className="text-neutral-400 mb-6">Answer a few questions about your use case and organization.</p>
 
       <QuestionField
         register={register}

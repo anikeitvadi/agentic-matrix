@@ -1,54 +1,69 @@
 import Link from "next/link"
 import type { Platform } from "@/.velite"
+import { tierMeta, getPricingPreview } from "@/lib/platform/utils"
 
 interface PlatformCardProps {
   platform: Platform
 }
 
-const tierColors = {
-  "enterprise-os": "bg-blue-500",
-  "ipaas-agent": "bg-green-500",
-  "developer-first": "bg-purple-500",
-  vertical: "bg-orange-500",
-}
-
-const tierLabels = {
-  "enterprise-os": "Enterprise",
-  "ipaas-agent": "iPaaS",
-  "developer-first": "Dev-First",
-  vertical: "Vertical",
-}
-
 export function PlatformCard({ platform }: PlatformCardProps) {
+  const meta = tierMeta[platform.tier]
+  const pricingPreview = getPricingPreview(platform)
+
   const formattedDate = new Date(platform.lastVerified).toLocaleDateString(
     "en-US",
     { month: "short", day: "numeric" },
   )
 
+  const maxTags = 3
+  const visibleCaps = platform.capabilities.slice(0, maxTags)
+  const overflowCount = platform.capabilities.length - maxTags
+
   return (
     <Link
       href={`/platforms/${platform.slug}`}
-      className="block group bg-white rounded-lg border border-neutral-200 hover:border-neutral-300 transition-colors"
+      className={`block group rounded-lg border border-neutral-800 bg-neutral-900/50 ${meta.hoverBorder} hover:border-neutral-700 transition-all`}
     >
       <div className="p-4">
-        <div className="flex items-center gap-3 mb-2">
-          <div className={`w-2 h-2 rounded-full ${tierColors[platform.tier]}`} />
-          <h3 className="font-medium text-neutral-900 group-hover:text-brand-600 transition-colors truncate">
-            {platform.title}
-          </h3>
-          <span className="ml-auto text-xs text-neutral-400 shrink-0">
-            {tierLabels[platform.tier]}
+        {/* Header */}
+        <div className="mb-1.5">
+          <span
+            className={`inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full ${meta.badge}`}
+          >
+            {meta.label}
           </span>
         </div>
+        <h3 className="font-medium text-white group-hover:text-brand-400 transition-colors mb-2">
+          {platform.title}
+        </h3>
 
-        <p className="text-sm text-neutral-600 line-clamp-2 mb-3">
+        {/* Description */}
+        <p className="text-sm text-neutral-400 line-clamp-2 mb-3">
           {platform.description}
         </p>
 
-        <div className="flex items-center justify-between text-xs text-neutral-400">
-          <span>{platform.pricing.model}</span>
-          <span>Verified {formattedDate}</span>
+        {/* Capability tags */}
+        <div className="flex flex-wrap gap-1.5 mb-3">
+          {visibleCaps.map((cap) => (
+            <span
+              key={cap}
+              className="px-2 py-0.5 text-xs bg-neutral-800 text-neutral-400 rounded"
+            >
+              {cap}
+            </span>
+          ))}
+          {overflowCount > 0 && (
+            <span className="px-2 py-0.5 text-xs text-neutral-500 rounded">
+              +{overflowCount} more
+            </span>
+          )}
         </div>
+      </div>
+
+      {/* Footer divider + pricing & date */}
+      <div className="border-t border-neutral-800 px-4 py-2.5 flex items-center justify-between text-xs text-neutral-500">
+        <span className="font-medium text-neutral-300">{pricingPreview}</span>
+        <span>Verified {formattedDate}</span>
       </div>
     </Link>
   )

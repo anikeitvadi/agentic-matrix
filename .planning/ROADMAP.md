@@ -4,6 +4,8 @@
 
 Build a vendor-neutral AI agent platform decision toolkit that helps enterprise IT leaders select the right platform for their needs. Starting with foundational infrastructure and platform data, we'll progressively add interactive assessment, recommendation logic, cost analysis, implementation blueprints, and sharing capabilities. Each phase delivers complete, verifiable functionality that builds toward a comprehensive self-serve decision support system.
 
+**Re-baseline note (2026-03-24):** This roadmap is now the historical phase plan plus current status notes. Phase 5 build execution reached 6 of 7 plans, with `05-07-PLAN.md` human verification still pending. Several portfolio-hardening improvements have also shipped outside the original phase sequence: results-page redesign, deterministic decision memo, optional AI decision brief, and exportable decision packet.
+
 ## Phases
 
 **Phase Numbering:**
@@ -16,8 +18,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Assessment Engine** - Interactive questionnaire with save/resume capability
 - [x] **Phase 3: Recommendation & Comparison** - Scoring system with filtering and decision audit trail
 - [x] **Phase 4: Cost Analysis** - ROI calculator and total cost of ownership projections
-- [ ] **Phase 5: Blueprint Library** - Implementation guidance with architecture diagrams
-- [ ] **Phase 6: Export & Sharing** - PDF export and email functionality
+- [ ] **Phase 5: Blueprint Library** - Build complete through 05-06, human verification pending
+- [ ] **Phase 6: Export & Sharing** - Formal phase incomplete; partial export functionality shipped early during portfolio hardening
 
 ## Phase Details
 
@@ -45,7 +47,7 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. User can complete multi-step questionnaire answering 10-15 questions about their situation
   2. User can save their assessment progress at any point and resume later from the same browser
-  3. User receives AI-powered follow-up questions that adapt based on their previous answers
+  3. Assessment captures only structured inputs that materially affect recommendations
   4. User sees conditional branching where irrelevant questions are skipped based on context
 **Plans**: 6 plans in 5 waves
 
@@ -56,6 +58,9 @@ Plans:
 - [x] 02-04-PLAN.md — Add progress persistence via localStorage
 - [x] 02-05-PLAN.md — Add AI-powered follow-up questions
 - [x] 02-06-PLAN.md — Human verification of Phase 2 success criteria
+
+Current product note:
+- The original AI follow-up feature was later removed because it did not influence scoring; AI now lives on the results page as an optional explanation layer.
 
 ### Phase 3: Recommendation & Comparison
 **Goal**: Users receive scored platform recommendations with transparent reasoning
@@ -108,12 +113,12 @@ Plans:
 **Plans**: 7 plans in 4 waves
 
 Plans:
-- [ ] 05-01-PLAN.md — Configure mdx-mermaid and blueprint Velite schema
-- [ ] 05-02-PLAN.md — Create Admonition and blueprint MDX components
-- [ ] 05-03-PLAN.md — Create Customer Support blueprint content
-- [ ] 05-04-PLAN.md — Create Data Extraction blueprint content
-- [ ] 05-05-PLAN.md — Create Workflow Automation blueprint content
-- [ ] 05-06-PLAN.md — Create blueprint pages and navigation
+- [x] 05-01-PLAN.md — Configure mdx-mermaid and blueprint Velite schema
+- [x] 05-02-PLAN.md — Create Admonition and blueprint MDX components
+- [x] 05-03-PLAN.md — Create Customer Support blueprint content
+- [x] 05-04-PLAN.md — Create Data Extraction blueprint content
+- [x] 05-05-PLAN.md — Create Workflow Automation blueprint content
+- [x] 05-06-PLAN.md — Create blueprint pages and navigation
 - [ ] 05-07-PLAN.md — Human verification of Phase 5 success criteria
 
 ### Phase 6: Export & Sharing
@@ -131,6 +136,9 @@ Plans:
 - [ ] 06-01: TBD during planning
 - [ ] 06-02: TBD during planning
 
+Current implementation note:
+- Results already support a deterministic decision packet export (copy markdown, download memo, print/save PDF) and an optional AI decision brief. Direct email delivery and a formal Phase 6 plan are still outstanding.
+
 ## Progress
 
 **Execution Order:**
@@ -142,9 +150,9 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 2. Assessment Engine | 6/6 | Complete | 2026-02-06 |
 | 3. Recommendation & Comparison | 5/5 | Complete | 2026-02-09 |
 | 4. Cost Analysis | 6/6 | Complete | 2026-02-16 |
-| 5. Blueprint Library | 0/7 | Planned | - |
-| 6. Export & Sharing | 0/TBD | Not started | - |
+| 5. Blueprint Library | 6/7 | Verification pending | - |
+| 6. Export & Sharing | Partial | In progress outside original plan | - |
 
 ---
 *Roadmap created: 2026-02-05*
-*Last updated: 2026-03-19*
+*Last updated: 2026-03-24*

@@ -10,6 +10,29 @@ capabilities:
   - Guardrails for safety controls
   - AWS service integration (Lambda, S3, DynamoDB)
   - Fine-tuning and continued pre-training
+  - SOC2 compliance
+  - HIPAA eligible
+  - Audit-log support
+structuredCapabilities:
+  hasRAG: true
+  hasMultiModal: true
+  hasLowCode: false
+  hasSelfHosted: false
+  hasMultiAgent: false
+  cloudNative: [aws]
+  complianceCerts: [soc2, hipaa, fedramp]
+  supportedIntegrations: [slack, salesforce, github, jira]
+  useCaseStrengths: [customer-support, data-extraction, knowledge-qa, workflow-automation]
+  zeroDataRetention: true
+  bringYourOwnKey: true
+  deploymentOptions: [saas, vpc]
+evaluationContext:
+  modelFlexibility: multi-provider
+  ecosystemMaturity: dominant
+  observability: comprehensive
+  vendorViability: big-tech
+  dataResidency: [us, eu, ap]
+  documentationQuality: comprehensive
 pricing:
   model: pay-per-use
   details: Token-based pricing varies by model, plus inference and storage costs
@@ -21,16 +44,16 @@ pricing:
         inputPrice: 3
         outputPrice: 15
       - name: Llama 3.1 70B
-        inputPrice: 0.72
-        outputPrice: 0.72
+        inputPrice: 1.95
+        outputPrice: 2.56
       - name: Amazon Titan Text
         inputPrice: 0.5
         outputPrice: 1.5
   enterpriseContact: true
-  infrastructureCosts: Additional charges for Knowledge Bases storage and retrieval
+  infrastructureCosts: Standard pricing shown. Batch/Flex tier is 50% lower. Additional charges for Knowledge Bases storage and retrieval.
 officialDocs: https://docs.aws.amazon.com/bedrock/
 pricingPage: https://aws.amazon.com/bedrock/pricing/
-lastVerified: 2026-02-09
+lastVerified: 2026-03-31
 ---
 
 Amazon Bedrock Agents provides a fully managed service for building AI agents within the AWS ecosystem. The platform offers access to multiple foundation models—including Anthropic Claude, Meta Llama, Amazon Titan, and Mistral—allowing organizations to choose the best model for each use case without vendor lock-in.

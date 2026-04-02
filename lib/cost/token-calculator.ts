@@ -61,9 +61,17 @@ export function calculateTokenCost(
  * @param conversations - Number of monthly conversations
  * @returns Estimated token usage breakdown
  */
-export function conversationsToTokens(conversations: number): TokenUsage {
+export function conversationsToTokens(
+  conversations: number,
+  avgTokensPerConversation?: number,
+): TokenUsage {
+  const totalTokens = avgTokensPerConversation ?? (AVG_INPUT_TOKENS_PER_CONVERSATION + AVG_OUTPUT_TOKENS_PER_CONVERSATION)
+  // 80/20 split: input tokens are typically 80% of total (prompt + context), output is 20% (response)
+  const inputTokens = Math.round(totalTokens * 0.8)
+  const outputTokens = Math.round(totalTokens * 0.2)
+
   return {
-    monthlyInputTokens: conversations * AVG_INPUT_TOKENS_PER_CONVERSATION,
-    monthlyOutputTokens: conversations * AVG_OUTPUT_TOKENS_PER_CONVERSATION,
+    monthlyInputTokens: conversations * inputTokens,
+    monthlyOutputTokens: conversations * outputTokens,
   }
 }

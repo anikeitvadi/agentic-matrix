@@ -38,7 +38,11 @@ interface AssessmentInput {
   complianceRequirements?: string[]
   budgetRange?: string
   useCases?: string[]
+  primaryUseCases?: string[]
   techStack?: string[]
+  currentStack?: string[]
+  teamTechnicalLevel?: string
+  organizationSize?: string
 }
 
 /**
@@ -85,26 +89,38 @@ export function deriveWeights(assessment: AssessmentInput): WeightConfig {
   // Budget emphasis: tighter budgets increase weight
   if (assessment.budgetRange) {
     const budgetBoosts: Record<string, number> = {
-      'under-500': 0.15,
-      'under-1000': 0.12,
-      'under-2000': 0.08,
-      'under-5000': 0.05,
-      'under-10000': 0.03,
-      'unlimited': 0,
+      'under-10k': 0.12,
+      '10k-50k': 0.08,
+      '50k-200k': 0.05,
+      '200k-plus': 0.02,
+      'unknown': 0,
     }
     weights.budgetFit += budgetBoosts[assessment.budgetRange] ?? 0.05
   }
 
   // Use case emphasis: more use cases = higher feature match importance
-  if (assessment.useCases && assessment.useCases.length > 0) {
-    const boost = Math.min(0.10, assessment.useCases.length * 0.025)
+  const useCases = assessment.primaryUseCases ?? assessment.useCases
+  if (useCases && useCases.length > 0) {
+    const boost = Math.min(0.10, useCases.length * 0.025)
     weights.featureMatch += boost
   }
 
   // Tech stack emphasis: specified stack = compatibility matters more
-  if (assessment.techStack && assessment.techStack.length > 0) {
-    const boost = Math.min(0.10, assessment.techStack.length * 0.02)
+  const techStack = assessment.currentStack ?? assessment.techStack
+  if (techStack && techStack.length > 0) {
+    const boost = Math.min(0.10, techStack.length * 0.02)
     weights.stackCompatibility += boost
+  }
+
+  // Team level emphasis: non-technical teams need more stack compatibility weight
+  if (assessment.teamTechnicalLevel === 'non-technical' || assessment.teamTechnicalLevel === 'some-technical') {
+    weights.stackCompatibility += 0.05
+  }
+
+  // Organization size: larger orgs weight compliance and budget higher
+  if (assessment.organizationSize === '1000+' || assessment.organizationSize === '201-1000') {
+    weights.complianceMatch += 0.03
+    weights.budgetFit += 0.03
   }
 
   // Apply MAX_WEIGHT cap

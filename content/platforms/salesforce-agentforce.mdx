@@ -10,9 +10,32 @@ capabilities:
   - Flow orchestration integration
   - Slack and omnichannel deployment
   - Industry-specific agents (Financial Services, Healthcare, Manufacturing)
+  - SOC2 compliance
+  - HIPAA eligible
+  - GDPR compliant
+structuredCapabilities:
+  hasRAG: true
+  hasMultiModal: false
+  hasLowCode: true
+  hasSelfHosted: false
+  hasMultiAgent: false
+  cloudNative: [salesforce]
+  complianceCerts: [soc2, hipaa, gdpr]
+  supportedIntegrations: [slack, salesforce, jira, teams]
+  useCaseStrengths: [customer-support, sales-routing]
+  zeroDataRetention: false
+  bringYourOwnKey: false
+  deploymentOptions: [saas]
+evaluationContext:
+  modelFlexibility: single-provider
+  ecosystemMaturity: dominant
+  observability: comprehensive
+  vendorViability: big-tech
+  dataResidency: [us, eu, ap]
+  documentationQuality: comprehensive
 pricing:
   model: per-conversation
-  details: $2 per conversation, included conversations vary by Salesforce edition
+  details: "Conversation model: $2/conversation. Flex Credit model: $500 per 100K credits (~$0.10/action). Requires base Salesforce licenses."
   perConversationRate: 2
   tiers:
     - name: Starter
@@ -28,9 +51,10 @@ pricing:
       includedUnits: 10000
       unitType: conversations
   enterpriseContact: true
+  infrastructureCosts: "Requires existing Salesforce licenses. Heavy AI usage tier (Agentforce 1 Sales) is $550/user/month. Flex Credits consumed per autonomous action."
 officialDocs: https://help.salesforce.com/s/articleView?id=sf.agentforce.htm
 pricingPage: https://www.salesforce.com/agentforce/pricing/
-lastVerified: 2026-02-09
+lastVerified: 2026-03-30
 ---
 
 Salesforce Agentforce represents the evolution of Einstein AI into autonomous agents that can take action across the entire Salesforce ecosystem. Agents have native access to Customer 360 data, meaning they understand customer context without complex integration work. The Trust Layer provides enterprise governance including audit trails, data masking, and toxicity detection.

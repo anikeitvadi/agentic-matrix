@@ -1,0 +1,67 @@
+---
+slug: crewai
+title: CrewAI
+description: Multi-agent orchestration framework built around role-based agent design, enabling teams to compose collaborative AI crews that delegate tasks, share context, and execute complex processes.
+tier: developer-first
+capabilities:
+  - Role-based agent design
+  - Multi-agent collaboration
+  - Task delegation patterns
+  - Process orchestration (sequential/hierarchical)
+  - Memory and context management
+  - Python-native framework
+  - CrewAI Enterprise observability
+  - Tool ecosystem and custom tools
+structuredCapabilities:
+  hasRAG: false
+  hasMultiModal: false
+  hasLowCode: false
+  hasSelfHosted: true
+  hasMultiAgent: true
+  cloudNative: []
+  complianceCerts: []
+  supportedIntegrations: []
+  useCaseStrengths: [workflow-automation, data-extraction]
+  zeroDataRetention: true
+  bringYourOwnKey: true
+  deploymentOptions: [saas, on-prem]
+evaluationContext:
+  modelFlexibility: bring-your-own
+  ecosystemMaturity: growing
+  observability: basic
+  vendorViability: startup
+  dataResidency: []
+  documentationQuality: adequate
+pricing:
+  model: hybrid
+  details: "Open-source framework is free. Cloud plans: Basic $99/month (100 executions), Standard $500/month (1,000 executions). Enterprise up to $120K/year."
+  tiers:
+    - name: Open Source
+      monthlyPrice: 0
+      includedUnits: 0
+      unitType: tasks
+    - name: Basic Cloud
+      monthlyPrice: 99
+      includedUnits: 100
+      unitType: tasks
+    - name: Standard Cloud
+      monthlyPrice: 500
+      includedUnits: 1000
+      unitType: tasks
+  tokenPricing:
+    inputPricePerMillion: 0
+    outputPricePerMillion: 0
+  enterpriseContact: true
+  infrastructureCosts: "Open-source is free. LLM API costs are separate. CrewAI Enterprise adds observability, managed deployment, and support."
+officialDocs: https://docs.crewai.com/
+pricingPage: https://www.crewai.com/pricing
+lastVerified: 2026-03-31
+---
+
+CrewAI is an open-source Python framework designed specifically for multi-agent orchestration. Its central abstraction is the "crew"—a team of agents, each assigned a distinct role, goal, and backstory, working together to accomplish a set of tasks. This role-based design maps naturally to real-world organizational structures: a research agent gathers information, an analyst agent synthesizes findings, and a writer agent produces the final output.
+
+The framework supports two primary process models: sequential, where agents execute tasks in a defined order, and hierarchical, where a manager agent delegates and coordinates work across subordinate agents. Each agent can be equipped with custom tools, access shared memory, and pass structured outputs to downstream agents. This makes CrewAI particularly effective for knowledge work pipelines—competitive analysis, content generation, code review workflows, and customer research—where the problem naturally decomposes into specialized subtasks.
+
+CrewAI is best suited for teams that want to build multi-agent systems without constructing low-level orchestration plumbing from scratch. Its opinionated abstractions (Agent, Task, Crew, Process) reduce boilerplate significantly compared to assembling the same patterns in a general-purpose framework. The community is growing quickly, with a rich library of example crews and third-party tool integrations. CrewAI Enterprise extends the open-source core with production observability, deployment management, and dedicated support for teams scaling beyond prototypes.
+
+The limitations are real: the framework's opinions can become constraints for teams with unconventional architectures, and the abstraction layer adds overhead compared to raw LLM API calls. Debugging multi-agent interactions requires understanding both the framework internals and the underlying model behavior. Teams that need fine-grained control over every prompt and API call may find CrewAI's higher-level abstractions limiting rather than liberating.

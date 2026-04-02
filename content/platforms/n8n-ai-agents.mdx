@@ -1,0 +1,67 @@
+---
+slug: n8n-ai-agents
+title: n8n AI Agents
+description: Open-source workflow automation platform with native AI agent nodes, 400+ integrations, and the flexibility to self-host or use managed cloud—bridging visual workflow design with code-level control.
+tier: developer-first
+capabilities:
+  - Visual workflow builder
+  - 400+ pre-built integrations
+  - AI agent nodes (ReAct, tools, chains)
+  - Self-hosted option
+  - Custom code nodes (JavaScript/Python)
+  - Credential management and encryption
+  - SOC2 compliance (Cloud)
+  - GDPR compliant
+structuredCapabilities:
+  hasRAG: false
+  hasMultiModal: false
+  hasLowCode: true
+  hasSelfHosted: true
+  hasMultiAgent: false
+  cloudNative: []
+  complianceCerts: [soc2, gdpr]
+  supportedIntegrations: [slack, github, jira, salesforce, hubspot, zendesk]
+  useCaseStrengths: [workflow-automation, data-extraction, customer-support]
+  zeroDataRetention: true
+  bringYourOwnKey: true
+  deploymentOptions: [saas, on-prem]
+evaluationContext:
+  modelFlexibility: bring-your-own
+  ecosystemMaturity: growing
+  observability: basic
+  vendorViability: startup
+  dataResidency: [self-hosted-anywhere]
+  documentationQuality: adequate
+pricing:
+  model: hybrid
+  details: Self-hosted Community edition is free and open-source. Cloud plans provide managed hosting with included task executions.
+  tiers:
+    - name: Community (Self-Hosted)
+      monthlyPrice: 0
+      includedUnits: 0
+      unitType: tasks
+    - name: Cloud Starter
+      monthlyPrice: 24
+      includedUnits: 5000
+      unitType: tasks
+    - name: Cloud Pro
+      monthlyPrice: 60
+      includedUnits: 10000
+      unitType: tasks
+  tokenPricing:
+    inputPricePerMillion: 0
+    outputPricePerMillion: 0
+  enterpriseContact: true
+  infrastructureCosts: "Self-hosted: free software + hosting costs ($20-100/month). Cloud: hosted plans include infrastructure. LLM API costs separate."
+officialDocs: https://docs.n8n.io/
+pricingPage: https://n8n.io/pricing/
+lastVerified: 2026-03-31
+---
+
+n8n is an open-source workflow automation platform that has evolved into a capable AI agent builder. Unlike pure-code frameworks, n8n provides a visual canvas where developers drag, connect, and configure nodes—including dedicated AI agent nodes that implement ReAct-style reasoning, tool use, and chain-of-thought patterns. The result is a system where agent logic is visible and debuggable in a flowchart-like interface, while still allowing arbitrary JavaScript or Python in custom code nodes when the visual abstractions are not enough.
+
+The platform's 400+ integration nodes are its standout advantage. Connecting an AI agent to Slack, Google Sheets, PostgreSQL, Salesforce, or a custom REST API is a matter of adding a node and mapping fields, not writing authentication boilerplate. This makes n8n exceptionally strong for operational automation: agents that triage support tickets, enrich CRM records, process invoices, or monitor data pipelines across multiple SaaS tools. The self-hosted Community edition gives teams full control over data residency, while Cloud plans handle infrastructure and provide SOC2-compliant hosting.
+
+n8n is the right fit for teams that want AI agent capabilities embedded within broader workflow automation. It appeals to developers who appreciate the speed of visual building but refuse to sacrifice code-level escape hatches. The platform is particularly effective when the "agent" is one step in a larger automated process—for example, an LLM node that classifies incoming emails, followed by conditional routing and API calls to downstream systems. The open-source licensing and active community (70,000+ GitHub stars) mean the platform evolves quickly and avoids vendor lock-in.
+
+The primary limitation is that n8n's agent capabilities are narrower than dedicated agent frameworks like LangGraph or CrewAI. Complex multi-agent architectures, sophisticated memory management, or custom reasoning loops may push against the boundaries of what the visual builder supports comfortably. For teams whose primary need is deep, multi-step agent reasoning rather than integration-heavy automation, a code-first framework will offer more flexibility. LLM costs are also entirely separate—n8n provides the orchestration, but teams must bring their own API keys and manage token budgets independently.

@@ -238,13 +238,14 @@ function generateReasoningText(criterion: Criterion, platformName: string): stri
         `meeting ${normalizedPercent}% of your security and regulatory requirements. ` +
         `This contributes ${contribution} points to the total score.`
 
-    case 'budgetFit':
+    case 'budgetFit': {
       // Note: for budget, higher normalized score means LOWER cost (inverted)
       const budgetLevel = criterion.normalizedValue >= 0.6 ? 'competitively priced' :
                           criterion.normalizedValue >= 0.3 ? 'moderately priced' : 'premium priced'
       return `${platformName} is ${budgetLevel} relative to alternatives, ` +
         `with a budget fit score of ${normalizedPercent}%. ` +
         `This contributes ${contribution} points to the total score.`
+    }
 
     case 'featureMatch':
       return `${platformName} offers ${performanceLevel} feature coverage, ` +

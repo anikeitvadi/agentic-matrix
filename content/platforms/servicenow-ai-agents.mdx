@@ -10,22 +10,46 @@ capabilities:
   - Document Intelligence
   - Workflow automation
   - CMDB and knowledge base integration
+  - SOC2 compliance
+  - HIPAA eligible
+  - ISO27001 certified
+structuredCapabilities:
+  hasRAG: true
+  hasMultiModal: false
+  hasLowCode: true
+  hasSelfHosted: false
+  hasMultiAgent: false
+  cloudNative: [servicenow]
+  complianceCerts: [soc2, hipaa, iso27001, fedramp]
+  supportedIntegrations: [slack, teams, jira, salesforce, servicenow]
+  useCaseStrengths: [it-ticketing, customer-support, workflow-automation]
+  zeroDataRetention: true
+  bringYourOwnKey: false
+  deploymentOptions: [saas, vpc]
+evaluationContext:
+  modelFlexibility: single-provider
+  ecosystemMaturity: dominant
+  observability: comprehensive
+  vendorViability: big-tech
+  dataResidency: [us, eu, ap, gov]
+  documentationQuality: comprehensive
 pricing:
   model: subscription
-  details: AI capabilities included in Pro/Enterprise tiers, Now Assist add-on available
+  details: "Base ITSM licensing plus 50-60% uplift for Now Assist AI capabilities. Implementation typically costs 3-5x annual license."
   tiers:
     - name: Pro
-      monthlyPrice: 100
-      includedUnits: 1
+      monthlyPrice: 5000
+      includedUnits: 50
       unitType: users
     - name: Enterprise
-      monthlyPrice: 175
-      includedUnits: 1
+      monthlyPrice: 17500
+      includedUnits: 100
       unitType: users
   enterpriseContact: true
+  infrastructureCosts: "Now Assist GenAI requires Pro Plus tier (50-60% uplift on base license). Implementation and consulting typically 3-5x annual software cost. Acquired Armis (2026) for security-integrated agent capabilities."
 officialDocs: https://docs.servicenow.com/bundle/now-platform/page/administer/now-assist/concept/now-assist.html
 pricingPage: https://www.servicenow.com/products/now-platform/pricing.html
-lastVerified: 2026-02-09
+lastVerified: 2026-03-30
 ---
 
 ServiceNow AI Agents combines the platform's deep enterprise service management expertise with generative AI through Now Assist. Agents can resolve IT incidents autonomously, route requests intelligently, and generate knowledge articles—all while maintaining the audit trails and approval workflows enterprises require.

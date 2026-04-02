@@ -6,10 +6,32 @@ tier: enterprise-os
 capabilities:
   - Constitutional AI safety framework
   - Model Context Protocol (MCP)
-  - Long context windows (200K+ tokens)
-  - Claude 3.5 Sonnet and Opus models
+  - Long context windows (up to 1M tokens)
+  - Claude Opus 4.6 and Sonnet 4.6 models
   - Tool use and function calling
   - Extended thinking mode
+  - SOC2 compliance
+  - Audit-log support
+structuredCapabilities:
+  hasRAG: false
+  hasMultiModal: true
+  hasLowCode: false
+  hasSelfHosted: false
+  hasMultiAgent: false
+  cloudNative: []
+  complianceCerts: [soc2]
+  supportedIntegrations: [slack, github]
+  useCaseStrengths: [customer-support, data-extraction, knowledge-qa]
+  zeroDataRetention: true
+  bringYourOwnKey: false
+  deploymentOptions: [saas]
+evaluationContext:
+  modelFlexibility: single-provider
+  ecosystemMaturity: established
+  observability: basic
+  vendorViability: established
+  dataResidency: [us, eu]
+  documentationQuality: comprehensive
 pricing:
   model: pay-per-use
   details: Token-based with API credits, enterprise plans available
@@ -17,16 +39,19 @@ pricing:
     inputPricePerMillion: 3
     outputPricePerMillion: 15
     modelVariants:
-      - name: Claude 3.5 Sonnet
+      - name: Claude Sonnet 4.6
         inputPrice: 3
         outputPrice: 15
-      - name: Claude Opus 4.5
+      - name: Claude Opus 4.6
         inputPrice: 5
         outputPrice: 25
+      - name: Claude Haiku 4.5
+        inputPrice: 1
+        outputPrice: 5
   enterpriseContact: true
 officialDocs: https://docs.anthropic.com
-pricingPage: https://www.anthropic.com/pricing
-lastVerified: 2026-02-05
+pricingPage: https://claude.com/pricing
+lastVerified: 2026-03-31
 ---
 
 Anthropic's Claude platform distinguishes itself through its safety-first approach using Constitutional AI, making it particularly attractive for enterprises in regulated industries. The recent introduction of Model Context Protocol (MCP) provides a standardized way to connect Claude to external tools and data sources, addressing a key integration challenge in agent development.

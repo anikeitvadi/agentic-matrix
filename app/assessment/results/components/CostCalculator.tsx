@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback } from 'react'
 import type { Platform } from '@/.velite'
 import type { UsageParameters, CostEstimate } from '@/lib/cost/types'
 import { calculatePlatformCost } from '@/lib/cost/tco-calculator'
+import { deriveUsageParameters } from '@/lib/assessment/recommendation-context'
 import { UsageInputPanel } from './UsageInputPanel'
 import { CostComparisonChart } from './CostComparisonChart'
 import { TCOProjectionChart } from './TCOProjectionChart'
@@ -11,7 +12,8 @@ import { PlatformCostCard } from './PlatformCostCard'
 
 interface CostCalculatorProps {
   platforms: Platform[]
-  topPlatformIds?: string[] // IDs of recommended platforms to highlight
+  topPlatformIds?: string[]
+  assessment?: Record<string, unknown> | null
 }
 
 type PeriodType = 'monthly' | 'yearly' | 'tco36'
@@ -29,14 +31,21 @@ type PeriodType = 'monthly' | 'yearly' | 'tco36'
  * - Detailed platform cost cards
  * - Responsive layout that adapts to screen size
  */
-export function CostCalculator({ platforms, topPlatformIds = [] }: CostCalculatorProps) {
-  // Default usage parameters (50K conversations ~= 100M input, 25M output tokens)
-  const [usageParams, setUsageParams] = useState<UsageParameters>({
-    monthlyConversations: 50_000,
-    monthlyInputTokens: 100_000_000,
-    monthlyOutputTokens: 25_000_000,
-    avgTokensPerConversation: 2500,
-  })
+export function CostCalculator({ platforms, topPlatformIds = [], assessment }: CostCalculatorProps) {
+  // Derive initial usage from assessment if available, otherwise use defaults
+  const initialUsage = useMemo<UsageParameters>(() => {
+    if (assessment) {
+      return deriveUsageParameters(assessment)
+    }
+    return {
+      monthlyConversations: 5_000,
+      monthlyInputTokens: 4_000_000,
+      monthlyOutputTokens: 1_000_000,
+      avgTokensPerConversation: 2500,
+    }
+  }, [assessment])
+
+  const [usageParams, setUsageParams] = useState<UsageParameters>(initialUsage)
 
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>('yearly')
   const [expandedPlatformId, setExpandedPlatformId] = useState<string | null>(null)

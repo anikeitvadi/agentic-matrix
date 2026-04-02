@@ -1,35 +1,66 @@
 ---
 slug: openai-frontier
-title: OpenAI Frontier
-description: Enterprise-grade AI operating system with GPT-4.5 models, custom tool integration, and workflow orchestration for building production-ready agent systems.
+title: OpenAI Agents Platform
+description: Enterprise AI platform with Agents SDK, Assistants API, and GPT-5.x/o4 models for building production-ready agent systems with custom tool integration and workflow orchestration.
 tier: enterprise-os
 capabilities:
   - Multi-modal agents (text, vision, audio)
   - Custom tool integration
   - Enterprise-grade security
-  - GPT-4.5 models (Turbo, Standard, Pro)
+  - GPT-5.x flagship and workhorse models
   - Workflow orchestration
   - Function calling and structured outputs
+  - SOC2 compliance
+  - GDPR compliant
+structuredCapabilities:
+  hasRAG: false
+  hasMultiModal: true
+  hasLowCode: false
+  hasSelfHosted: false
+  hasMultiAgent: false
+  cloudNative: []
+  complianceCerts: [soc2, gdpr]
+  supportedIntegrations: [slack, github]
+  useCaseStrengths: [customer-support, data-extraction, knowledge-qa]
+  zeroDataRetention: true
+  bringYourOwnKey: false
+  deploymentOptions: [saas]
+evaluationContext:
+  modelFlexibility: single-provider
+  ecosystemMaturity: dominant
+  observability: comprehensive
+  vendorViability: big-tech
+  dataResidency: [us, eu]
+  documentationQuality: comprehensive
 pricing:
   model: pay-per-use
   details: Token-based pricing with volume discounts, enterprise agreements available
   tokenPricing:
-    inputPricePerMillion: 2.5
-    outputPricePerMillion: 10
+    inputPricePerMillion: 1.75
+    outputPricePerMillion: 14
     modelVariants:
-      - name: GPT-4o
+      - name: GPT-5.4 (flagship)
+        inputPrice: 2.5
+        outputPrice: 15
+      - name: GPT-5.2 (workhorse)
+        inputPrice: 1.75
+        outputPrice: 14
+      - name: o4-mini (reasoning)
+        inputPrice: 1.1
+        outputPrice: 4.4
+      - name: GPT-4.1 nano (budget)
+        inputPrice: 0.1
+        outputPrice: 0.4
+      - name: GPT-4o (legacy)
         inputPrice: 2.5
         outputPrice: 10
-      - name: GPT-4.5 Turbo
-        inputPrice: 5
-        outputPrice: 15
   enterpriseContact: true
 officialDocs: https://platform.openai.com/docs
 pricingPage: https://openai.com/pricing
-lastVerified: 2026-02-05
+lastVerified: 2026-03-31
 ---
 
-OpenAI Frontier represents the enterprise-grade evolution of the GPT platform, positioning itself as an operating system for AI agents rather than just a model API. With GPT-4.5 models as the foundation, Frontier enables organizations to build multi-modal agents that combine text, vision, and audio processing with custom tool integration and sophisticated workflow orchestration capabilities.
+OpenAI Agents Platform represents the enterprise-grade evolution of the GPT platform, built around the Agents SDK and Assistants API. With the GPT-5.x series and o4 reasoning models as the foundation, it enables organizations to build multi-modal agents that combine text, vision, and audio processing with custom tool integration, persistent conversation threads, and sophisticated workflow orchestration capabilities.
 
 The platform's strength lies in its maturity and ecosystem. Enterprise security features include SOC 2 Type II compliance, data residency options, and zero data retention policies for API calls. Function calling and structured outputs provide reliable interfaces for tool integration, while the Assistants API simplifies building stateful conversational agents.
 

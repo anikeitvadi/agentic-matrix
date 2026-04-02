@@ -1,0 +1,54 @@
+---
+slug: langchain-langgraph
+title: LangChain / LangGraph
+description: The most popular open-source agent framework, offering Python-native tooling for building stateful, multi-step AI agents with full control over orchestration, retrieval, and tool use.
+tier: developer-first
+capabilities:
+  - Python-native framework
+  - LangGraph stateful orchestration
+  - LangSmith observability and tracing
+  - Tool and function calling
+  - RAG and retrieval pipelines
+  - Multi-agent patterns
+  - Streaming and async support
+  - SOC2 compliance (LangSmith Cloud)
+structuredCapabilities:
+  hasRAG: true
+  hasMultiModal: false
+  hasLowCode: false
+  hasSelfHosted: true
+  hasMultiAgent: true
+  cloudNative: []
+  complianceCerts: [soc2]
+  supportedIntegrations: []
+  useCaseStrengths: [customer-support, data-extraction, knowledge-qa, workflow-automation]
+  zeroDataRetention: true
+  bringYourOwnKey: true
+  deploymentOptions: [on-prem, hybrid-cloud]
+evaluationContext:
+  modelFlexibility: bring-your-own
+  ecosystemMaturity: dominant
+  observability: comprehensive
+  vendorViability: established
+  dataResidency: []
+  documentationQuality: comprehensive
+pricing:
+  model: pay-per-use
+  details: Framework is free and open-source. Costs come from your chosen LLM provider plus hosting infrastructure.
+  tokenPricing:
+    inputPricePerMillion: 0
+    outputPricePerMillion: 0
+  enterpriseContact: false
+  infrastructureCosts: "Costs come from your chosen LLM provider (OpenAI, Anthropic, etc.) plus hosting. Typical: $0.50-$15/1M tokens depending on model. Self-hosted infrastructure: $100-500/month."
+officialDocs: https://python.langchain.com/docs/
+pricingPage: https://www.langchain.com/pricing
+lastVerified: 2026-03-31
+---
+
+LangChain is the most widely adopted open-source framework for building LLM-powered applications, with LangGraph extending it into the domain of stateful, multi-step agent orchestration. Together they provide the primitives for constructing agents that can reason over tools, manage conversation memory, retrieve documents, and coordinate complex workflows—all in Python (with a growing JavaScript/TypeScript ecosystem as well).
+
+The core strength of the LangChain/LangGraph stack is flexibility. Because it is a framework rather than a managed platform, developers choose their own LLM provider, vector store, hosting environment, and deployment strategy. LangGraph introduces a graph-based execution model where each node represents an agent step and edges define control flow, making it straightforward to implement cycles, conditional branching, and human-in-the-loop checkpoints. LangSmith, the companion observability product, provides tracing, evaluation, and dataset management so teams can debug and improve agents in production.
+
+LangChain/LangGraph is the right choice for engineering teams with solid Python experience who want maximum control over every layer of their agent stack. It shines when requirements are novel or highly customized—scenarios where a managed platform's abstractions would get in the way. The ecosystem is enormous: hundreds of community-maintained integrations, active Discord and GitHub communities, and frequent releases mean that new model providers and techniques are supported quickly.
+
+The tradeoff is engineering effort. There is no drag-and-drop interface, no built-in hosting, and no one-click deployment. Teams are responsible for infrastructure, scaling, error handling, and security hardening. For organizations without dedicated ML or platform engineering capacity, the operational burden can be significant. LangSmith Cloud alleviates some of this with managed tracing and SOC2-compliant hosting, but the core agent runtime remains self-managed.

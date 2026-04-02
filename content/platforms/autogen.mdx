@@ -1,0 +1,48 @@
+---
+slug: autogen
+title: AutoGen
+description: Microsoft Research's open-source multi-agent conversation framework enabling complex agent interactions with customizable topologies and built-in human-in-the-loop patterns.
+tier: developer-first
+capabilities:
+  - Multi-agent conversation framework
+  - AutoGen Studio UI
+  - Flexible agent topologies
+  - Code execution sandbox
+  - Human-in-the-loop patterns
+  - Microsoft Research backed
+structuredCapabilities:
+  hasRAG: false
+  hasMultiModal: false
+  hasLowCode: true
+  hasSelfHosted: true
+  hasMultiAgent: true
+  cloudNative: []
+  complianceCerts: []
+  supportedIntegrations: []
+  useCaseStrengths: [workflow-automation]
+  zeroDataRetention: true
+  bringYourOwnKey: true
+  deploymentOptions: [on-prem, hybrid-cloud]
+evaluationContext:
+  modelFlexibility: bring-your-own
+  ecosystemMaturity: growing
+  observability: minimal
+  vendorViability: big-tech
+  dataResidency: []
+  documentationQuality: adequate
+pricing:
+  model: pay-per-use
+  details: Open-source framework (MIT license). Costs come from your chosen LLM provider.
+  tokenPricing:
+    inputPricePerMillion: 0
+    outputPricePerMillion: 0
+  infrastructureCosts: Framework is free and open-source (MIT license). Costs come from your chosen LLM provider (OpenAI, Anthropic, etc.). AutoGen Studio provides a no-code UI for prototyping agent teams. Self-hosted infrastructure typically $50-200/month.
+officialDocs: https://microsoft.github.io/autogen/
+lastVerified: 2026-03-31
+---
+
+AutoGen, developed by Microsoft Research, is an open-source framework for building multi-agent systems where multiple AI agents collaborate through structured conversations. Unlike single-agent frameworks, AutoGen's core abstraction is the conversation — agents take turns, delegate tasks, critique each other's outputs, and converge on solutions through multi-turn dialogue.
+
+The framework supports flexible agent topologies: sequential chains, round-robin discussions, hierarchical delegation, and custom conversation patterns. AutoGen Studio provides a visual interface for prototyping agent teams without code, lowering the barrier for experimentation. The built-in code execution sandbox enables agents to write, run, and iterate on code safely — particularly valuable for data analysis and software engineering use cases.
+
+AutoGen excels when your problem benefits from multiple perspectives or decomposition into sub-tasks handled by specialized agents. Research teams, data science groups, and engineering organizations building complex reasoning systems find it compelling. The tradeoff is that multi-agent systems are inherently harder to debug and control than single-agent approaches — conversation management, token costs (multiple agents multiply API calls), and ensuring convergence require careful design. Best suited for teams with Python expertise who want maximum control over agent interaction patterns.

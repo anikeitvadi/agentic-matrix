@@ -61,12 +61,23 @@ export interface AuditEntry {
  * @property criteriaScores - Individual criterion scores with normalization details
  * @property auditTrail - Step-by-step explanation of how score was calculated
  */
+export interface RecommendationSummary {
+  matchCount: number
+  totalSignals: number
+  headline: string
+  rationale: string
+  strengths: string[]
+  caveats: string[]
+  estimatedAnnualCost: number | null
+}
+
 export interface PlatformScore {
   platformId: string
   platformName: string
   totalScore: number
   criteriaScores: Criterion[]
   auditTrail: AuditEntry[]
+  recommendationSummary: RecommendationSummary
 }
 
 /**

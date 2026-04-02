@@ -60,6 +60,25 @@ export function Step4Constraints({ register, errors, control }: Step4Props) {
         errors={errors}
         control={control}
         field={{
+          name: 'expectedMonthlyConversations',
+          label: 'What is your expected monthly usage volume?',
+          type: 'radio',
+          required: true,
+          description: 'Approximate number of AI agent conversations per month',
+          options: [
+            { value: 'under-1k', label: 'Under 1,000 conversations' },
+            { value: '1k-10k', label: '1,000 – 10,000 conversations' },
+            { value: '10k-100k', label: '10,000 – 100,000 conversations' },
+            { value: '100k-plus', label: '100,000+ conversations' },
+          ],
+        }}
+      />
+
+      <QuestionField
+        register={register}
+        errors={errors}
+        control={control}
+        field={{
           name: 'decisionMakers',
           label: 'Who are the decision makers involved?',
           type: 'checkbox',

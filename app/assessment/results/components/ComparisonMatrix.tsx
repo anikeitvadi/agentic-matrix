@@ -13,6 +13,7 @@ import Link from 'next/link'
 import type { PlatformScore } from '@/lib/scoring/types'
 import type { Platform } from '@/.velite'
 import type { FilterValues } from './FilterPanel'
+import { isEstimatedAnnualCostInDisplayRange } from '@/lib/assessment/budget-ranges'
 
 interface ComparisonMatrixProps {
   scores: PlatformScore[]
@@ -232,60 +233,46 @@ function applyFilters(
   filters: FilterValues
 ): PlatformScore[] {
   return scores.filter((score) => {
-    // Find the full platform data for this score
     const platform = platforms.find((p) => p.slug === score.platformId)
     if (!platform) return false
 
-    // Budget filter: map platform tier to budget range
+    // Budget filter: use estimated annual cost from scoring
     if (filters.budgetRange !== 'all') {
-      const tierBudgetMap: Record<string, string[]> = {
-        'under-1000': ['developer-first'],
-        '1000-5000': ['developer-first', 'ipaas-agent'],
-        'enterprise': ['enterprise-os', 'ipaas-agent', 'vertical'],
-      }
-      const allowedTiers = tierBudgetMap[filters.budgetRange] || []
-      if (!allowedTiers.includes(platform.tier)) {
+      const annualCost = score.recommendationSummary?.estimatedAnnualCost
+      if (annualCost == null) return false // Exclude if no cost estimate
+
+      if (!isEstimatedAnnualCostInDisplayRange(annualCost, filters.budgetRange as any)) {
         return false
       }
     }
 
-    // Compliance filter: check if platform tier suggests compliance support
+    // Compliance filter: check structuredCapabilities.complianceCerts
     if (filters.compliance.length > 0) {
-      // Enterprise-os and vertical tiers typically have compliance certifications
-      const hasComplianceSupport =
-        platform.tier === 'enterprise-os' || platform.tier === 'vertical'
-
-      // Also check capabilities for compliance-related terms
-      const capabilitiesText = platform.capabilities.join(' ').toLowerCase()
-      const hasComplianceCap = filters.compliance.some(
-        (req) =>
-          capabilitiesText.includes(req.toLowerCase()) ||
-          capabilitiesText.includes('compliance') ||
-          capabilitiesText.includes('enterprise-sso') ||
-          capabilitiesText.includes('audit')
+      const certs = platform.structuredCapabilities?.complianceCerts ?? []
+      const certsLower = certs.map((c: string) => c.toLowerCase())
+      const hasAllRequired = filters.compliance.every((req) =>
+        certsLower.includes(req.toLowerCase())
       )
-
-      if (!hasComplianceSupport && !hasComplianceCap) {
-        return false
-      }
+      if (!hasAllRequired) return false
     }
 
-    // Stack filter: check capabilities for SDK/language mentions
+    // Stack filter: check structuredCapabilities.cloudNative + deployment
     if (filters.stack.length > 0) {
-      const capabilitiesText = platform.capabilities.join(' ').toLowerCase()
+      const cloudNative = platform.structuredCapabilities?.cloudNative ?? []
+      const deploymentOptions = platform.structuredCapabilities?.deploymentOptions ?? []
+      const hasSelfHosted = platform.structuredCapabilities?.hasSelfHosted ?? false
 
-      // Check if any selected stack technology is mentioned
-      const hasStackMatch = filters.stack.some(
-        (tech) =>
-          capabilitiesText.includes(tech.toLowerCase()) ||
-          // Developer-first and enterprise-os typically have broad SDK support
-          platform.tier === 'developer-first' ||
-          platform.tier === 'enterprise-os'
-      )
-
-      if (!hasStackMatch) {
+      const hasStackMatch = filters.stack.some((stack) => {
+        const stackLower = stack.toLowerCase()
+        // Cloud provider match
+        if (cloudNative.some((c: string) => c.toLowerCase() === stackLower)) return true
+        // On-premise / hybrid match
+        if (stackLower === 'on-premise' && (hasSelfHosted || deploymentOptions.includes('on-prem' as any) || deploymentOptions.includes('vpc' as any))) return true
+        if (stackLower === 'hybrid' && (deploymentOptions.includes('hybrid-cloud' as any) || hasSelfHosted)) return true
         return false
-      }
+      })
+
+      if (!hasStackMatch) return false
     }
 
     return true

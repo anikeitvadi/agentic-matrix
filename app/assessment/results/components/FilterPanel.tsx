@@ -16,10 +16,10 @@ interface FilterPanelProps {
 /**
  * Filter panel for narrowing platform recommendations.
  *
- * Provides three filter types:
- * - Budget range: dropdown (All, under-1000, 1000-5000, enterprise)
- * - Compliance: checkboxes for SOC2, HIPAA, GDPR
- * - Stack compatibility: checkboxes for Python, TypeScript, Node.js, etc.
+ * Filters align to assessment vocabulary:
+ * - Budget: annual display ranges (under-10k, 10k-50k, 50k-200k, 200k-plus)
+ * - Compliance: SOC2, HIPAA, GDPR
+ * - Stack: infrastructure values (AWS, Azure, GCP, On-premise, Hybrid)
  */
 export function FilterPanel({ onFilterChange }: FilterPanelProps) {
   const { register, watch } = useForm<FilterValues>({
@@ -30,34 +30,31 @@ export function FilterPanel({ onFilterChange }: FilterPanelProps) {
     },
   })
 
-  // Watch form values and notify parent of changes
   const values = watch()
 
   useEffect(() => {
     onFilterChange(values)
   }, [values, onFilterChange])
 
-  // Available compliance options
   const complianceOptions = [
     { value: 'soc2', label: 'SOC 2' },
     { value: 'hipaa', label: 'HIPAA' },
     { value: 'gdpr', label: 'GDPR' },
   ]
 
-  // Available tech stack options
   const stackOptions = [
-    { value: 'python', label: 'Python' },
-    { value: 'typescript', label: 'TypeScript' },
-    { value: 'nodejs', label: 'Node.js' },
-    { value: 'java', label: 'Java' },
-    { value: 'go', label: 'Go' },
+    { value: 'aws', label: 'AWS' },
+    { value: 'azure', label: 'Azure' },
+    { value: 'gcp', label: 'GCP' },
+    { value: 'on-premise', label: 'On-premise' },
+    { value: 'hybrid', label: 'Hybrid' },
   ]
 
   return (
     <div className="p-4 bg-neutral-900 rounded-lg border border-neutral-800 sticky top-4">
       <h3 className="font-semibold mb-4 text-lg">Filter Platforms</h3>
 
-      {/* Budget filter */}
+      {/* Budget filter — annual ranges */}
       <div className="mb-6">
         <label
           htmlFor="budgetRange"
@@ -71,9 +68,10 @@ export function FilterPanel({ onFilterChange }: FilterPanelProps) {
           className="w-full p-2 bg-neutral-800 rounded-lg border border-neutral-700 text-neutral-100 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
         >
           <option value="all">All budgets</option>
-          <option value="under-1000">Under $1,000/mo</option>
-          <option value="1000-5000">$1,000 - $5,000/mo</option>
-          <option value="enterprise">Enterprise ($5,000+)</option>
+          <option value="under-10k">&lt;$10k/year</option>
+          <option value="10k-50k">$10k–$50k/year</option>
+          <option value="50k-200k">$50k–$200k/year</option>
+          <option value="200k-plus">$200k+/year</option>
         </select>
       </div>
 
@@ -100,7 +98,7 @@ export function FilterPanel({ onFilterChange }: FilterPanelProps) {
         </div>
       </div>
 
-      {/* Stack compatibility checkboxes */}
+      {/* Infrastructure stack checkboxes */}
       <div>
         <label className="block text-sm font-medium mb-2 text-neutral-300">
           Tech Stack

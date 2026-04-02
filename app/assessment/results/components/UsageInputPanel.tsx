@@ -76,23 +76,26 @@ export function UsageInputPanel({ onUsageChange, initialUsage }: UsageInputPanel
     return valueToIndex(50_000) // Default to Growth tier
   })
 
+  // Preserve the assessment-derived token profile instead of hardcoding
+  const avgTokens = initialUsage?.avgTokensPerConversation ?? 2500
+
   const currentValue = SLIDER_STEPS[sliderIndex]
-  const tokenUsage = conversationsToTokens(currentValue)
+  const tokenUsage = conversationsToTokens(currentValue, avgTokens)
 
   const handleSliderChange = useCallback((values: number[]) => {
     const newIndex = values[0]
     setSliderIndex(newIndex)
 
     const conversations = SLIDER_STEPS[newIndex]
-    const tokens = conversationsToTokens(conversations)
+    const tokens = conversationsToTokens(conversations, avgTokens)
 
     onUsageChange({
       monthlyConversations: conversations,
       monthlyInputTokens: tokens.monthlyInputTokens,
       monthlyOutputTokens: tokens.monthlyOutputTokens,
-      avgTokensPerConversation: 2500, // 2000 input + 500 output
+      avgTokensPerConversation: avgTokens,
     })
-  }, [onUsageChange])
+  }, [onUsageChange, avgTokens])
 
   const handlePresetClick = useCallback((value: number) => {
     const index = valueToIndex(value)
@@ -175,7 +178,7 @@ export function UsageInputPanel({ onUsageChange, initialUsage }: UsageInputPanel
           </div>
         </div>
         <p className="text-xs text-neutral-500 mt-2">
-          Based on ~2,000 input and ~500 output tokens per conversation
+          Based on ~{Math.round(avgTokens * 0.8).toLocaleString()} input and ~{Math.round(avgTokens * 0.2).toLocaleString()} output tokens per conversation
         </p>
       </div>
     </div>

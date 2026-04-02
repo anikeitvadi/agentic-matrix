@@ -4,12 +4,35 @@ title: Google Vertex AI Agent Builder
 description: Google Cloud's native agent platform powered by Gemini models, featuring grounding with Google Search and comprehensive enterprise data connectors.
 tier: enterprise-os
 capabilities:
-  - Gemini model access (Pro, Ultra)
+  - Gemini model access (2.5 Pro, 2.5 Flash, 2.0 Flash)
   - Grounding with Google Search
   - Vertex AI integration
   - Multi-modal support (text, images, video)
   - Enterprise data connectors
   - Agent evaluation and monitoring
+  - SOC2 compliance
+  - HIPAA eligible
+  - ISO27001 certified
+structuredCapabilities:
+  hasRAG: true
+  hasMultiModal: true
+  hasLowCode: false
+  hasSelfHosted: false
+  hasMultiAgent: false
+  cloudNative: [gcp]
+  complianceCerts: [soc2, hipaa, iso27001, fedramp]
+  supportedIntegrations: [slack, salesforce]
+  useCaseStrengths: [data-extraction, knowledge-qa, customer-support]
+  zeroDataRetention: true
+  bringYourOwnKey: true
+  deploymentOptions: [saas, vpc]
+evaluationContext:
+  modelFlexibility: multi-provider
+  ecosystemMaturity: dominant
+  observability: comprehensive
+  vendorViability: big-tech
+  dataResidency: [us, eu, ap]
+  documentationQuality: comprehensive
 pricing:
   model: pay-per-use
   details: Vertex AI pricing with agent-specific charges
@@ -20,13 +43,13 @@ pricing:
       - name: Gemini 1.5 Pro
         inputPrice: 1.25
         outputPrice: 5
-      - name: Gemini 1.5 Flash
-        inputPrice: 0.075
-        outputPrice: 0.3
+      - name: Gemini 2.0 Flash
+        inputPrice: 0.15
+        outputPrice: 0.60
   enterpriseContact: true
 officialDocs: https://cloud.google.com/vertex-ai/docs
 pricingPage: https://cloud.google.com/vertex-ai/pricing
-lastVerified: 2026-02-05
+lastVerified: 2026-03-31
 ---
 
 Vertex AI Agent Builder brings Google's Gemini models into a comprehensive platform for building enterprise agents on Google Cloud. The platform's standout feature is grounding with Google Search, enabling agents to provide current information and cite sources—addressing a common limitation of standalone language models.

@@ -8,10 +8,15 @@ import { deriveWeights } from '@/lib/scoring/weights'
 import type { PlatformScore, ScoringContext } from '@/lib/scoring/types'
 import { getFormStorageKey } from '@/lib/assessment/progress-storage'
 import { PlatformScores } from './PlatformScores'
+import { DecisionMemo } from './DecisionMemo'
+import { AIDecisionBrief } from './AIDecisionBrief'
+import { DecisionPacketExport } from './DecisionPacketExport'
 import { FilterPanel, type FilterValues } from './FilterPanel'
 import { ComparisonMatrix } from './ComparisonMatrix'
 import { AuditTrail } from './AuditTrail'
 import { CostCalculator } from './CostCalculator'
+import { SectionDivider } from '@/components/ui/SectionDivider'
+import { DataDisclaimer } from '@/components/ui/DataDisclaimer'
 
 interface ResultsContentProps {
   platforms: Platform[]
@@ -98,14 +103,18 @@ export function ResultsContent({ platforms }: ResultsContentProps) {
       {/* Top Recommendations */}
       <PlatformScores scores={scores} maxDisplay={5} />
 
-      {/* Filters and Comparison Matrix */}
+      {/* Decision Brief */}
+      <SectionDivider label="Decision brief" />
+      <DecisionMemo scores={scores} />
+      <AIDecisionBrief assessment={assessment} scores={scores} />
+      <DecisionPacketExport assessment={assessment} scores={scores} />
+
+      {/* Detailed Comparison */}
+      <SectionDivider label="Detailed comparison" />
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Filter Panel - Sidebar */}
         <div className="lg:col-span-1">
           <FilterPanel onFilterChange={handleFilterChange} />
         </div>
-
-        {/* Comparison Matrix - Main content */}
         <div className="lg:col-span-3">
           <ComparisonMatrix
             scores={scores}
@@ -115,16 +124,19 @@ export function ResultsContent({ platforms }: ResultsContentProps) {
         </div>
       </div>
 
-      {/* Decision Audit Trail */}
+      {/* Score Audit */}
+      <SectionDivider label="Score audit" />
       <AuditTrail scores={scores} />
 
       {/* Cost Analysis */}
-      <div className="pt-4 border-t border-neutral-800">
-        <CostCalculator
-          platforms={platforms}
-          topPlatformIds={scores.slice(0, 5).map((s) => s.platformId)}
-        />
-      </div>
+      <SectionDivider label="Cost analysis" />
+      <CostCalculator
+        platforms={platforms}
+        topPlatformIds={scores.slice(0, 5).map((s) => s.platformId)}
+        assessment={assessment}
+      />
+
+      <DataDisclaimer />
     </div>
   )
 }

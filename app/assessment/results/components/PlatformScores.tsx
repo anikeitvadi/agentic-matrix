@@ -45,22 +45,45 @@ export function PlatformScores({ scores, maxDisplay = 5 }: PlatformScoresProps) 
               </div>
 
               {/* Platform info */}
-              <div>
-                <Link
-                  href={`/platforms/${score.platformId}`}
-                  className="text-lg font-medium hover:text-brand-400 transition-colors"
-                >
-                  {score.platformName}
-                </Link>
-                <p className="text-sm text-neutral-400">
-                  Match score: {score.totalScore}/100
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <Link
+                    href={`/platforms/${score.platformId}`}
+                    className="text-lg font-medium hover:text-brand-400 transition-colors"
+                  >
+                    {score.platformName}
+                  </Link>
+                  {index === 0 && (
+                    <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-brand-900/30 border border-brand-700/50 text-brand-400">
+                      Best Match
+                    </span>
+                  )}
+                </div>
+                <p className="text-sm text-neutral-400 mt-0.5">
+                  {score.recommendationSummary?.headline ?? `Match score: ${score.totalScore}/100`}
                 </p>
+
+                {/* Strengths & caveats */}
+                {score.recommendationSummary && (
+                  <div className="flex flex-wrap gap-1.5 mt-2">
+                    {score.recommendationSummary.strengths.map((s) => (
+                      <span key={s} className="px-2 py-0.5 text-xs rounded-full bg-emerald-950/40 border border-emerald-800/50 text-emerald-400">
+                        {s}
+                      </span>
+                    ))}
+                    {score.recommendationSummary.caveats.map((c) => (
+                      <span key={c} className="px-2 py-0.5 text-xs rounded-full bg-amber-950/40 border border-amber-800/50 text-amber-400">
+                        {c}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
             {/* Score display */}
-            <div className="flex items-center gap-3">
-              {/* Score bar visualization */}
+            <div className="flex items-center gap-3 shrink-0">
+              {/* Score bar */}
               <div className="hidden sm:block w-24 h-2 bg-neutral-800 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-brand-500 rounded-full transition-all duration-300"

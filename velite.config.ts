@@ -13,6 +13,34 @@ const platforms = defineCollection({
       lastVerified: s.isodate(),
       tier: s.enum(['enterprise-os', 'ipaas-agent', 'developer-first', 'vertical']),
       capabilities: s.array(s.string()),
+      // Structured capability flags for deterministic scoring (no keyword matching)
+      structuredCapabilities: s.object({
+        hasRAG: s.boolean().default(false),
+        hasMultiModal: s.boolean().default(false),
+        hasLowCode: s.boolean().default(false),
+        hasSelfHosted: s.boolean().default(false),
+        hasMultiAgent: s.boolean().default(false),
+        cloudNative: s.array(s.enum(['aws', 'azure', 'gcp', 'ibm', 'salesforce', 'sap', 'servicenow'])).default([]),
+        complianceCerts: s.array(s.enum(['soc2', 'hipaa', 'gdpr', 'iso27001', 'fedramp'])).default([]),
+        supportedIntegrations: s.array(s.string()).default([]),
+        useCaseStrengths: s.array(s.enum([
+          'customer-support', 'data-extraction', 'workflow-automation',
+          'knowledge-qa', 'sales-routing', 'it-ticketing'
+        ])).default([]),
+        // Enterprise security flags
+        zeroDataRetention: s.boolean().default(false),
+        bringYourOwnKey: s.boolean().default(false),
+        deploymentOptions: s.array(s.enum(['saas', 'vpc', 'on-prem', 'hybrid-cloud'])).default(['saas']),
+      }).optional(),
+      // Extended evaluation dimensions (informational, not weighted in scoring)
+      evaluationContext: s.object({
+        modelFlexibility: s.enum(['single-provider', 'multi-provider', 'bring-your-own']).default('single-provider'),
+        ecosystemMaturity: s.enum(['emerging', 'growing', 'established', 'dominant']).default('growing'),
+        observability: s.enum(['minimal', 'basic', 'comprehensive']).default('basic'),
+        vendorViability: s.enum(['startup', 'established', 'big-tech']).default('established'),
+        dataResidency: s.array(s.string()).default([]),
+        documentationQuality: s.enum(['minimal', 'adequate', 'comprehensive']).default('adequate'),
+      }).optional(),
       pricing: s.object({
         model: s.enum(['pay-per-use', 'subscription', 'per-conversation', 'hybrid']),
         details: s.string(),

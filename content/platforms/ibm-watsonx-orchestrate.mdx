@@ -10,25 +10,50 @@ capabilities:
   - IBM Cloud Pak integration
   - Hybrid cloud deployment
   - Enterprise governance and lineage
+  - SOC2 compliance
+  - HIPAA eligible
+  - ISO27001 certified
+  - Audit-log support
+structuredCapabilities:
+  hasRAG: false
+  hasMultiModal: false
+  hasLowCode: true
+  hasSelfHosted: true
+  hasMultiAgent: false
+  cloudNative: [ibm]
+  complianceCerts: [soc2, hipaa, iso27001]
+  supportedIntegrations: [slack, salesforce, sap, oracle, workday, servicenow]
+  useCaseStrengths: [workflow-automation]
+  zeroDataRetention: true
+  bringYourOwnKey: true
+  deploymentOptions: [saas, vpc, on-prem, hybrid-cloud]
+evaluationContext:
+  modelFlexibility: multi-provider
+  ecosystemMaturity: established
+  observability: comprehensive
+  vendorViability: big-tech
+  dataResidency: [us, eu, ap]
+  documentationQuality: comprehensive
 pricing:
   model: hybrid
-  details: Per-user licensing with usage-based AI consumption, enterprise agreements available
+  details: "Essentials plan starting at $500/month. Enterprise at $1,500/month with expanded features and capacity."
   tokenPricing:
     inputPricePerMillion: 0.6
     outputPricePerMillion: 0.6
   tiers:
-    - name: Standard
-      monthlyPrice: 100
-      includedUnits: 1
+    - name: Essentials
+      monthlyPrice: 500
+      includedUnits: 50
       unitType: users
     - name: Enterprise
-      monthlyPrice: 250
-      includedUnits: 1
+      monthlyPrice: 1500
+      includedUnits: 200
       unitType: users
   enterpriseContact: true
+  infrastructureCosts: Token costs for Granite models are additional.
 officialDocs: https://www.ibm.com/docs/en/watsonx-orchestrate
 pricingPage: https://www.ibm.com/products/watsonx-orchestrate/pricing
-lastVerified: 2026-02-09
+lastVerified: 2026-03-31
 ---
 
 IBM watsonx Orchestrate brings together IBM's decades of enterprise AI experience with modern foundation models. The platform enables organizations to orchestrate AI-powered automation through a skills-based approach—pre-built skills handle common enterprise tasks while custom skills extend functionality for specific business processes.

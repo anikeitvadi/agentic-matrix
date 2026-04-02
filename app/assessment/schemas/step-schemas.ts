@@ -92,6 +92,12 @@ export const step4Schema = z.object({
       errorMap: () => ({ message: 'Please indicate your team\'s technical level' })
     }
   ),
+  expectedMonthlyConversations: z.enum(
+    ['under-1k', '1k-10k', '10k-100k', '100k-plus'],
+    {
+      errorMap: () => ({ message: 'Please select expected usage volume' })
+    }
+  ),
   decisionMakers: z.array(
     z.enum(['it-leader', 'business-leader', 'executive', 'technical-team'])
   ).min(1, 'Please select at least one decision maker type')

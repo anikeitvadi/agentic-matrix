@@ -10,22 +10,47 @@ capabilities:
   - Cross-module intelligence
   - Role-based personalization
   - SAP Business AI foundation
+  - Joule Studio for custom agent building
+  - SOC2 compliance
+  - GDPR compliant
+  - ISO27001 certified
+structuredCapabilities:
+  hasRAG: false
+  hasMultiModal: false
+  hasLowCode: true
+  hasSelfHosted: false
+  hasMultiAgent: false
+  cloudNative: [sap]
+  complianceCerts: [soc2, gdpr, iso27001]
+  supportedIntegrations: [sap, teams, slack]
+  useCaseStrengths: [workflow-automation]
+  zeroDataRetention: false
+  bringYourOwnKey: false
+  deploymentOptions: [saas, hybrid-cloud]
+evaluationContext:
+  modelFlexibility: single-provider
+  ecosystemMaturity: established
+  observability: basic
+  vendorViability: big-tech
+  dataResidency: [us, eu, ap]
+  documentationQuality: adequate
 pricing:
   model: subscription
-  details: Included with SAP cloud subscriptions, premium AI features may require add-ons
+  details: "Joule Base included at no cost across 13 SAP solutions. Joule Premium with advanced agentic features available via SAP AI Units packages."
   tiers:
     - name: Standard (with SAP Cloud)
       monthlyPrice: 0
-      includedUnits: 1
+      includedUnits: 100
       unitType: users
     - name: Premium AI Add-on
-      monthlyPrice: 75
-      includedUnits: 1
+      monthlyPrice: 7500
+      includedUnits: 100
       unitType: users
   enterpriseContact: true
+  infrastructureCosts: "Joule Base is free with existing SAP Cloud. Joule Premium requires SAP AI Units purchased in packages. Joule Studio (GA Q1 2026) enables custom agent building with Deep Research capability."
 officialDocs: https://help.sap.com/docs/joule
 pricingPage: https://www.sap.com/products/artificial-intelligence/ai-assistant.html
-lastVerified: 2026-02-09
+lastVerified: 2026-03-30
 ---
 
 SAP Joule is deeply embedded across SAP's cloud portfolio, providing AI assistance that understands SAP's complex business processes and data models. Unlike general-purpose AI, Joule knows the difference between a purchase order and a sales order, understands organizational hierarchies, and respects SAP's authorization model.

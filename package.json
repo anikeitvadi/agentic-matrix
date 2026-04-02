@@ -3,16 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
+    "dev": "node scripts/dev.mjs",
+    "dev:next": "next dev",
+    "dev:content": "velite dev",
+    "build": "velite build --clean && next build",
     "start": "next start",
-    "lint": "eslint . --ext .js,.mjs,.cjs",
+    "lint": "eslint .",
     "test": "vitest"
   },
   "dependencies": {
     "@ai-sdk/openai": "^3.0.25",
+    "@chenglou/pretext": "^0.0.3",
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-slider": "^1.3.6",
+    "@tailwindcss/typography": "^0.5.19",
     "@tanstack/react-table": "^8.21.3",
     "ai": "^6.0.73",
     "mdx-mermaid": "^2.0.3",
@@ -34,9 +38,11 @@
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^5.1.3",
     "eslint": "^9.18.0",
+    "eslint-config-next": "^16.2.1",
     "jsdom": "^28.0.0",
     "tailwindcss": "^4.0.0",
     "typescript": "^5.7.3",
+    "typescript-eslint": "^8.57.2",
     "vitest": "^4.0.18"
   }
 }
