@@ -63,6 +63,22 @@ export function PlatformScores({ scores, maxDisplay = 5 }: PlatformScoresProps) 
                   {score.recommendationSummary?.headline ?? `Match score: ${score.totalScore}/100`}
                 </p>
 
+                {/* Gate failures */}
+                {score.gateFailures?.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mt-2">
+                    {score.gateFailures.filter(g => g.severity === 'hard').map((g) => (
+                      <span key={g.gate + g.requirement} className="px-2 py-0.5 text-xs rounded-full bg-red-950/40 border border-red-800/50 text-red-400">
+                        Missing {g.requirement}
+                      </span>
+                    ))}
+                    {score.gateFailures.filter(g => g.severity === 'soft').map((g) => (
+                      <span key={g.gate + g.requirement} className="px-2 py-0.5 text-xs rounded-full bg-amber-950/40 border border-amber-800/50 text-amber-400">
+                        {g.requirement}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
                 {/* Strengths & caveats */}
                 {score.recommendationSummary && (
                   <div className="flex flex-wrap gap-1.5 mt-2">
@@ -81,19 +97,27 @@ export function PlatformScores({ scores, maxDisplay = 5 }: PlatformScoresProps) 
               </div>
             </div>
 
-            {/* Score display */}
-            <div className="flex items-center gap-3 shrink-0">
-              {/* Score bar */}
-              <div className="hidden sm:block w-24 h-2 bg-neutral-800 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-brand-500 rounded-full transition-all duration-300"
-                  style={{ width: `${score.totalScore}%` }}
-                />
-              </div>
-
+            {/* Score + meta */}
+            <div className="flex flex-col items-end gap-1 shrink-0">
               {/* Numeric score */}
               <div className="text-3xl font-bold text-brand-500 min-w-[3ch] text-right">
                 {score.totalScore}
+              </div>
+              {/* Risk + Confidence labels */}
+              <div className="flex gap-2 text-[10px] font-medium uppercase tracking-wider">
+                {score.implementationRisk && (
+                  <span className={
+                    score.implementationRisk.label === 'Low' ? 'text-emerald-500' :
+                    score.implementationRisk.label === 'Medium' ? 'text-amber-500' : 'text-red-500'
+                  }>
+                    Risk: {score.implementationRisk.label}
+                  </span>
+                )}
+                {score.confidence && (
+                  <span className="text-neutral-500">
+                    Evidence: {score.confidence.label}
+                  </span>
+                )}
               </div>
             </div>
           </div>
