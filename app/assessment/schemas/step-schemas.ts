@@ -100,7 +100,7 @@ export const step4Schema = z.object({
   ),
   decisionMakers: z.array(
     z.enum(['it-leader', 'business-leader', 'executive', 'technical-team'])
-  ).min(1, 'Please select at least one decision maker type')
+  ).optional()
 })
 
 export type Step4Data = z.infer<typeof step4Schema>

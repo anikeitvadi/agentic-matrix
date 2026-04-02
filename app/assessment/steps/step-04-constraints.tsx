@@ -82,8 +82,8 @@ export function Step4Constraints({ register, errors, control }: Step4Props) {
           name: 'decisionMakers',
           label: 'Who are the decision makers involved?',
           type: 'checkbox',
-          required: true,
-          description: 'Select all that apply',
+          required: false,
+          description: 'Optional — helps contextualize the AI decision brief',
           options: [
             { value: 'it-leader', label: 'IT Leader (CTO, CIO)' },
             { value: 'business-leader', label: 'Business Leader (COO, VP)' },

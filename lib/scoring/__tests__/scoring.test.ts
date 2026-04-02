@@ -225,7 +225,7 @@ describe('SAW Scoring', () => {
         allPlatforms: mockPlatforms,
         userAssessment: {
           integrationNeeds: ['slack', 'github'],
-          budgetRange: 'under-5000',
+          budgetRange: '10k-50k',
         },
         weightConfig: DEFAULT_WEIGHTS,
       }
