@@ -63,7 +63,10 @@ export function buildDecisionMemo(scores: PlatformScore[]): DecisionMemo | null 
       platformId: winner.platformId,
       platformName: winner.platformName,
       totalScore: winner.totalScore,
-      confidenceLabel: getConfidenceLabel(winner.totalScore - (closestChallenger?.totalScore ?? winner.totalScore)),
+      confidenceLabel: getConfidenceLabel(
+        winner.totalScore - (closestChallenger?.totalScore ?? winner.totalScore),
+        winner.confidence?.score,
+      ),
       lead,
       rationale: winner.recommendationSummary.rationale,
       reasons: winnerReasons,
@@ -101,13 +104,20 @@ function buildAlternativeMemo(
 
   const reasonParts: string[] = []
 
-  if (winnerEdges.length > 0) {
+  // Prioritize gate failures in "why not"
+  const hardGateFailures = challenger.gateFailures?.filter(g => g.severity === 'hard') ?? []
+  if (hardGateFailures.length > 0) {
+    const failureDescs = hardGateFailures.map(g => `missing ${g.requirement}`)
+    reasonParts.push(`Does not meet hard requirements: ${formatList(failureDescs)}.`)
+  }
+
+  if (winnerEdges.length > 0 && hardGateFailures.length === 0) {
     reasonParts.push(
       `${winner.platformName} stayed ahead on ${formatList(winnerEdges.map((edge) => edge.label))}.`
     )
   }
 
-  if (challenger.recommendationSummary.caveats[0]) {
+  if (challenger.recommendationSummary.caveats[0] && hardGateFailures.length === 0) {
     reasonParts.push(`Main tradeoff: ${challenger.recommendationSummary.caveats[0]}.`)
   } else if (challengerEdges.length > 0) {
     reasonParts.push(
@@ -135,6 +145,19 @@ function buildRecommendationChangeScenarios(
 ): DecisionMemoScenario[] {
   const scenarios: DecisionMemoScenario[] = []
   const usedCriteria = new Set<string>()
+
+  // Check if any challenger has gate failures — offer scenario to drop requirement
+  for (const challenger of challengers) {
+    const hardGates = challenger.gateFailures?.filter(g => g.severity === 'hard') ?? []
+    if (hardGates.length > 0 && challenger.totalScore > winner.totalScore - 20) {
+      const gateDescs = hardGates.map(g => g.requirement).join(', ')
+      scenarios.push({
+        title: `If you can relax the ${gateDescs} requirement`,
+        detail: `${challenger.platformName} scores ${challenger.totalScore} but was penalized for missing ${gateDescs}. If that requirement is a preference rather than a hard gate, ${challenger.platformName} becomes a viable alternative.`,
+      })
+      if (scenarios.length >= 3) return scenarios
+    }
+  }
 
   for (const challenger of challengers) {
     const challengerAdvantages = getCriterionDeltas(winner, challenger)
@@ -242,14 +265,15 @@ function getCriterionDeltas(winner: PlatformScore, challenger: PlatformScore): C
     .sort((a, b) => Math.abs(b.diff) - Math.abs(a.diff))
 }
 
-function getConfidenceLabel(scoreGap: number): string {
-  if (scoreGap >= 15) {
-    return 'Clear leader'
+function getConfidenceLabel(scoreGap: number, confidenceScore?: number): string {
+  const gapLabel = scoreGap >= 15 ? 'Clear leader' : scoreGap >= 6 ? 'Moderate lead' : 'Close call'
+
+  // If confidence is low, qualify the label
+  if (confidenceScore != null && confidenceScore < 45) {
+    return `${gapLabel} (low evidence)`
   }
-  if (scoreGap >= 6) {
-    return 'Moderate lead'
-  }
-  return 'Close call'
+
+  return gapLabel
 }
 
 function formatList(items: string[]): string {
