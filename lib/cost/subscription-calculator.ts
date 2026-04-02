@@ -41,7 +41,16 @@ export function selectTier(
     return aUnits - bUnits
   })
 
-  // Find the smallest tier that can accommodate usage
+  // For user-based tiers, don't compare against conversation count.
+  // Pick the lowest non-free tier as a baseline estimate since we
+  // can't map conversations to user seats without more context.
+  const firstTier = sortedTiers[0]
+  if (firstTier?.unitType === 'users') {
+    // Return lowest non-free tier, or first tier if all are free
+    return sortedTiers.find(t => t.monthlyPrice > 0) ?? firstTier
+  }
+
+  // For task/conversation-based tiers, find smallest that fits usage
   for (const tier of sortedTiers) {
     const includedUnits = tier.includedUnits ?? Infinity
     if (monthlyUsage <= includedUnits) {
