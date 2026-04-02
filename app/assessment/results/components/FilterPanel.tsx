@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 
 export interface FilterValues {
@@ -31,9 +31,14 @@ export function FilterPanel({ onFilterChange }: FilterPanelProps) {
   })
 
   const values = watch()
+  const prevRef = useRef('')
 
   useEffect(() => {
-    onFilterChange(values)
+    const serialized = JSON.stringify(values)
+    if (serialized !== prevRef.current) {
+      prevRef.current = serialized
+      onFilterChange(values)
+    }
   }, [values, onFilterChange])
 
   const complianceOptions = [

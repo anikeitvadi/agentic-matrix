@@ -90,16 +90,16 @@ export default function HomePage() {
 
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              { key: "enterprise-os", label: "Enterprise OS", color: "text-blue-400", border: "border-blue-900/50", bg: "bg-blue-950/30" },
-              { key: "ipaas-agent", label: "iPaaS + Agent", color: "text-green-400", border: "border-green-900/50", bg: "bg-green-950/30" },
-              { key: "developer-first", label: "Developer-First", color: "text-purple-400", border: "border-purple-900/50", bg: "bg-purple-950/30" },
-              { key: "vertical", label: "Vertical", color: "text-orange-400", border: "border-orange-900/50", bg: "bg-orange-950/30" },
+              { key: "enterprise-os", label: "Enterprise OS", color: "text-blue-400", border: "border-blue-900/50", bg: "bg-blue-950/30", hoverBorder: "hover:border-blue-700/50", hoverText: "group-hover:text-blue-400" },
+              { key: "ipaas-agent", label: "iPaaS + Agent", color: "text-green-400", border: "border-green-900/50", bg: "bg-green-950/30", hoverBorder: "hover:border-green-700/50", hoverText: "group-hover:text-green-400" },
+              { key: "developer-first", label: "Developer-First", color: "text-purple-400", border: "border-purple-900/50", bg: "bg-purple-950/30", hoverBorder: "hover:border-purple-700/50", hoverText: "group-hover:text-purple-400" },
+              { key: "vertical", label: "Vertical", color: "text-orange-400", border: "border-orange-900/50", bg: "bg-orange-950/30", hoverBorder: "hover:border-orange-700/50", hoverText: "group-hover:text-orange-400" },
             ].map((tier) => {
               const items = tiers[tier.key as keyof typeof tiers]
               return (
                 <div
                   key={tier.key}
-                  className={`rounded-2xl border ${tier.border} ${tier.bg} p-5 transition-colors hover:border-neutral-700`}
+                  className={`group rounded-2xl border ${tier.border} ${tier.bg} p-5 transition-all duration-200 ${tier.hoverBorder} cursor-pointer`}
                 >
                   <div className={`text-xs font-bold uppercase tracking-[0.2em] ${tier.color}`}>
                     {tier.label}
@@ -107,7 +107,7 @@ export default function HomePage() {
                   <div className="mt-1 text-2xl font-bold text-white">{items.length}</div>
                   <div className="mt-3 space-y-1">
                     {items.map((p) => (
-                      <div key={p.slug} className="truncate text-sm text-neutral-500">
+                      <div key={p.slug} className={`truncate text-sm text-neutral-500 transition-colors ${tier.hoverText}`}>
                         {p.title}
                       </div>
                     ))}

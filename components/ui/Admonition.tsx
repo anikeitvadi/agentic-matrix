@@ -8,24 +8,24 @@ interface AdmonitionProps {
 
 const styles = {
   warning: {
-    border: 'border-amber-500',
-    bg: 'bg-amber-50',
-    title: 'text-amber-800',
+    border: 'border-amber-500/50',
+    bg: 'bg-amber-950/20',
+    title: 'text-amber-400',
   },
   danger: {
-    border: 'border-red-500',
-    bg: 'bg-red-50',
-    title: 'text-red-800',
+    border: 'border-red-500/50',
+    bg: 'bg-red-950/20',
+    title: 'text-red-400',
   },
   tip: {
-    border: 'border-green-500',
-    bg: 'bg-green-50',
-    title: 'text-green-800',
+    border: 'border-emerald-500/50',
+    bg: 'bg-emerald-950/20',
+    title: 'text-emerald-400',
   },
   info: {
-    border: 'border-blue-500',
-    bg: 'bg-blue-50',
-    title: 'text-blue-800',
+    border: 'border-blue-500/50',
+    bg: 'bg-blue-950/20',
+    title: 'text-blue-400',
   },
 }
 
@@ -43,7 +43,7 @@ export function Admonition({ type, title, children }: AdmonitionProps) {
       <p className={`font-semibold mb-2 ${style.title}`}>
         {title || defaultTitles[type]}
       </p>
-      <div className="text-sm text-neutral-700 prose prose-sm max-w-none">
+      <div className="text-sm text-neutral-300 prose prose-sm prose-invert max-w-none">
         {children}
       </div>
     </div>

@@ -22,7 +22,7 @@ export function PlatformCard({ platform }: PlatformCardProps) {
   return (
     <Link
       href={`/platforms/${platform.slug}`}
-      className={`block group rounded-lg border border-neutral-800 bg-neutral-900/50 ${meta.hoverBorder} hover:border-neutral-700 transition-all`}
+      className={`block group rounded-lg border border-neutral-800 bg-neutral-900/50 ${meta.hoverBorder} transition-all`}
     >
       <div className="p-4">
         {/* Header */}
@@ -33,7 +33,7 @@ export function PlatformCard({ platform }: PlatformCardProps) {
             {meta.label}
           </span>
         </div>
-        <h3 className="font-medium text-white group-hover:text-brand-400 transition-colors mb-2">
+        <h3 className={`font-medium text-white ${meta.hoverText} transition-colors mb-2`}>
           {platform.title}
         </h3>
 

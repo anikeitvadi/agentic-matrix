@@ -44,9 +44,19 @@ body {
     radial-gradient(circle at top right, rgba(59, 130, 246, 0.04), transparent 22rem);
 }
 
-/* GFM task list items: use standard prose bullets (checkbox hidden via component) */
+/* GFM task list items: hide checkboxes, use standard prose bullets */
 .prose li.task-list-item {
   padding-left: 0;
+  list-style: disc;
+}
+
+.prose li.task-list-item input[type="checkbox"] {
+  display: none;
+}
+
+.prose ul.contains-task-list {
+  list-style: disc;
+  padding-left: 1.5em;
 }
 
 ::selection {
