@@ -83,9 +83,25 @@ export function calculatePlatformCost(
         monthlyInputTokens: usageParams.monthlyInputTokens,
         monthlyOutputTokens: usageParams.monthlyOutputTokens,
       })
-      monthlyBaseCost = 0
 
-      if (monthlyUsageCost > 0) {
+      // For open-source/free frameworks ($0 token pricing), estimate LLM provider costs
+      // since users still pay their chosen provider (OpenAI, Anthropic, etc.)
+      if (monthlyUsageCost === 0 && pricing.tokenPricing &&
+          pricing.tokenPricing.inputPricePerMillion === 0 && pricing.tokenPricing.outputPricePerMillion === 0) {
+        // Estimate using mid-range LLM pricing (~$2.50/$10 per 1M tokens)
+        const estimatedLLMCost =
+          (usageParams.monthlyInputTokens / 1_000_000) * 2.5 +
+          (usageParams.monthlyOutputTokens / 1_000_000) * 10
+        monthlyUsageCost = estimatedLLMCost
+
+        breakdown.push({
+          category: 'token',
+          item: 'Estimated LLM provider cost',
+          monthlyCost: monthlyUsageCost,
+          annualCost: monthlyUsageCost * 12,
+          notes: `Framework is free — estimated using mid-range LLM pricing ($2.50/$10 per 1M tokens)`,
+        })
+      } else if (monthlyUsageCost > 0) {
         breakdown.push({
           category: 'token',
           item: 'Token usage',
@@ -94,6 +110,8 @@ export function calculatePlatformCost(
           notes: `${(usageParams.monthlyInputTokens / 1_000_000).toFixed(1)}M input + ${(usageParams.monthlyOutputTokens / 1_000_000).toFixed(1)}M output tokens/month`,
         })
       }
+
+      monthlyBaseCost = 0
       break
     }
 
@@ -163,6 +181,23 @@ export function calculatePlatformCost(
         monthlyInputTokens: usageParams.monthlyInputTokens,
         monthlyOutputTokens: usageParams.monthlyOutputTokens,
       })
+
+      // For hybrid frameworks with $0 token pricing, estimate LLM costs
+      if (monthlyUsageCost === 0 && pricing.tokenPricing &&
+          pricing.tokenPricing.inputPricePerMillion === 0 && pricing.tokenPricing.outputPricePerMillion === 0) {
+        const estimatedLLMCost =
+          (usageParams.monthlyInputTokens / 1_000_000) * 2.5 +
+          (usageParams.monthlyOutputTokens / 1_000_000) * 10
+        monthlyUsageCost = estimatedLLMCost
+
+        breakdown.push({
+          category: 'token',
+          item: 'Estimated LLM provider cost',
+          monthlyCost: monthlyUsageCost,
+          annualCost: monthlyUsageCost * 12,
+          notes: `Framework is free — estimated using mid-range LLM pricing ($2.50/$10 per 1M tokens)`,
+        })
+      }
 
       if (monthlyBaseCost > 0 && !breakdown.some(b => b.category === 'platform')) {
         breakdown.push({
