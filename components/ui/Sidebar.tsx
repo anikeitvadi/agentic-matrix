@@ -109,13 +109,8 @@ export function Sidebar() {
         {/* Logo */}
         <div className="border-b border-neutral-800 px-5 py-5">
           <Link href="/" className="flex items-start gap-3" onClick={closeMobile}>
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 shadow-lg shadow-brand-700/30">
-              <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            </div>
             <div className="min-w-0">
-              <div className="font-serif text-xl leading-none text-white">Agentic Decisions</div>
+              <div className="font-serif text-xl leading-none text-white">Agentic Matrix</div>
               <div className="mt-1 text-xs uppercase tracking-[0.24em] text-neutral-500">
                 Decision Toolkit
               </div>

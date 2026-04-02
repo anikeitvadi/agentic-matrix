@@ -141,13 +141,30 @@ export function calculatePlatformCost(
     }
 
     case 'hybrid': {
-      monthlyBaseCost = pricing.baseSubscription ?? 0
+      // Hybrid: base subscription + token usage
+      // Check tiers for base cost if baseSubscription isn't set directly
+      if (pricing.baseSubscription != null) {
+        monthlyBaseCost = pricing.baseSubscription
+      } else if (pricing.tiers && pricing.tiers.length > 0) {
+        const tier = selectTier(pricing.tiers, usageParams.monthlyConversations)
+        if (tier) {
+          monthlyBaseCost = calculateSubscriptionCost(tier, usageParams.monthlyConversations)
+          breakdown.push({
+            category: 'platform',
+            item: `${tier.name} subscription`,
+            monthlyCost: monthlyBaseCost,
+            annualCost: monthlyBaseCost * 12,
+            notes: `Includes ${tier.includedUnits?.toLocaleString() ?? 'unlimited'} ${tier.unitType ?? 'units'}/month`,
+          })
+        }
+      }
+
       monthlyUsageCost = calculateTokenCost(pricing.tokenPricing, {
         monthlyInputTokens: usageParams.monthlyInputTokens,
         monthlyOutputTokens: usageParams.monthlyOutputTokens,
       })
 
-      if (monthlyBaseCost > 0) {
+      if (monthlyBaseCost > 0 && !breakdown.some(b => b.category === 'platform')) {
         breakdown.push({
           category: 'platform',
           item: 'Base subscription',

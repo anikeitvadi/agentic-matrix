@@ -14,8 +14,8 @@ const newsreader = Newsreader({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://agentic-decisions.vercel.app"),
-  title: "Agentic Decisions — AI Agent Platform Comparison",
+  metadataBase: new URL("https://agentic-matrix.vercel.app"),
+  title: "Agentic Matrix — AI Agent Platform Comparison",
   description:
     "Vendor-neutral recommendations for enterprise AI agent platforms. Compare pricing, compliance, and capabilities across leading platforms with transparent scoring.",
   keywords: [
@@ -31,15 +31,15 @@ export const metadata: Metadata = {
     "AI compliance",
   ],
   openGraph: {
-    title: "Agentic Decisions — AI Agent Platform Comparison",
+    title: "Agentic Matrix — AI Agent Platform Comparison",
     description:
       "Vendor-neutral recommendations for enterprise AI agent platforms. Compare pricing, compliance, and capabilities across leading platforms with transparent scoring.",
     type: "website",
-    siteName: "Agentic Decisions",
+    siteName: "Agentic Matrix",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Agentic Decisions — AI Agent Platform Comparison",
+    title: "Agentic Matrix — AI Agent Platform Comparison",
     description:
       "Vendor-neutral recommendations for enterprise AI agent platforms. Compare pricing, compliance, and capabilities across leading platforms with transparent scoring.",
   },

@@ -4,7 +4,7 @@ import { platforms, blueprints } from "@/.velite"
 import MatrixHero from "@/components/landing/MatrixHero"
 
 export const metadata: Metadata = {
-  title: "Agentic Decisions | AI Agent Platform Comparison",
+  title: "Agentic Matrix | AI Agent Platform Comparison",
   description: `Vendor-neutral platform recommendations backed by transparent scoring and real pricing data across ${platforms.length} platforms.`,
 }
 

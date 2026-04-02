@@ -6,7 +6,7 @@ import { DataDisclaimer } from "@/components/ui/DataDisclaimer"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "AI Agent Platforms | Agentic Decisions",
+  title: "AI Agent Platforms | Agentic Matrix",
   description: "Browse structured AI agent platform profiles with pricing, capabilities, and source links.",
 }
 

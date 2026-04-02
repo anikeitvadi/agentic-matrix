@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
 export const metadata: Metadata = {
-  title: 'Editorial Policy | Agentic Decisions',
+  title: 'Editorial Policy | Agentic Matrix',
   description: 'Our commitment to vendor-neutral AI agent platform guidance and data accuracy.',
 }
 

@@ -3,7 +3,7 @@
 import { useRef, useEffect, useState } from 'react'
 
 // ── Config ──────────────────────────────────────────────────────────────
-const HIGHLIGHT_TEXT = 'AGENTIC DECISIONS'
+const HIGHLIGHT_TEXT = 'AGENTIC MATRIX'
 const CHAR_SET = '01アイウエオカキクケコサシスセソタチツテト'
 const FONT_SIZE = 13
 const FONT = `${FONT_SIZE}px "IBM Plex Mono", "SF Mono", monospace`
@@ -14,7 +14,7 @@ const SPAWN_CHANCE = 0.008 // low density
 const MAX_DROPS = 120 // hard cap for performance
 const TRAIL_LENGTH = 12
 const HEADLINE_FONT_SIZE = 36
-const HEADLINE_FONT = `bold ${HEADLINE_FONT_SIZE}px "IBM Plex Mono", monospace`
+const HEADLINE_FONT = `bold ${HEADLINE_FONT_SIZE}px "Space Grotesk", system-ui, sans-serif`
 const BOUNCE_SPREAD = 2.5 // how far particles spread on bounce
 const GRAVITY = 0.12
 

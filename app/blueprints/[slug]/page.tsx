@@ -27,7 +27,7 @@ export async function generateMetadata({
   }
 
   return {
-    title: `${blueprint.title} | Agentic Decisions`,
+    title: `${blueprint.title} | Agentic Matrix`,
     description: blueprint.description,
   }
 }

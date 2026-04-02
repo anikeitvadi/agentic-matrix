@@ -3,7 +3,7 @@ import Link from "next/link"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Blueprint Library | Agentic Decisions",
+  title: "Blueprint Library | Agentic Matrix",
   description: "Implementation-ready guidance for common enterprise AI agent use cases",
 }
 

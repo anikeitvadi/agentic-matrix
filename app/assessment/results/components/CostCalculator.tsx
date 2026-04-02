@@ -185,16 +185,19 @@ export function CostCalculator({ platforms, topPlatformIds = [], assessment }: C
         <h3 className="text-xl font-semibold mb-4">Detailed Cost Breakdown</h3>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {estimates.map((estimate, index) => (
-            <button
+            <div
               key={estimate.platformId}
               onClick={() => handleCardClick(estimate.platformId)}
-              className="text-left focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 focus:ring-offset-neutral-950 rounded-xl"
+              className="cursor-pointer transition-all hover:-translate-y-0.5"
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleCardClick(estimate.platformId) }}
             >
               <PlatformCostCard
                 estimate={estimate}
-                isRecommended={index === 0} // Highlight first platform as recommended
+                isRecommended={index === 0}
               />
-            </button>
+            </div>
           ))}
         </div>
         <p className="text-xs text-neutral-500 mt-4 text-center">

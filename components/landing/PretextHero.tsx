@@ -12,7 +12,7 @@ import {
 const HEADLINE_TEXT =
   'Choose an AI agent platform with evidence, not vendor momentum.'
 const BODY_TEXT =
-  'Agentic Decisions helps enterprise teams compare AI agent platforms through transparent, ' +
+  'Agentic Matrix helps enterprise teams compare AI agent platforms through transparent, ' +
   'deterministic scoring instead of vendor pitches. The assessment captures your constraints — ' +
   'budget, compliance, technical readiness, expected scale — then produces a weighted recommendation ' +
   'backed by an auditable methodology. Every score is explainable. Every tradeoff is surfaced. ' +
