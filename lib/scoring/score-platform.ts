@@ -146,7 +146,15 @@ export function scoreAllPlatforms(
 ): PlatformScore[] {
   if (platforms.length === 0) return []
   const scores = platforms.map((p) => scorePlatform(p, context))
-  return scores.sort((a, b) => b.totalScore - a.totalScore)
+
+  // Sort: platforms passing all hard gates rank above those that don't,
+  // then by totalScore descending within each group
+  return scores.sort((a, b) => {
+    if (a.passedAllGates !== b.passedAllGates) {
+      return a.passedAllGates ? -1 : 1
+    }
+    return b.totalScore - a.totalScore
+  })
 }
 
 // ── Criterion calculations ──────────────────────────────────────────────

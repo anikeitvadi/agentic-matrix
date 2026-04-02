@@ -110,7 +110,13 @@ function evaluateBudgetGate(
 }
 
 /**
- * Deployment gate: can the platform be deployed as required?
+ * Deployment gate: soft warning when user's current infrastructure
+ * includes on-premise or hybrid but the platform doesn't support it.
+ *
+ * NOTE: currentStack describes the user's existing environment, not an
+ * explicit deployment requirement. This gate produces soft warnings only.
+ * A separate "required deployment model" assessment field would be needed
+ * for hard deployment gates.
  */
 function evaluateDeploymentGate(
   platform: Platform,
@@ -120,34 +126,34 @@ function evaluateDeploymentGate(
   const stack = getAssessmentArray(assessment, 'currentStack', 'techStack')
   const caps = platform.structuredCapabilities
 
-  const needsOnPrem = stack.includes('on-premise')
-  const needsHybrid = stack.includes('hybrid')
+  const hasOnPrem = stack.includes('on-premise')
+  const hasHybrid = stack.includes('hybrid')
 
-  if (needsOnPrem) {
-    const hasOnPrem = caps?.hasSelfHosted ||
+  if (hasOnPrem) {
+    const supportsOnPrem = caps?.hasSelfHosted ||
       caps?.deploymentOptions?.some(d => d === 'on-prem' || d === 'vpc')
 
-    if (!hasOnPrem) {
+    if (!supportsOnPrem) {
       failures.push({
         gate: 'deployment',
-        requirement: 'On-premise deployment',
+        requirement: 'On-premise compatibility',
         actual: `Available: ${caps?.deploymentOptions?.join(', ') || 'SaaS only'}`,
-        severity: 'soft',
+        severity: 'soft', // Soft: current env, not explicit requirement
       })
     }
   }
 
-  if (needsHybrid) {
-    const hasHybrid = caps?.deploymentOptions?.some(d =>
+  if (hasHybrid) {
+    const supportsHybrid = caps?.deploymentOptions?.some(d =>
       d === 'hybrid-cloud' || d === 'vpc'
     ) || caps?.hasSelfHosted
 
-    if (!hasHybrid) {
+    if (!supportsHybrid) {
       failures.push({
         gate: 'deployment',
-        requirement: 'Hybrid cloud deployment',
+        requirement: 'Hybrid deployment compatibility',
         actual: `Available: ${caps?.deploymentOptions?.join(', ') || 'SaaS only'}`,
-        severity: 'soft',
+        severity: 'soft', // Soft: current env, not explicit requirement
       })
     }
   }
