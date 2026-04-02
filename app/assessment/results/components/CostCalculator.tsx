@@ -7,7 +7,6 @@ import { calculatePlatformCost } from '@/lib/cost/tco-calculator'
 import { deriveUsageParameters, derivePlatformComplexity } from '@/lib/assessment/recommendation-context'
 import { UsageInputPanel } from './UsageInputPanel'
 import { CostComparisonChart } from './CostComparisonChart'
-import { TCOProjectionChart } from './TCOProjectionChart'
 import { PlatformCostCard } from './PlatformCostCard'
 
 interface CostCalculatorProps {
@@ -48,7 +47,7 @@ export function CostCalculator({ platforms, topPlatformIds = [], assessment }: C
   const [usageParams, setUsageParams] = useState<UsageParameters>(initialUsage)
 
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>('yearly')
-  const [expandedPlatformId, setExpandedPlatformId] = useState<string | null>(null)
+  const [expandedPlatformId, setExpandedPlatformId] = useState<string | null>(null) // kept for cost card click highlight
 
   // Filter platforms to only those in topPlatformIds or top 5 by default
   const platformsToCalculate = useMemo(() => {
@@ -166,14 +165,6 @@ export function CostCalculator({ platforms, topPlatformIds = [], assessment }: C
         <div className="lg:col-span-2">
           <CostComparisonChart estimates={estimates} period={selectedPeriod} />
         </div>
-      </div>
-
-      {/* TCO Projection Chart */}
-      <div className="bg-neutral-900 rounded-lg border border-neutral-800 p-6">
-        <TCOProjectionChart
-          estimates={estimates}
-          highlightPlatform={expandedPlatformId ?? undefined}
-        />
       </div>
 
       {/* Platform Cost Cards */}
