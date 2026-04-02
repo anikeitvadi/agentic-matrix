@@ -18,25 +18,19 @@ export function buildEvidence(
   const caps = platform.structuredCapabilities
   const ctx = platform.evaluationContext
 
-  // Count hard requirements
+  // Count hard requirements — only explicit requirements, not current environment
   const compliance = getAssessmentArray(assessment, 'complianceRequirements').filter(v => v !== 'none')
   const integrations = getAssessmentArray(assessment, 'integrationNeeds')
-  const stack = getAssessmentArray(assessment, 'currentStack', 'techStack')
 
-  // Hard requirements = compliance + deployment needs
+  // Hard requirements = compliance certs only
+  // NOTE: currentStack describes existing infrastructure, not deployment requirements.
+  // Deployment compatibility is a soft signal, not a hard requirement.
   const hardReqs: { name: string; met: boolean }[] = []
 
-  // Compliance requirements
   const certs = caps?.complianceCerts ?? []
   const certsLower = certs.map(c => c.toLowerCase())
   for (const req of compliance) {
     hardReqs.push({ name: req.toUpperCase(), met: certsLower.includes(req.toLowerCase()) })
-  }
-
-  // Deployment requirements
-  if (stack.includes('on-premise')) {
-    const hasOnPrem = caps?.hasSelfHosted || caps?.deploymentOptions?.some(d => d === 'on-prem' || d === 'vpc')
-    hardReqs.push({ name: 'On-premise', met: !!hasOnPrem })
   }
 
   const hardRequirementsMet = hardReqs.filter(r => r.met).length

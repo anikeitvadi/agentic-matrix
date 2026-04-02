@@ -123,18 +123,17 @@ describe('Weight Derivation', () => {
 
     it('should increase budgetFit weight when user has tight budget', () => {
       const weights = deriveWeights({
-        budgetRange: 'under-1000',
+        budgetRange: 'under-10k',
       })
 
       expect(weights.budgetFit).toBeGreaterThan(DEFAULT_WEIGHTS.budgetFit)
     })
 
     it('should never exceed 0.35 for any single weight', () => {
-      // Even with maximum emphasis on one criterion
       const weights = deriveWeights({
         integrationNeeds: ['Slack', 'GitHub', 'Jira', 'Salesforce', 'HubSpot', 'Notion', 'Asana'],
         complianceRequirements: ['SOC2', 'HIPAA', 'GDPR', 'ISO27001'],
-        budgetRange: 'under-500',
+        budgetRange: 'under-10k',
       })
 
       expect(weights.integrationFit).toBeLessThanOrEqual(0.35)
@@ -148,11 +147,11 @@ describe('Weight Derivation', () => {
       const testCases = [
         { integrationNeeds: ['Slack'] },
         { complianceRequirements: ['SOC2', 'HIPAA'] },
-        { budgetRange: 'under-1000' as const },
+        { budgetRange: 'under-10k' as const },
         {
           integrationNeeds: ['Slack', 'GitHub'],
           complianceRequirements: ['SOC2'],
-          budgetRange: 'under-5000' as const,
+          budgetRange: '10k-50k' as const,
         },
         {}, // Empty assessment
       ]
@@ -418,6 +417,136 @@ describe('SAW Scoring', () => {
 
       // n8n (open-source, free) should have best budget score
       expect(results[0].platformId).toBe('n8n')
+    })
+  })
+
+  describe('Layered Scoring', () => {
+    it('should include gate failures on platforms missing required certs', () => {
+      const context: ScoringContext = {
+        allPlatforms: mockPlatforms,
+        userAssessment: {
+          complianceRequirements: ['hipaa'],
+        },
+        weightConfig: DEFAULT_WEIGHTS,
+      }
+
+      const results = scoreAllPlatforms(mockPlatforms, context)
+
+      // n8n has gdpr and soc2 but NOT hipaa
+      const n8nScore = results.find(r => r.platformId === 'n8n')
+      expect(n8nScore?.gateFailures.length).toBeGreaterThan(0)
+      expect(n8nScore?.gateFailures.some(g => g.gate === 'compliance')).toBe(true)
+
+      // workato HAS hipaa
+      const workatoScore = results.find(r => r.platformId === 'workato')
+      expect(workatoScore?.gateFailures.filter(g => g.gate === 'compliance').length).toBe(0)
+    })
+
+    it('should rank gate-passing platforms above gate-failing ones', () => {
+      const context: ScoringContext = {
+        allPlatforms: mockPlatforms,
+        userAssessment: {
+          complianceRequirements: ['hipaa'],
+        },
+        weightConfig: DEFAULT_WEIGHTS,
+      }
+
+      const results = scoreAllPlatforms(mockPlatforms, context)
+
+      // Platforms passing all hard gates should come first
+      const firstFailing = results.findIndex(r => !r.passedAllGates)
+      const lastPassing = results.length - 1 - [...results].reverse().findIndex(r => r.passedAllGates)
+
+      if (firstFailing >= 0 && lastPassing >= 0) {
+        expect(firstFailing).toBeGreaterThan(lastPassing)
+      }
+    })
+
+    it('should include implementation risk with score and label', () => {
+      const context: ScoringContext = {
+        allPlatforms: mockPlatforms,
+        userAssessment: {},
+        weightConfig: DEFAULT_WEIGHTS,
+      }
+
+      const results = scoreAllPlatforms(mockPlatforms, context)
+
+      for (const result of results) {
+        expect(result.implementationRisk).toBeDefined()
+        expect(result.implementationRisk.score).toBeGreaterThanOrEqual(0)
+        expect(result.implementationRisk.score).toBeLessThanOrEqual(100)
+        expect(['Low', 'Medium', 'High']).toContain(result.implementationRisk.label)
+        expect(result.implementationRisk.factors.length).toBeGreaterThan(0)
+      }
+    })
+
+    it('should include confidence score', () => {
+      const context: ScoringContext = {
+        allPlatforms: mockPlatforms,
+        userAssessment: {
+          complianceRequirements: ['soc2'],
+          integrationNeeds: ['slack'],
+          budgetRange: 'under-10k',
+          teamTechnicalLevel: 'engineering-team',
+          primaryUseCases: ['customer-support'],
+        },
+        weightConfig: DEFAULT_WEIGHTS,
+      }
+
+      const results = scoreAllPlatforms(mockPlatforms, context)
+
+      for (const result of results) {
+        expect(result.confidence).toBeDefined()
+        expect(result.confidence.score).toBeGreaterThanOrEqual(0)
+        expect(result.confidence.score).toBeLessThanOrEqual(100)
+        expect(['High', 'Medium', 'Low']).toContain(result.confidence.label)
+      }
+    })
+
+    it('should have lower confidence with empty assessment', () => {
+      const fullContext: ScoringContext = {
+        allPlatforms: mockPlatforms,
+        userAssessment: {
+          complianceRequirements: ['soc2'],
+          integrationNeeds: ['slack'],
+          budgetRange: 'under-10k',
+          teamTechnicalLevel: 'engineering-team',
+        },
+        weightConfig: DEFAULT_WEIGHTS,
+      }
+
+      const emptyContext: ScoringContext = {
+        allPlatforms: mockPlatforms,
+        userAssessment: {},
+        weightConfig: DEFAULT_WEIGHTS,
+      }
+
+      const fullResults = scoreAllPlatforms(mockPlatforms, fullContext)
+      const emptyResults = scoreAllPlatforms(mockPlatforms, emptyContext)
+
+      // Average confidence should be higher with full assessment
+      const avgFull = fullResults.reduce((s, r) => s + r.confidence.score, 0) / fullResults.length
+      const avgEmpty = emptyResults.reduce((s, r) => s + r.confidence.score, 0) / emptyResults.length
+      expect(avgFull).toBeGreaterThan(avgEmpty)
+    })
+
+    it('should include evidence with requirements and cost', () => {
+      const context: ScoringContext = {
+        allPlatforms: mockPlatforms,
+        userAssessment: {
+          complianceRequirements: ['soc2'],
+        },
+        weightConfig: DEFAULT_WEIGHTS,
+      }
+
+      const results = scoreAllPlatforms(mockPlatforms, context)
+
+      for (const result of results) {
+        expect(result.evidence).toBeDefined()
+        expect(result.evidence.hardRequirementsTotal).toBeGreaterThanOrEqual(0)
+        expect(result.evidence.hardRequirementsMet).toBeLessThanOrEqual(result.evidence.hardRequirementsTotal)
+        expect(Array.isArray(result.evidence.deploymentOptions)).toBe(true)
+      }
     })
   })
 })
