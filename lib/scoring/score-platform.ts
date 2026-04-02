@@ -16,6 +16,10 @@ import type { Platform } from '.velite'
 import type { Criterion, PlatformScore, AuditEntry, ScoringContext } from './types'
 import { normalizeMinMax, CRITERION_DIRECTIONS } from './normalize'
 import { calculatePlatformCost } from '@/lib/cost/tco-calculator'
+import { evaluateGates } from './gates'
+import { calculateImplementationRisk } from './implementation-risk'
+import { calculateConfidence } from './confidence'
+import { buildEvidence } from './evidence'
 import {
   getAssessmentArray,
   getAssessmentString,
@@ -24,20 +28,6 @@ import {
   deriveUsageParameters,
   derivePlatformComplexity,
 } from '@/lib/assessment/recommendation-context'
-
-// Budget ceilings mapped from assessment ranges to annual dollar amounts
-const BUDGET_CEILINGS: Record<string, number | null> = {
-  'under-500': 6_000,
-  'under-1000': 12_000,
-  'under-2000': 24_000,
-  'under-5000': 60_000,
-  'under-10000': 120_000,
-  'under-10k': 10_000,
-  '10k-50k': 50_000,
-  '50k-200k': 200_000,
-  '200k-plus': null,
-  unlimited: null,
-}
 
 /**
  * Calculates the SAW (Simple Additive Weighting) score.
@@ -104,23 +94,32 @@ export function scorePlatform(
     criteriaScores.map((c) => ({ weight: c.weight, normalizedValue: c.normalizedValue })),
   )
 
-  // Budget disqualification penalty
-  const budgetRange = getAssessmentString(userAssessment, 'budgetRange')
-  if (budgetRange) {
-    const ceiling = BUDGET_CEILINGS[budgetRange]
-    if (ceiling != null && budgetFitRaw > 0) {
-      const overRatio = budgetFitRaw / ceiling
-      if (overRatio > 2) {
-        const penalty = Math.min(40, Math.floor(overRatio * 5))
-        totalScore = Math.max(0, totalScore - penalty)
-      }
-    }
+  // ── Layered analysis ────────────────────────────────────────────────
+
+  // Hard gates (pass/fail requirements)
+  const gateFailures = evaluateGates(platform, userAssessment, budgetFitRaw)
+  const passedAllGates = gateFailures.filter(g => g.severity === 'hard').length === 0
+
+  // Apply score penalty for hard gate failures (replaces old inline budget penalty)
+  if (!passedAllGates) {
+    const hardFailCount = gateFailures.filter(g => g.severity === 'hard').length
+    const penalty = Math.min(40, hardFailCount * 15)
+    totalScore = Math.max(0, totalScore - penalty)
   }
 
-  // Generate audit trail
+  // Implementation risk (uses evaluationContext)
+  const implementationRisk = calculateImplementationRisk(platform, userAssessment)
+
+  // Confidence (how much is evidence vs assumptions)
+  const confidence = calculateConfidence(platform, userAssessment)
+
+  // Evidence (structured facts for comparison matrix)
+  const evidence = buildEvidence(platform, userAssessment, gateFailures, budgetFitRaw)
+
+  // Audit trail
   const auditTrail = generateAuditTrail(criteriaScores, platform)
 
-  // Build recommendation summary
+  // Recommendation summary
   const summary = buildRecommendationSummary(platform, userAssessment, criteriaScores, totalScore, budgetFitRaw)
 
   return {
@@ -130,6 +129,11 @@ export function scorePlatform(
     criteriaScores,
     auditTrail,
     recommendationSummary: summary,
+    gateFailures,
+    passedAllGates,
+    implementationRisk,
+    confidence,
+    evidence,
   }
 }
 
@@ -197,6 +201,10 @@ function calculateComplianceMatch(
   const missingCount = required.length - matchCount
   score -= missingCount * 2
 
+  // Enterprise security bonuses when user has compliance requirements
+  if (platform.structuredCapabilities?.zeroDataRetention) score += 2
+  if (platform.structuredCapabilities?.bringYourOwnKey) score += 2
+
   return Math.max(0, score)
 }
 
@@ -259,6 +267,14 @@ function calculateFeatureMatch(
   // Bonus for multi-modal capability
   if (caps?.hasMultiModal) score += 1
 
+  // Multi-agent bonus for complex use cases
+  if (caps?.hasMultiAgent) {
+    const complexUseCases = ['workflow-automation', 'data-extraction']
+    if (useCases.some(uc => complexUseCases.includes(uc))) {
+      score += 2
+    }
+  }
+
   return score
 }
 
@@ -297,6 +313,12 @@ function calculateStackCompatibility(
     if (teamLevel === 'non-technical' || teamLevel === 'some-technical') {
       score += 3 // Extra bonus for low-code when team isn't technical
     }
+  }
+
+  // Deployment flexibility bonus: more options = more flexibility
+  const deployOpts = caps?.deploymentOptions ?? ['saas']
+  if (deployOpts.length > 1) {
+    score += deployOpts.length - 1 // +1 per option beyond SaaS
   }
 
   return score

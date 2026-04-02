@@ -36,6 +36,8 @@ export default tseslint.config(
       'react-hooks/set-state-in-effect': 'warn',
       // Incompatible library warnings are informational
       'react-hooks/incompatible-library': 'warn',
+      // React compiler memoization preservation is informational
+      'react-compiler/react-compiler': 'warn',
     },
   },
 

@@ -71,6 +71,47 @@ export interface RecommendationSummary {
   estimatedAnnualCost: number | null
 }
 
+export interface GateFailure {
+  gate: 'compliance' | 'budget-ceiling' | 'deployment' | 'self-hosting'
+  requirement: string
+  actual: string
+  severity: 'hard' | 'soft'
+}
+
+export interface RiskFactor {
+  name: string
+  value: string
+  impact: 'positive' | 'neutral' | 'negative'
+  explanation: string
+}
+
+export interface ImplementationRisk {
+  score: number        // 0-100 (higher = lower risk = better)
+  label: 'Low' | 'Medium' | 'High'
+  factors: RiskFactor[]
+}
+
+export interface Confidence {
+  score: number        // 0-100
+  label: 'High' | 'Medium' | 'Low'
+  evidenceBasis: string[]
+  assumptions: string[]
+}
+
+export interface Evidence {
+  annualCostEstimate: number | null
+  hardRequirementsMet: number
+  hardRequirementsTotal: number
+  certsMissing: string[]
+  integrationsMet: string[]
+  integrationsMissing: string[]
+  deploymentOptions: string[]
+  modelFlexibility: string
+  observability: string
+  vendorViability: string
+  ecosystemMaturity: string
+}
+
 export interface PlatformScore {
   platformId: string
   platformName: string
@@ -78,6 +119,11 @@ export interface PlatformScore {
   criteriaScores: Criterion[]
   auditTrail: AuditEntry[]
   recommendationSummary: RecommendationSummary
+  gateFailures: GateFailure[]
+  passedAllGates: boolean
+  implementationRisk: ImplementationRisk
+  confidence: Confidence
+  evidence: Evidence
 }
 
 /**

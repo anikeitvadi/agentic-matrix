@@ -4,7 +4,7 @@ import { useState, useMemo, useCallback } from 'react'
 import type { Platform } from '@/.velite'
 import type { UsageParameters, CostEstimate } from '@/lib/cost/types'
 import { calculatePlatformCost } from '@/lib/cost/tco-calculator'
-import { deriveUsageParameters } from '@/lib/assessment/recommendation-context'
+import { deriveUsageParameters, derivePlatformComplexity } from '@/lib/assessment/recommendation-context'
 import { UsageInputPanel } from './UsageInputPanel'
 import { CostComparisonChart } from './CostComparisonChart'
 import { TCOProjectionChart } from './TCOProjectionChart'
@@ -68,12 +68,8 @@ export function CostCalculator({ platforms, topPlatformIds = [], assessment }: C
     return platformsWithPricing
       .map((platform) => {
         try {
-          // Build complexity parameters (simplified for now)
-          const complexity = {
-            hasNativeIntegration: true, // Could be derived from assessment
-            requiresCustomCode: false, // Could be derived from platform tier
-            complianceRequirements: [], // Could be derived from assessment
-          }
+          // Derive complexity from assessment context (or use safe defaults)
+          const complexity = derivePlatformComplexity(platform, assessment ?? {})
 
           return calculatePlatformCost(
             platform as any, // Type assertion - Platform type matches PlatformForCost
