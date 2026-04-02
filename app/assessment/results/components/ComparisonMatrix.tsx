@@ -38,19 +38,28 @@ export function ComparisonMatrix({ scores, platforms, filters }: ComparisonMatri
     { id: 'totalScore', desc: true },
   ])
 
-  // Define table columns
+  // Define evidence-first columns
   const columns = useMemo(
     () => [
       columnHelper.accessor('platformName', {
         header: 'Platform',
-        cell: (info) => (
-          <Link
-            href={`/platforms/${info.row.original.platformId}`}
-            className="font-medium hover:text-brand-400 transition-colors"
-          >
-            {info.getValue()}
-          </Link>
-        ),
+        cell: (info) => {
+          const row = info.row.original
+          const hasHardFail = row.gateFailures?.some(g => g.severity === 'hard')
+          return (
+            <div>
+              <Link
+                href={`/platforms/${row.platformId}`}
+                className="font-medium hover:text-brand-400 transition-colors"
+              >
+                {info.getValue()}
+              </Link>
+              {hasHardFail && (
+                <span className="ml-2 text-[10px] text-red-400 font-medium uppercase">Req gap</span>
+              )}
+            </div>
+          )
+        },
       }),
       columnHelper.accessor('totalScore', {
         header: 'Score',
@@ -59,48 +68,70 @@ export function ComparisonMatrix({ scores, platforms, filters }: ComparisonMatri
         ),
       }),
       columnHelper.accessor(
-        (row) =>
-          row.criteriaScores.find((c) => c.name === 'integrationFit')?.normalizedValue ?? 0,
+        (row) => row.evidence?.annualCostEstimate ?? 0,
         {
-          id: 'integrationFit',
-          header: 'Integration',
-          cell: (info) => formatPercent(info.getValue()),
+          id: 'annualCost',
+          header: 'Est. Annual',
+          cell: (info) => {
+            const val = info.getValue()
+            if (!val) return <span className="text-neutral-500">—</span>
+            return <span className="font-mono text-sm">${val >= 1000 ? `${(val/1000).toFixed(0)}k` : val.toFixed(0)}</span>
+          },
         }
       ),
       columnHelper.accessor(
-        (row) =>
-          row.criteriaScores.find((c) => c.name === 'complianceMatch')?.normalizedValue ?? 0,
+        (row) => {
+          const e = row.evidence
+          if (!e || e.hardRequirementsTotal === 0) return 1
+          return e.hardRequirementsMet / e.hardRequirementsTotal
+        },
         {
-          id: 'complianceMatch',
-          header: 'Compliance',
-          cell: (info) => formatPercent(info.getValue()),
+          id: 'requirements',
+          header: 'Requirements',
+          cell: (info) => {
+            const row = info.row.original
+            const e = row.evidence
+            if (!e || e.hardRequirementsTotal === 0) return <span className="text-neutral-500">—</span>
+            const allMet = e.hardRequirementsMet === e.hardRequirementsTotal
+            return (
+              <span className={allMet ? 'text-emerald-400' : 'text-red-400'}>
+                {e.hardRequirementsMet}/{e.hardRequirementsTotal}
+              </span>
+            )
+          },
         }
       ),
       columnHelper.accessor(
-        (row) =>
-          row.criteriaScores.find((c) => c.name === 'budgetFit')?.normalizedValue ?? 0,
+        (row) => row.implementationRisk?.score ?? 50,
         {
-          id: 'budgetFit',
-          header: 'Budget Fit',
-          cell: (info) => formatPercent(info.getValue()),
+          id: 'risk',
+          header: 'Risk',
+          cell: (info) => {
+            const risk = info.row.original.implementationRisk
+            if (!risk) return <span className="text-neutral-500">—</span>
+            const color = risk.label === 'Low' ? 'text-emerald-400' : risk.label === 'Medium' ? 'text-amber-400' : 'text-red-400'
+            return <span className={`text-sm font-medium ${color}`}>{risk.label}</span>
+          },
         }
       ),
       columnHelper.accessor(
-        (row) =>
-          row.criteriaScores.find((c) => c.name === 'featureMatch')?.normalizedValue ?? 0,
+        (row) => row.evidence?.vendorViability ?? '',
         {
-          id: 'featureMatch',
-          header: 'Features',
-          cell: (info) => formatPercent(info.getValue()),
+          id: 'vendor',
+          header: 'Vendor',
+          cell: (info) => (
+            <span className="text-sm capitalize">{info.getValue() || '—'}</span>
+          ),
         }
       ),
       columnHelper.accessor(
-        (row) =>
-          row.criteriaScores.find((c) => c.name === 'stackCompatibility')?.normalizedValue ?? 0,
+        (row) => row.evidence?.deploymentOptions?.join(', ') ?? '',
         {
-          id: 'stackCompatibility',
-          header: 'Stack Fit',
-          cell: (info) => formatPercent(info.getValue()),
+          id: 'deployment',
+          header: 'Deploy',
+          cell: (info) => (
+            <span className="text-xs text-neutral-400">{info.getValue() || 'SaaS'}</span>
+          ),
         }
       ),
     ],
