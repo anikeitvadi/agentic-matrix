@@ -43,18 +43,23 @@ export function AIDecisionBrief({ assessment, scores }: AIDecisionBriefProps) {
 
   const handleGenerate = () => {
     startTransition(async () => {
-      const result = await generateRecommendationBrief({
-        assessment: assessment ?? {},
-        topRecommendations,
-      })
+      try {
+        const result = await generateRecommendationBrief({
+          assessment: assessment ?? {},
+          topRecommendations,
+        })
 
-      if ('error' in result) {
-        setError(result.error)
-        return
+        if ('error' in result) {
+          setError(result.error)
+          return
+        }
+
+        setBrief(result.brief)
+        setError(null)
+      } catch (err) {
+        console.error('AI brief generation failed:', err)
+        setError('Failed to generate brief. Check your OpenAI API key and try again.')
       }
-
-      setBrief(result.brief)
-      setError(null)
     })
   }
 
