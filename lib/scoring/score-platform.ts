@@ -171,15 +171,26 @@ function calculateIntegrationFit(
   const supported = platform.structuredCapabilities?.supportedIntegrations ?? []
 
   if (needed.length === 0) {
-    // No specific integrations needed — give a small breadth bonus
-    // but don't let it dominate (cap at 3 so API platforms aren't crushed)
+    // No specific integrations needed — cap breadth bonus
+    // Developer-first frameworks get a baseline since they connect via code
+    if (supported.length === 0 && platform.tier === 'developer-first') {
+      return 2 // Frameworks can integrate with anything via API/SDK
+    }
     return Math.min(3, supported.length)
   }
 
   const supportedLower = supported.map((s) => s.toLowerCase())
-  return needed.filter((n) =>
+  let matchCount = needed.filter((n) =>
     supportedLower.some((s) => s.includes(n.toLowerCase()) || n.toLowerCase().includes(s)),
   ).length
+
+  // Developer-first frameworks with 0 listed integrations can connect to
+  // most services via code — give partial credit instead of 0
+  if (matchCount === 0 && supported.length === 0 && platform.tier === 'developer-first') {
+    matchCount = Math.ceil(needed.length * 0.5) // 50% credit — can build but not native
+  }
+
+  return matchCount
 }
 
 /**
