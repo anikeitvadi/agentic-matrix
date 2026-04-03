@@ -37,29 +37,15 @@ Data extraction agents transform unstructured documents into structured, validat
 ## Architecture
 
 <Mermaid chart={`
-sequenceDiagram
-    participant User
-    participant Agent
-    participant Parser as Document Parser
-    participant Validator
-    participant Review as Human Review
-    participant DB as Database
-
-    User->>Agent: Upload document
-    Agent->>Parser: Extract raw text/fields
-    Parser-->>Agent: Raw data + confidence
-    Agent->>Validator: Validate against schema
-    alt Validation passes & high confidence
-        Validator-->>Agent: Valid data
-        Agent->>DB: Store extracted data
-        Agent-->>User: Confirmation + preview
-    else Low confidence or validation fails
-        Validator-->>Agent: Needs review
-        Agent->>Review: Queue for human review
-        Review-->>Agent: Corrected data
-        Agent->>DB: Store with corrections
-        Agent-->>User: Confirmation after review
-    end
+flowchart TD
+    A[Upload Document] --> B[Extract Fields]
+    B --> C{Confidence Check}
+    C -->|High confidence| D[Validate Schema]
+    C -->|Low confidence| E[Human Review]
+    D -->|Pass| F[Store Data]
+    D -->|Fail| E
+    E --> F
+    F --> G[Return Results]
 `} />
 
 **Key patterns:**
