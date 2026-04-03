@@ -12,6 +12,8 @@ import type { DecisionAdjustment, GateFailure, ImplementationRisk, Confidence } 
 
 interface DecisionScoreInput {
   fitScore: number
+  passedAllGates: boolean
+  hardGateCount: number
   implementationRisk: ImplementationRisk
   confidence: Confidence
   gateFailures: GateFailure[]
@@ -53,6 +55,16 @@ function getHeuristicPenalty(heuristicFlags: string[]): number {
 export function calculateDecisionScore(input: DecisionScoreInput): DecisionScoreResult {
   const adjustments: DecisionAdjustment[] = []
 
+  // Hard gate penalty (logged so the full fitScore→decisionScore gap is explainable)
+  if (!input.passedAllGates) {
+    const hardGatePenalty = Math.min(40, input.hardGateCount * 15)
+    adjustments.push({
+      factor: 'Hard gate failures',
+      penalty: hardGatePenalty,
+      reasoning: `${input.hardGateCount} hard requirement${input.hardGateCount > 1 ? 's' : ''} not met: -${hardGatePenalty}`,
+    })
+  }
+
   const riskPenalty = getRiskPenalty(input.implementationRisk)
   if (riskPenalty > 0) {
     adjustments.push({
@@ -90,7 +102,8 @@ export function calculateDecisionScore(input: DecisionScoreInput): DecisionScore
     })
   }
 
-  const totalPenalty = riskPenalty + confidencePenalty + softGatePenalty + heuristicPenalty
+  const hardGatePenalty = !input.passedAllGates ? Math.min(40, input.hardGateCount * 15) : 0
+  const totalPenalty = hardGatePenalty + riskPenalty + confidencePenalty + softGatePenalty + heuristicPenalty
   const decisionScore = Math.max(0, Math.min(100, input.fitScore - totalPenalty))
 
   return { decisionScore, adjustments }

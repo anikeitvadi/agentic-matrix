@@ -53,10 +53,11 @@ export function buildDecisionMemo(scores: PlatformScore[]): DecisionMemo | null 
 
   const closestChallenger = scores[1]
   const winnerReasons = buildWinnerReasons(winner)
+  const scoreGap = closestChallenger ? winner.decisionScore - closestChallenger.decisionScore : 0
   const lead =
     closestChallenger
-      ? `${winner.platformName} is the strongest current recommendation because it produces the best overall weighted fit against your stated priorities, finishing ${winner.totalScore - closestChallenger.totalScore} points ahead of ${closestChallenger.platformName}.`
-      : `${winner.platformName} is the strongest current recommendation based on the weighted fit model for your assessment.`
+      ? `${winner.platformName} is the current recommendation after combining fit scoring, implementation risk, evidence quality, and requirement coverage — finishing ${scoreGap} points ahead of ${closestChallenger.platformName}.`
+      : `${winner.platformName} is the current recommendation after combining fit scoring, implementation risk, evidence quality, and requirement coverage.`
 
   return {
     winner: {
@@ -125,7 +126,7 @@ function buildAlternativeMemo(
     )
   } else {
     reasonParts.push(
-      `${winner.platformName} remains the more balanced choice for the current weighting.`
+      `${winner.platformName} remains the stronger choice after accounting for fit, risk, and evidence quality.`
     )
   }
 

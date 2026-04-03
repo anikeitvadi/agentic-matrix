@@ -305,7 +305,7 @@ export function derivePlatformComplexityWithFlags(
   }
 
   const requiresCustomCode = platform.tier === 'developer-first' || (!lowCodeFriendly && teamTechnicalLevel === 'non-technical')
-  if (requiresCustomCode && !platform.structuredCapabilities?.hasLowCode === undefined) {
+  if (requiresCustomCode && platform.structuredCapabilities?.hasLowCode === undefined) {
     heuristicFlags.push('Custom code burden inferred from tier')
   }
 

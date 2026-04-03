@@ -95,19 +95,14 @@ export function scorePlatform(
   const gateFailures = evaluateGates(platform, userAssessment, budgetFitRaw)
   const passedAllGates = gateFailures.filter(g => g.severity === 'hard').length === 0
 
-  // Penalize fitScore for hard gate failures
-  let adjustedFitScore = fitScore
-  if (!passedAllGates) {
-    const hardFailCount = gateFailures.filter(g => g.severity === 'hard').length
-    adjustedFitScore = Math.max(0, fitScore - Math.min(40, hardFailCount * 15))
-  }
-
   const implementationRisk = calculateImplementationRisk(platform, userAssessment)
   const confidence = calculateConfidence(platform, userAssessment)
 
-  // Decision score = fitScore - penalties for risk, confidence, soft gates, heuristics
+  // Decision score = fitScore - ALL penalties (including hard gates)
   const { decisionScore, adjustments: decisionAdjustments } = calculateDecisionScore({
-    fitScore: adjustedFitScore,
+    fitScore,
+    passedAllGates,
+    hardGateCount: gateFailures.filter(g => g.severity === 'hard').length,
     implementationRisk,
     confidence,
     gateFailures,
@@ -124,6 +119,7 @@ export function scorePlatform(
     fitScore,
     decisionScore,
     passedAllGates,
+    gateFailures,
     implementationRisk,
     confidence,
     criteriaScores,
