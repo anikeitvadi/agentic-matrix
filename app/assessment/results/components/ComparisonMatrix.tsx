@@ -144,23 +144,14 @@ export function ComparisonMatrix({ scores, platforms, filters }: ComparisonMatri
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-        <div>
-          <p className="paper-eyebrow">Comparison workbench</p>
-          <h2 className="mt-3 font-heading text-3xl text-white">Pressure-test the shortlist.</h2>
-          <p className="mt-2 max-w-3xl text-sm leading-6 text-neutral-400">
-            Sort the leading options by evidence, cost, risk, and requirement coverage. This is
-            for shortlisting and tradeoff review, not for replacing the top-line recommendation.
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <StatusPill>{filteredData.length} shown</StatusPill>
-          <StatusPill>{scores.length} total platforms</StatusPill>
-          <StatusPill>Req gap = misses a hard gate</StatusPill>
-        </div>
+      <div className="flex items-center justify-between gap-4">
+        <h3 className="font-heading text-lg font-bold text-white">
+          All platforms ({filteredData.length}/{scores.length})
+        </h3>
+        <span className="text-xs text-neutral-500">Sortable by any column</span>
       </div>
 
-      <div className="overflow-hidden rounded-[1.75rem] border border-neutral-800/70 bg-neutral-950/50">
+      <div className="overflow-hidden rounded-xl border border-neutral-800/60 bg-neutral-950/50">
         <div className="overflow-x-auto">
         <table className="w-full border-collapse">
           <thead className="bg-neutral-950/95">

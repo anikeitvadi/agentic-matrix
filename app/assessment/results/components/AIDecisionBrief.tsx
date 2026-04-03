@@ -59,25 +59,21 @@ export function AIDecisionBrief({ assessment, scores }: AIDecisionBriefProps) {
   }
 
   return (
-    <section className="rounded-2xl border border-neutral-800/60 bg-neutral-900/30 p-6">
-      <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-        <div className="max-w-2xl">
-          <h2 className="text-2xl font-semibold text-white">AI Decision Brief</h2>
-          <p className="mt-2 text-sm leading-6 text-neutral-400">
-            Optional AI synthesis of the deterministic ranking. This does not change the score or the matrix. It explains the current recommendation in a stakeholder-ready format.
-          </p>
-          <p className="mt-2 text-sm leading-6 text-neutral-500">
-            Generating this brief sends your selected assessment answers and top recommendation data to OpenAI. Avoid using it for sensitive or confidential information.
+    <div className="rounded-xl border border-neutral-800/60 bg-neutral-900/30 p-5">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h3 className="font-heading text-base font-bold text-white">AI Brief</h3>
+          <p className="mt-1 text-sm text-neutral-500">
+            Optional AI explanation of the ranking. Sends selected data to OpenAI.
           </p>
         </div>
         <button
           type="button"
           onClick={handleGenerate}
           disabled={isPending}
-          className="inline-flex items-center justify-center rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-500 disabled:cursor-not-allowed disabled:opacity-60"
+          className="shrink-0 rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-brand-500 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
         >
-          {!brief && !isPending && <span className="w-2 h-2 rounded-full bg-brand-400 animate-pulse mr-2" />}
-          {isPending ? 'Generating brief...' : brief ? 'Regenerate Brief' : 'Generate Brief'}
+          {isPending ? 'Generating...' : brief ? 'Regenerate' : 'Generate'}
         </button>
       </div>
 
@@ -123,7 +119,7 @@ export function AIDecisionBrief({ assessment, scores }: AIDecisionBriefProps) {
           </div>
         </div>
       )}
-    </section>
+    </div>
   )
 }
 
