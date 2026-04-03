@@ -13,18 +13,18 @@ capabilities:
   - SOC2 compliance
   - Audit-log support
 structuredCapabilities:
-  hasRAG: false
+  hasRAG: true
   hasMultiModal: true
   hasLowCode: false
   hasSelfHosted: false
-  hasMultiAgent: false
+  hasMultiAgent: true
   cloudNative: []
-  complianceCerts: [soc2]
-  supportedIntegrations: [slack, github]
-  useCaseStrengths: [customer-support, data-extraction, knowledge-qa]
+  complianceCerts: [soc2, gdpr]
+  supportedIntegrations: [slack, github, jira, salesforce]
+  useCaseStrengths: [customer-support, data-extraction, knowledge-qa, workflow-automation]
   zeroDataRetention: true
   bringYourOwnKey: false
-  deploymentOptions: [saas]
+  deploymentOptions: [saas, vpc]
 evaluationContext:
   modelFlexibility: single-provider
   ecosystemMaturity: established
