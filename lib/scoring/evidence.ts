@@ -14,6 +14,8 @@ export function buildEvidence(
   assessment: Record<string, unknown>,
   gateFailures: GateFailure[],
   estimatedAnnualCost: number,
+  heuristicFlags: string[] = [],
+  usedPricingProxy: boolean = false,
 ): Evidence {
   const caps = platform.structuredCapabilities
   const ctx = platform.evaluationContext
@@ -59,5 +61,8 @@ export function buildEvidence(
     observability: ctx?.observability ?? 'unknown',
     vendorViability: ctx?.vendorViability ?? 'unknown',
     ecosystemMaturity: ctx?.ecosystemMaturity ?? 'unknown',
+    heuristicFlags,
+    costConfidence: usedPricingProxy ? 'Low' : heuristicFlags.length > 1 ? 'Medium' : 'High',
+    assumptionLevel: heuristicFlags.length === 0 ? 'Low' : heuristicFlags.length <= 2 ? 'Medium' : 'High',
   }
 }

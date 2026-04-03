@@ -276,3 +276,41 @@ export function derivePlatformComplexity(
     complianceRequirements: requiredCompliance,
   }
 }
+
+/**
+ * Like derivePlatformComplexity but also returns heuristic flags
+ * explaining which values were inferred rather than explicitly known.
+ */
+export function derivePlatformComplexityWithFlags(
+  platform: Platform,
+  assessment: AssessmentRecord
+): { complexity: Omit<PlatformComplexity, 'tier'>; heuristicFlags: string[] } {
+  const capabilitiesText = platformCapabilitiesText(platform)
+  const currentStack = getAssessmentArray(assessment, 'currentStack', 'techStack')
+  const requiredCompliance = getAssessmentArray(assessment, 'complianceRequirements').filter(v => v !== 'none')
+  const teamTechnicalLevel = getAssessmentString(assessment, 'teamTechnicalLevel')
+  const heuristicFlags: string[] = []
+
+  const stackKeywords = currentStack.flatMap((stack) => STACK_KEYWORD_MAP[stack] ?? [stack])
+  const lowCodeFriendly = hasKeywordMatch(capabilitiesText, LOW_CODE_HINTS)
+  const stackAligned = stackKeywords.length === 0 || hasKeywordMatch(capabilitiesText, stackKeywords)
+
+  // Detect heuristic inferences
+  const hasNativeIntegration = platform.tier === 'ipaas-agent' || stackAligned || platform.tier === 'vertical'
+  if (hasNativeIntegration && !platform.structuredCapabilities?.supportedIntegrations?.length) {
+    heuristicFlags.push('Native integration inferred from platform tier')
+  }
+  if (stackAligned && stackKeywords.length > 0 && !platform.structuredCapabilities?.cloudNative?.length) {
+    heuristicFlags.push('Stack compatibility inferred from keyword matching')
+  }
+
+  const requiresCustomCode = platform.tier === 'developer-first' || (!lowCodeFriendly && teamTechnicalLevel === 'non-technical')
+  if (requiresCustomCode && !platform.structuredCapabilities?.hasLowCode === undefined) {
+    heuristicFlags.push('Custom code burden inferred from tier')
+  }
+
+  return {
+    complexity: { hasNativeIntegration, requiresCustomCode, complianceRequirements: requiredCompliance },
+    heuristicFlags,
+  }
+}

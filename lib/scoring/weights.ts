@@ -43,6 +43,8 @@ interface AssessmentInput {
   currentStack?: string[]
   teamTechnicalLevel?: string
   organizationSize?: string
+  timeline?: string
+  expectedMonthlyConversations?: string
 }
 
 /**
@@ -121,6 +123,28 @@ export function deriveWeights(assessment: AssessmentInput): WeightConfig {
   if (assessment.organizationSize === '1000+' || assessment.organizationSize === '201-1000') {
     weights.complianceMatch += 0.03
     weights.budgetFit += 0.03
+  }
+
+  // Timeline: short timelines favor deployability, long timelines favor features
+  const timeline = assessment.timeline as string | undefined
+  if (timeline === 'asap') {
+    weights.stackCompatibility += 0.06
+    weights.featureMatch -= 0.02
+  } else if (timeline === '1-3-months') {
+    weights.stackCompatibility += 0.04
+  } else if (timeline === '6-12-months') {
+    weights.featureMatch += 0.03
+  }
+
+  // Usage volume: large scale increases cost sensitivity and governance importance
+  const volume = assessment.expectedMonthlyConversations as string | undefined
+  if (volume === '1k-10k') {
+    weights.budgetFit += 0.02
+  } else if (volume === '10k-100k') {
+    weights.budgetFit += 0.05
+  } else if (volume === '100k-plus') {
+    weights.budgetFit += 0.08
+    weights.complianceMatch += 0.02
   }
 
   // Apply MAX_WEIGHT cap

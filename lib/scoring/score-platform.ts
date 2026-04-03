@@ -19,6 +19,8 @@ import { calculatePlatformCost } from '@/lib/cost/tco-calculator'
 import { evaluateGates } from './gates'
 import { calculateImplementationRisk } from './implementation-risk'
 import { calculateConfidence } from './confidence'
+import { calculateDecisionScore } from './decision-score'
+import { classifyRecommendation } from './summary-classifier'
 import { buildEvidence } from './evidence'
 import {
   getAssessmentArray,
@@ -26,7 +28,7 @@ import {
   getTeamTierFitScore,
   getTimelineTierFitScore,
   deriveUsageParameters,
-  derivePlatformComplexity,
+  derivePlatformComplexityWithFlags,
 } from '@/lib/assessment/recommendation-context'
 
 /**
@@ -55,18 +57,20 @@ export function scorePlatform(
 ): PlatformScore {
   const { allPlatforms, userAssessment, weightConfig } = context
 
-  // Calculate raw values for each criterion
+  // ── Layer 1: SAW fit scoring ─────────────────────────────────────────
+
   const integrationFitRaw = calculateIntegrationFit(platform, userAssessment)
   const complianceMatchRaw = calculateComplianceMatch(platform, userAssessment)
-  const budgetFitRaw = calculateBudgetFit(platform, userAssessment, allPlatforms)
+  const { annualCost: budgetFitRaw, heuristicFlags, usedPricingProxy } =
+    calculateBudgetFitWithMetadata(platform, userAssessment)
   const featureMatchRaw = calculateFeatureMatch(platform, userAssessment)
   const stackCompatibilityRaw = calculateStackCompatibility(platform, userAssessment)
 
-  // Get min/max for normalization across all platforms
+  // Normalization across all platforms
   const allRaw = allPlatforms.map((p) => ({
     integration: calculateIntegrationFit(p, userAssessment),
     compliance: calculateComplianceMatch(p, userAssessment),
-    budget: calculateBudgetFit(p, userAssessment, allPlatforms),
+    budget: calculateBudgetFitWithMetadata(p, userAssessment).annualCost,
     feature: calculateFeatureMatch(p, userAssessment),
     stack: calculateStackCompatibility(p, userAssessment),
   }))
@@ -74,58 +78,70 @@ export function scorePlatform(
   const norm = (raw: number, allVals: number[], direction: boolean) =>
     normalizeMinMax(raw, Math.min(...allVals), Math.max(...allVals), direction)
 
-  const integrationFitNorm = norm(integrationFitRaw, allRaw.map((r) => r.integration), CRITERION_DIRECTIONS.integrationFit)
-  const complianceMatchNorm = norm(complianceMatchRaw, allRaw.map((r) => r.compliance), CRITERION_DIRECTIONS.complianceMatch)
-  const budgetFitNorm = norm(budgetFitRaw, allRaw.map((r) => r.budget), CRITERION_DIRECTIONS.budgetFit)
-  const featureMatchNorm = norm(featureMatchRaw, allRaw.map((r) => r.feature), CRITERION_DIRECTIONS.featureMatch)
-  const stackCompatibilityNorm = norm(stackCompatibilityRaw, allRaw.map((r) => r.stack), CRITERION_DIRECTIONS.stackCompatibility)
-
-  // Build criteria array
   const criteriaScores: Criterion[] = [
-    { name: 'integrationFit', weight: weightConfig.integrationFit, value: integrationFitRaw, normalizedValue: integrationFitNorm, higherIsBetter: CRITERION_DIRECTIONS.integrationFit },
-    { name: 'complianceMatch', weight: weightConfig.complianceMatch, value: complianceMatchRaw, normalizedValue: complianceMatchNorm, higherIsBetter: CRITERION_DIRECTIONS.complianceMatch },
-    { name: 'budgetFit', weight: weightConfig.budgetFit, value: budgetFitRaw, normalizedValue: budgetFitNorm, higherIsBetter: CRITERION_DIRECTIONS.budgetFit },
-    { name: 'featureMatch', weight: weightConfig.featureMatch, value: featureMatchRaw, normalizedValue: featureMatchNorm, higherIsBetter: CRITERION_DIRECTIONS.featureMatch },
-    { name: 'stackCompatibility', weight: weightConfig.stackCompatibility, value: stackCompatibilityRaw, normalizedValue: stackCompatibilityNorm, higherIsBetter: CRITERION_DIRECTIONS.stackCompatibility },
+    { name: 'integrationFit', weight: weightConfig.integrationFit, value: integrationFitRaw, normalizedValue: norm(integrationFitRaw, allRaw.map(r => r.integration), CRITERION_DIRECTIONS.integrationFit), higherIsBetter: CRITERION_DIRECTIONS.integrationFit },
+    { name: 'complianceMatch', weight: weightConfig.complianceMatch, value: complianceMatchRaw, normalizedValue: norm(complianceMatchRaw, allRaw.map(r => r.compliance), CRITERION_DIRECTIONS.complianceMatch), higherIsBetter: CRITERION_DIRECTIONS.complianceMatch },
+    { name: 'budgetFit', weight: weightConfig.budgetFit, value: budgetFitRaw, normalizedValue: norm(budgetFitRaw, allRaw.map(r => r.budget), CRITERION_DIRECTIONS.budgetFit), higherIsBetter: CRITERION_DIRECTIONS.budgetFit },
+    { name: 'featureMatch', weight: weightConfig.featureMatch, value: featureMatchRaw, normalizedValue: norm(featureMatchRaw, allRaw.map(r => r.feature), CRITERION_DIRECTIONS.featureMatch), higherIsBetter: CRITERION_DIRECTIONS.featureMatch },
+    { name: 'stackCompatibility', weight: weightConfig.stackCompatibility, value: stackCompatibilityRaw, normalizedValue: norm(stackCompatibilityRaw, allRaw.map(r => r.stack), CRITERION_DIRECTIONS.stackCompatibility), higherIsBetter: CRITERION_DIRECTIONS.stackCompatibility },
   ]
 
-  // Calculate total score
-  let totalScore = calculateSAW(
+  const fitScore = calculateSAW(
     criteriaScores.map((c) => ({ weight: c.weight, normalizedValue: c.normalizedValue })),
   )
 
-  // ── Layered analysis ────────────────────────────────────────────────
+  // ── Layer 2: Gates, risk, confidence, decision score ───────────────
 
-  // Hard gates (pass/fail requirements)
   const gateFailures = evaluateGates(platform, userAssessment, budgetFitRaw)
   const passedAllGates = gateFailures.filter(g => g.severity === 'hard').length === 0
 
-  // Apply score penalty for hard gate failures (replaces old inline budget penalty)
+  // Penalize fitScore for hard gate failures
+  let adjustedFitScore = fitScore
   if (!passedAllGates) {
     const hardFailCount = gateFailures.filter(g => g.severity === 'hard').length
-    const penalty = Math.min(40, hardFailCount * 15)
-    totalScore = Math.max(0, totalScore - penalty)
+    adjustedFitScore = Math.max(0, fitScore - Math.min(40, hardFailCount * 15))
   }
 
-  // Implementation risk (uses evaluationContext)
   const implementationRisk = calculateImplementationRisk(platform, userAssessment)
-
-  // Confidence (how much is evidence vs assumptions)
   const confidence = calculateConfidence(platform, userAssessment)
 
-  // Evidence (structured facts for comparison matrix)
-  const evidence = buildEvidence(platform, userAssessment, gateFailures, budgetFitRaw)
+  // Decision score = fitScore - penalties for risk, confidence, soft gates, heuristics
+  const { decisionScore, adjustments: decisionAdjustments } = calculateDecisionScore({
+    fitScore: adjustedFitScore,
+    implementationRisk,
+    confidence,
+    gateFailures,
+    heuristicFlags,
+  })
 
-  // Audit trail
+  // ── Evidence & summary ─────────────────────────────────────────────
+
+  const evidence = buildEvidence(platform, userAssessment, gateFailures, budgetFitRaw, heuristicFlags, usedPricingProxy)
   const auditTrail = generateAuditTrail(criteriaScores, platform)
 
-  // Recommendation summary
-  const summary = buildRecommendationSummary(platform, userAssessment, criteriaScores, totalScore, budgetFitRaw)
+  // Classify recommendation into thesis
+  const classification = classifyRecommendation({
+    fitScore,
+    decisionScore,
+    passedAllGates,
+    implementationRisk,
+    confidence,
+    criteriaScores,
+  })
+
+  // Build summary with thesis-based rationale
+  const summary = buildRecommendationSummary(
+    platform, userAssessment, criteriaScores, decisionScore, budgetFitRaw,
+    classification, fitScore, decisionScore, evidence,
+  )
 
   return {
     platformId: platform.slug,
     platformName: platform.title,
-    totalScore,
+    totalScore: decisionScore, // backward compatible
+    fitScore,
+    decisionScore,
+    decisionAdjustments,
     criteriaScores,
     auditTrail,
     recommendationSummary: summary,
@@ -147,13 +163,12 @@ export function scoreAllPlatforms(
   if (platforms.length === 0) return []
   const scores = platforms.map((p) => scorePlatform(p, context))
 
-  // Sort: platforms passing all hard gates rank above those that don't,
-  // then by totalScore descending within each group
+  // Ranking: gates first, then decisionScore, then fitScore, then confidence
   return scores.sort((a, b) => {
-    if (a.passedAllGates !== b.passedAllGates) {
-      return a.passedAllGates ? -1 : 1
-    }
-    return b.totalScore - a.totalScore
+    if (a.passedAllGates !== b.passedAllGates) return a.passedAllGates ? -1 : 1
+    if (a.decisionScore !== b.decisionScore) return b.decisionScore - a.decisionScore
+    if (a.fitScore !== b.fitScore) return b.fitScore - a.fitScore
+    return b.confidence.score - a.confidence.score
   })
 }
 
@@ -234,31 +249,33 @@ function calculateComplianceMatch(
  * Budget fit: real estimated annual cost from the TCO calculator.
  * Lower is better (handled by inverted normalization in CRITERION_DIRECTIONS).
  */
-function calculateBudgetFit(
+function calculateBudgetFitWithMetadata(
   platform: Platform,
   assessment: Record<string, unknown>,
-  _allPlatforms: Platform[],
-): number {
+): { annualCost: number; heuristicFlags: string[]; usedPricingProxy: boolean } {
   const usage = deriveUsageParameters(assessment)
+  const { complexity, heuristicFlags } = derivePlatformComplexityWithFlags(platform, assessment)
 
   try {
-    const complexity = derivePlatformComplexity(platform, assessment)
     const costEstimate = calculatePlatformCost(platform, {
       monthlyConversations: usage.monthlyConversations,
       monthlyInputTokens: usage.monthlyInputTokens,
       monthlyOutputTokens: usage.monthlyOutputTokens,
       complexity,
     })
-    return costEstimate.yearlyTotal ?? 0
+    return { annualCost: costEstimate.yearlyTotal ?? 0, heuristicFlags, usedPricingProxy: false }
   } catch {
-    // Fallback: rough tier estimate if calculator fails
     const tierCosts: Record<string, number> = {
       'enterprise-os': 50_000,
       'ipaas-agent': 5_000,
       'developer-first': 1_000,
       vertical: 15_000,
     }
-    return tierCosts[platform.tier] ?? 10_000
+    return {
+      annualCost: tierCosts[platform.tier] ?? 10_000,
+      heuristicFlags: [...heuristicFlags, 'Pricing proxy fallback used'],
+      usedPricingProxy: true,
+    }
   }
 }
 
@@ -385,8 +402,12 @@ function buildRecommendationSummary(
   platform: Platform,
   assessment: Record<string, unknown>,
   criteria: Criterion[],
-  totalScore: number,
+  _totalScore: number,
   estimatedAnnualCost: number,
+  classification: { decisionThesis: import('./types').DecisionThesis; headline: string },
+  fitScore: number,
+  decisionScore: number,
+  evidence: import('./types').Evidence,
 ) {
   const caps = platform.structuredCapabilities
   const required = getAssessmentArray(assessment, 'complianceRequirements').filter((v) => v !== 'none')
@@ -395,70 +416,53 @@ function buildRecommendationSummary(
   const neededIntegrations = getAssessmentArray(assessment, 'integrationNeeds')
   const supported = caps?.supportedIntegrations ?? []
   const supportedLower = supported.map((s) => s.toLowerCase())
+  const teamLevel = getAssessmentString(assessment, 'teamTechnicalLevel')
 
-  // Count matched signals
-  const signals: string[] = []
-  const caveats: string[] = []
-
-  // Compliance signals
+  // Strengths
+  const strengths: string[] = []
   const complianceMatches = required.filter((r) => certsLower.includes(r.toLowerCase()))
-  complianceMatches.forEach((c) => signals.push(`${c.toUpperCase()}`))
-  const complianceMisses = required.filter((r) => !certsLower.includes(r.toLowerCase()))
-  complianceMisses.forEach((c) => caveats.push(`Missing ${c.toUpperCase()}`))
-
-  // Integration signals
+  complianceMatches.forEach((c) => strengths.push(c.toUpperCase()))
   const integrationMatches = neededIntegrations.filter((n) =>
     supportedLower.some((s) => s.includes(n.toLowerCase())),
   )
-  if (integrationMatches.length > 0) signals.push('Integration aligned')
+  if (integrationMatches.length > 0) strengths.push('Integration aligned')
+  const budgetCriterion = criteria.find((c) => c.name === 'budgetFit')
+  if (budgetCriterion && budgetCriterion.normalizedValue > 0.6) strengths.push('Within budget')
+  const stackCriterion = criteria.find((c) => c.name === 'stackCompatibility')
+  if (stackCriterion && stackCriterion.normalizedValue > 0.6) strengths.push('Stack aligned')
+
+  // Caveats
+  const caveats: string[] = []
+  const complianceMisses = required.filter((r) => !certsLower.includes(r.toLowerCase()))
+  complianceMisses.forEach((c) => caveats.push(`Missing ${c.toUpperCase()}`))
   if (neededIntegrations.length > 0 && integrationMatches.length < neededIntegrations.length) {
     caveats.push(`${neededIntegrations.length - integrationMatches.length} integrations not native`)
   }
+  if (budgetCriterion && budgetCriterion.normalizedValue < 0.3) caveats.push('Budget pressure')
+  if (teamLevel === 'non-technical' && platform.tier === 'developer-first') caveats.push('Engineering team needed')
+  if (evidence.heuristicFlags.length > 0) caveats.push('Some estimates use assumptions')
 
-  // Budget signal
-  const budgetCriterion = criteria.find((c) => c.name === 'budgetFit')
-  if (budgetCriterion && budgetCriterion.normalizedValue > 0.6) {
-    signals.push('Within budget')
-  } else if (budgetCriterion && budgetCriterion.normalizedValue < 0.3) {
-    caveats.push('Budget pressure')
-  }
+  const totalSignals = required.length + (neededIntegrations.length > 0 ? 1 : 0) + 2
 
-  // Stack signal
-  const stackCriterion = criteria.find((c) => c.name === 'stackCompatibility')
-  if (stackCriterion && stackCriterion.normalizedValue > 0.6) {
-    signals.push('Stack aligned')
-  }
-
-  // Team capability caveat
-  const teamLevel = getAssessmentString(assessment, 'teamTechnicalLevel')
-  if (teamLevel === 'non-technical' && platform.tier === 'developer-first') {
-    caveats.push('Engineering team needed')
-  }
-
-  const totalSignals = required.length + (neededIntegrations.length > 0 ? 1 : 0) + 2 // +2 for budget and stack
+  // Thesis-based rationale: thesis sentence + top 2 reasons + main caveat
+  const topReasons = strengths.slice(0, 2).join(' and ').toLowerCase()
+  const mainCaveat = caveats[0] ? ` The main tradeoff is ${caveats[0].toLowerCase()}.` : ''
+  const rationale = `${platform.title} is ${classification.headline.toLowerCase()}. ${
+    topReasons ? `It stayed ahead on ${topReasons}.` : 'It offers a balanced profile across criteria.'
+  }${mainCaveat}`
 
   return {
-    headline: `${totalScore >= 70 ? 'Strong' : totalScore >= 50 ? 'Moderate' : 'Weak'} fit for your requirements`,
-    rationale: generateRationale(platform, totalScore, signals, caveats),
-    strengths: signals,
-    caveats,
-    matchCount: signals.length,
+    matchCount: strengths.length,
     totalSignals,
+    headline: classification.headline,
+    rationale,
+    strengths,
+    caveats,
     estimatedAnnualCost: estimatedAnnualCost > 0 ? estimatedAnnualCost : null,
+    fitScore,
+    decisionScore,
+    decisionThesis: classification.decisionThesis,
+    costConfidence: evidence.costConfidence,
+    assumptionLevel: evidence.assumptionLevel,
   }
-}
-
-function generateRationale(
-  platform: Platform,
-  totalScore: number,
-  strengths: string[],
-  caveats: string[],
-): string {
-  if (totalScore >= 80) {
-    return `${platform.title} aligns well across compliance, cost, and technical requirements.${strengths.length > 0 ? ` Key strengths: ${strengths.join(', ')}.` : ''}`
-  }
-  if (totalScore >= 60) {
-    return `${platform.title} is a reasonable fit with some tradeoffs.${caveats.length > 0 ? ` Watch: ${caveats.join(', ')}.` : ''}`
-  }
-  return `${platform.title} has significant gaps relative to your stated requirements.${caveats.length > 0 ? ` Issues: ${caveats.join(', ')}.` : ''}`
 }
