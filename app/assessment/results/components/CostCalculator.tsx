@@ -49,10 +49,13 @@ export function CostCalculator({ platforms, topPlatformIds = [], assessment }: C
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>('yearly')
   const [expandedPlatformId, setExpandedPlatformId] = useState<string | null>(null) // kept for cost card click highlight
 
-  // Show all platforms in cost analysis — not just top scored
+  // Show top recommended platforms in cost analysis
   const platformsToCalculate = useMemo(() => {
-    return platforms.filter((p) => p.pricing?.model)
-  }, [platforms])
+    if (topPlatformIds.length > 0) {
+      return platforms.filter((p) => topPlatformIds.includes(p.slug))
+    }
+    return platforms.slice(0, 5)
+  }, [platforms, topPlatformIds])
 
   // Calculate cost estimates for all platforms
   const estimates = useMemo<CostEstimate[]>(() => {
