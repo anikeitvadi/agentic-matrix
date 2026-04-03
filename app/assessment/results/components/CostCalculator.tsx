@@ -172,7 +172,7 @@ export function CostCalculator({ platforms, topPlatformIds = [], assessment }: C
       {/* Platform Cost Cards */}
       <div>
         <h3 className="text-xl font-semibold mb-4">Detailed Cost Breakdown</h3>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
           {estimates.map((estimate, index) => (
             <div
               key={estimate.platformId}

@@ -21,7 +21,7 @@ interface PlatformCostCardProps {
 export function PlatformCostCard({ estimate, isRecommended = false }: PlatformCostCardProps) {
   return (
     <div
-      className={`rounded-xl border p-6 shadow-sm ${
+      className={`rounded-xl border p-6 shadow-sm h-full ${
         isRecommended
           ? 'border-brand-500 ring-2 ring-brand-500/30 bg-brand-950/20'
           : 'border-neutral-800 bg-neutral-900'
