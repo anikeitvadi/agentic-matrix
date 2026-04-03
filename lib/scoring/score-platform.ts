@@ -171,7 +171,9 @@ function calculateIntegrationFit(
   const supported = platform.structuredCapabilities?.supportedIntegrations ?? []
 
   if (needed.length === 0) {
-    return supported.length // Reward breadth when no specific needs
+    // No specific integrations needed — give a small breadth bonus
+    // but don't let it dominate (cap at 3 so API platforms aren't crushed)
+    return Math.min(3, supported.length)
   }
 
   const supportedLower = supported.map((s) => s.toLowerCase())
@@ -194,7 +196,8 @@ function calculateComplianceMatch(
   const certs = platform.structuredCapabilities?.complianceCerts ?? []
 
   // Base score from cert count (breadth)
-  let score = certs.length
+  // Base score from cert count — cap breadth bonus when no requirements
+  let score = required.length === 0 ? Math.min(3, certs.length) : certs.length
 
   if (required.length === 0) {
     return score
@@ -263,7 +266,7 @@ function calculateFeatureMatch(
   let score = 0
 
   if (useCases.length === 0) {
-    score = strengths.length
+    score = Math.min(3, strengths.length) // Cap breadth when no use cases specified
   } else {
     // Direct match: each matched use case = 3 points
     const strengthsLower = strengths.map((s) => s.toLowerCase())
