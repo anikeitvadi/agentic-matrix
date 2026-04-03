@@ -20,12 +20,9 @@ export function DecisionMemo({ scores }: DecisionMemoProps) {
       <div className="flex items-center justify-between gap-4">
         <div>
           <p className="paper-eyebrow">Decision memo</p>
-          <h2 className="mt-3 font-heading text-3xl text-white sm:text-4xl">
-            Why the current leader wins.
+          <h2 className="mt-2 font-heading text-2xl font-bold text-white">
+            Why the current leader wins
           </h2>
-          <p className="mt-2 text-sm text-neutral-500">
-            Deterministic summary of why the current leader won and what could change the call.
-          </p>
         </div>
         <span className="inline-flex items-center rounded-full border border-brand-800/50 bg-brand-900/30 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-brand-400">
           {memo.winner.confidenceLabel}
@@ -41,7 +38,7 @@ export function DecisionMemo({ scores }: DecisionMemoProps) {
               </p>
               <Link
                 href={`/platforms/${memo.winner.platformId}`}
-                className="mt-3 inline-block font-heading text-3xl text-white transition-colors hover:text-brand-400"
+                className="mt-2 inline-block font-heading text-xl font-bold text-white transition-colors hover:text-brand-400"
               >
                 {memo.winner.platformName}
               </Link>
@@ -56,14 +53,14 @@ export function DecisionMemo({ scores }: DecisionMemoProps) {
             </div>
           </div>
 
-          <div className="mt-6 grid gap-3 md:grid-cols-3">
+          <div className="mt-4 flex flex-wrap gap-2">
             {memo.winner.reasons.map((reason) => (
-              <div
+              <span
                 key={reason}
-                className="rounded-2xl border border-emerald-800/50 bg-emerald-950/40 px-4 py-4 text-sm leading-6 text-emerald-400"
+                className="rounded-full border border-emerald-800/50 bg-emerald-950/40 px-4 py-2 text-sm text-emerald-400"
               >
                 {reason}
-              </div>
+              </span>
             ))}
           </div>
         </div>
@@ -88,7 +85,7 @@ export function DecisionMemo({ scores }: DecisionMemoProps) {
 
       {memo.alternatives.length > 0 && (
         <div className="space-y-4">
-          <h3 className="font-heading text-2xl text-white">Why not the next best options</h3>
+          <h3 className="font-heading text-lg font-bold text-white">Why not the next best options</h3>
           <div className="grid gap-4 md:grid-cols-2">
             {memo.alternatives.map((alternative) => (
               <div
