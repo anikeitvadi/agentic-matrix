@@ -109,10 +109,8 @@ export function ResultsContent({ platforms }: ResultsContentProps) {
 
       {/* Export + AI brief */}
       <SectionDivider label="Export and explain" />
-      <div className="grid gap-4 lg:grid-cols-2">
-        <DecisionPacketExport assessment={assessment} scores={scores} />
-        <AIDecisionBrief assessment={assessment} scores={scores} />
-      </div>
+      <DecisionPacketExport assessment={assessment} scores={scores} />
+      <AIDecisionBrief assessment={assessment} scores={scores} />
 
       {/* Comparison */}
       <SectionDivider label="Compare platforms" />

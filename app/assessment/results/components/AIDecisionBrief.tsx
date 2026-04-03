@@ -84,38 +84,27 @@ export function AIDecisionBrief({ assessment, scores }: AIDecisionBriefProps) {
       )}
 
       {brief && (
-        <div className="mt-6 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-          <div className="space-y-6">
-            <div className="rounded-xl border border-neutral-800 bg-neutral-900/80 px-5 py-5">
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-neutral-500">
-                Executive Summary
-              </p>
-              <p className="mt-3 text-sm leading-7 text-neutral-300">
-                {brief.executiveSummary}
-              </p>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-medium text-white">Recommendation</h3>
-              <p className="mt-3 text-sm leading-7 text-neutral-300">{brief.recommendation}</p>
-            </div>
-
-            <ListSection title="Tradeoffs" items={brief.tradeoffs} />
+        <div className="mt-4 space-y-4">
+          <div className="rounded-lg border border-neutral-800/60 bg-neutral-900/50 px-4 py-4">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">Executive Summary</p>
+            <p className="mt-2 text-sm leading-relaxed text-neutral-300">{brief.executiveSummary}</p>
           </div>
 
-          <div className="space-y-6">
-            <ListSection title="Risk Checks" items={brief.riskChecks} />
-            <ListSection
-              title="Questions That Would Change The Decision"
-              items={brief.questionsThatWouldChangeDecision}
-            />
+          <div>
+            <p className="text-sm font-semibold text-white">Recommendation</p>
+            <p className="mt-1 text-sm leading-relaxed text-neutral-400">{brief.recommendation}</p>
+          </div>
 
-            <div className="rounded-xl border border-brand-800/50 bg-brand-950/40 px-5 py-5">
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-400">
-                Recommended Next Step
-              </p>
-              <p className="mt-3 text-sm leading-7 text-neutral-300">{brief.nextStep}</p>
-            </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            <CompactList title="Tradeoffs" items={brief.tradeoffs} />
+            <CompactList title="Risk Checks" items={brief.riskChecks} />
+          </div>
+
+          <CompactList title="Decision-changing questions" items={brief.questionsThatWouldChangeDecision} />
+
+          <div className="rounded-lg border border-brand-800/40 bg-brand-950/30 px-4 py-3">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-brand-400">Next Step</p>
+            <p className="mt-1 text-sm text-neutral-300">{brief.nextStep}</p>
           </div>
         </div>
       )}
@@ -123,20 +112,17 @@ export function AIDecisionBrief({ assessment, scores }: AIDecisionBriefProps) {
   )
 }
 
-function ListSection({ title, items }: { title: string; items: string[] }) {
+function CompactList({ title, items }: { title: string; items: string[] }) {
   return (
     <div>
-      <h3 className="text-lg font-medium text-white">{title}</h3>
-      <div className="mt-3 space-y-3">
+      <p className="text-sm font-semibold text-white mb-2">{title}</p>
+      <ul className="space-y-1.5">
         {items.map((item) => (
-          <div
-            key={item}
-            className="rounded-xl border border-neutral-800/60 bg-neutral-900/30 px-4 py-3 text-sm leading-6 text-neutral-300"
-          >
+          <li key={item} className="rounded-lg border border-neutral-800/50 bg-neutral-900/30 px-3 py-2 text-sm leading-relaxed text-neutral-400">
             {item}
-          </div>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   )
 }
