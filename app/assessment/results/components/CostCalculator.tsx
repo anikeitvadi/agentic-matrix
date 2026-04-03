@@ -49,10 +49,13 @@ export function CostCalculator({ platforms, topPlatformIds = [], assessment }: C
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>('yearly')
   const [expandedPlatformId, setExpandedPlatformId] = useState<string | null>(null) // kept for cost card click highlight
 
-  // Show top recommended platforms in cost analysis
+  // Show top recommended platforms in score order (not file order)
   const platformsToCalculate = useMemo(() => {
     if (topPlatformIds.length > 0) {
-      return platforms.filter((p) => topPlatformIds.includes(p.slug))
+      // Preserve score ranking order, not velite file order
+      return topPlatformIds
+        .map((id) => platforms.find((p) => p.slug === id))
+        .filter((p): p is typeof platforms[number] => p != null)
     }
     return platforms.slice(0, 5)
   }, [platforms, topPlatformIds])
