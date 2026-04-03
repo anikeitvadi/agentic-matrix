@@ -42,6 +42,7 @@ export function AIDecisionBrief({ assessment, scores }: AIDecisionBriefProps) {
   }
 
   const handleGenerate = () => {
+    setError(null)
     startTransition(async () => {
       try {
         const result = await generateRecommendationBrief({
@@ -55,10 +56,9 @@ export function AIDecisionBrief({ assessment, scores }: AIDecisionBriefProps) {
         }
 
         setBrief(result.brief)
-        setError(null)
       } catch (err) {
         console.error('AI brief generation failed:', err)
-        setError('Failed to generate brief. Check your OpenAI API key and try again.')
+        setError('Failed to generate brief. Check your API key and try again.')
       }
     })
   }
@@ -83,51 +83,62 @@ export function AIDecisionBrief({ assessment, scores }: AIDecisionBriefProps) {
       </div>
 
       {error && (
-        <div className="mt-4 rounded-xl border border-amber-800/50 bg-amber-950/40 px-4 py-3 text-sm text-amber-400">
+        <div className="mt-3 rounded-lg border border-amber-800/50 bg-amber-950/30 px-3 py-2 text-sm text-amber-400">
           {error}
         </div>
       )}
 
       {brief && (
         <div className="mt-4 space-y-4">
-          <div className="rounded-lg border border-neutral-800/60 bg-neutral-900/50 px-4 py-4">
+          {/* Executive Summary */}
+          <div className="rounded-lg border border-neutral-800/60 bg-neutral-950/50 px-4 py-3">
             <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">Executive Summary</p>
             <p className="mt-2 text-sm leading-relaxed text-neutral-300">{brief.executiveSummary}</p>
           </div>
 
+          {/* Recommendation */}
           <div>
             <p className="text-sm font-semibold text-white">Recommendation</p>
             <p className="mt-1 text-sm leading-relaxed text-neutral-400">{brief.recommendation}</p>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
-            <CompactList title="Tradeoffs" items={brief.tradeoffs} />
-            <CompactList title="Risk Checks" items={brief.riskChecks} />
+          {/* Tradeoffs */}
+          <div>
+            <p className="text-sm font-semibold text-white mb-2">Tradeoffs</p>
+            {brief.tradeoffs.map((item, i) => (
+              <p key={i} className="mb-1.5 text-sm leading-relaxed text-neutral-400">
+                {item}
+              </p>
+            ))}
           </div>
 
-          <CompactList title="Decision-changing questions" items={brief.questionsThatWouldChangeDecision} />
+          {/* Risk Checks */}
+          <div>
+            <p className="text-sm font-semibold text-white mb-2">Risk Checks</p>
+            {brief.riskChecks.map((item, i) => (
+              <p key={i} className="mb-1.5 text-sm leading-relaxed text-neutral-400">
+                {item}
+              </p>
+            ))}
+          </div>
 
+          {/* Decision Questions */}
+          <div>
+            <p className="text-sm font-semibold text-white mb-2">What would change this decision</p>
+            {brief.questionsThatWouldChangeDecision.map((item, i) => (
+              <p key={i} className="mb-1.5 text-sm leading-relaxed text-neutral-400">
+                {item}
+              </p>
+            ))}
+          </div>
+
+          {/* Next Step */}
           <div className="rounded-lg border border-brand-800/40 bg-brand-950/30 px-4 py-3">
             <p className="text-[10px] font-bold uppercase tracking-wider text-brand-400">Next Step</p>
             <p className="mt-1 text-sm text-neutral-300">{brief.nextStep}</p>
           </div>
         </div>
       )}
-    </div>
-  )
-}
-
-function CompactList({ title, items }: { title: string; items: string[] }) {
-  return (
-    <div>
-      <p className="text-sm font-semibold text-white mb-2">{title}</p>
-      <ul className="space-y-1.5">
-        {items.map((item) => (
-          <li key={item} className="rounded-lg border border-neutral-800/50 bg-neutral-900/30 px-3 py-2 text-sm leading-relaxed text-neutral-400">
-            {item}
-          </li>
-        ))}
-      </ul>
     </div>
   )
 }
