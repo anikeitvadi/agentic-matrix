@@ -1,6 +1,6 @@
 'use client'
 
-import { UseFormRegister, FieldErrors, Control, Controller } from 'react-hook-form'
+import { UseFormRegister, FieldErrors, Control } from 'react-hook-form'
 import type { AssessmentData } from '../schemas/assessment-schema'
 
 interface QuestionStepProps {
@@ -27,31 +27,33 @@ export function QuestionField({ register, errors, control, field }: QuestionFiel
   const errorMessage = getErrorMessage(errors, field.name)
 
   return (
-    <div className="mb-6">
-      <label className="block text-sm font-medium mb-2">
+    <div className="mb-8 last:mb-0">
+      <label className="block font-heading text-base font-semibold text-white mb-1">
         {field.label}
-        {field.required && <span className="text-red-500 ml-1">*</span>}
+        {field.required && <span className="ml-1 text-brand-400">*</span>}
       </label>
 
       {field.description && (
-        <p className="text-sm text-neutral-400 mb-3">{field.description}</p>
+        <p className="text-sm text-neutral-500 mb-4">{field.description}</p>
       )}
 
       {/* Radio buttons */}
       {field.type === 'radio' && field.options && (
-        <div className="space-y-2">
+        <div className="grid gap-2 sm:grid-cols-2">
           {field.options.map((option) => (
             <label
               key={option.value}
-              className="flex items-center gap-3 p-3 rounded-lg border border-neutral-800 hover:border-neutral-700 cursor-pointer transition-colors"
+              className="group flex items-center gap-3 rounded-xl border border-neutral-800/60 bg-neutral-900/30 p-4 cursor-pointer transition-all duration-200 hover:border-neutral-600 has-[:checked]:border-brand-500/60 has-[:checked]:bg-brand-950/30 has-[:checked]:shadow-[0_0_12px_rgba(71,180,167,0.06)]"
             >
               <input
                 type="radio"
                 value={option.value}
                 {...register(field.name as any)}
-                className="w-4 h-4 text-brand-600 bg-neutral-900 border-neutral-700 focus:ring-brand-600 focus:ring-2"
+                className="h-4 w-4 border-neutral-600 bg-neutral-800 text-brand-500 focus:ring-brand-500 focus:ring-2 focus:ring-offset-0"
               />
-              <span className="text-sm">{option.label}</span>
+              <span className="text-sm text-neutral-300 group-has-[:checked]:text-brand-300 transition-colors">
+                {option.label}
+              </span>
             </label>
           ))}
         </div>
@@ -59,19 +61,21 @@ export function QuestionField({ register, errors, control, field }: QuestionFiel
 
       {/* Checkboxes */}
       {field.type === 'checkbox' && field.options && (
-        <div className="space-y-2">
+        <div className="grid gap-2 sm:grid-cols-2">
           {field.options.map((option) => (
             <label
               key={option.value}
-              className="flex items-center gap-3 p-3 rounded-lg border border-neutral-800 hover:border-neutral-700 cursor-pointer transition-colors"
+              className="group flex items-center gap-3 rounded-xl border border-neutral-800/60 bg-neutral-900/30 p-4 cursor-pointer transition-all duration-200 hover:border-neutral-600 has-[:checked]:border-brand-500/60 has-[:checked]:bg-brand-950/30 has-[:checked]:shadow-[0_0_12px_rgba(71,180,167,0.06)]"
             >
               <input
                 type="checkbox"
                 value={option.value}
                 {...register(field.name as any)}
-                className="w-4 h-4 text-brand-600 bg-neutral-900 border-neutral-700 rounded focus:ring-brand-600 focus:ring-2"
+                className="h-4 w-4 rounded border-neutral-600 bg-neutral-800 text-brand-500 focus:ring-brand-500 focus:ring-2 focus:ring-offset-0"
               />
-              <span className="text-sm">{option.label}</span>
+              <span className="text-sm text-neutral-300 group-has-[:checked]:text-brand-300 transition-colors">
+                {option.label}
+              </span>
             </label>
           ))}
         </div>
@@ -83,7 +87,7 @@ export function QuestionField({ register, errors, control, field }: QuestionFiel
           type="text"
           {...register(field.name as any)}
           placeholder={field.placeholder}
-          className="w-full px-4 py-2 bg-neutral-900 border border-neutral-800 rounded-lg text-neutral-100 placeholder-neutral-600 focus:border-brand-600 focus:ring-1 focus:ring-brand-600 transition-colors"
+          className="w-full rounded-xl border border-neutral-800/60 bg-neutral-900/30 px-4 py-3 text-sm text-white placeholder-neutral-600 transition-all focus:border-brand-500/60 focus:outline-none focus:ring-1 focus:ring-brand-500/30"
         />
       )}
 
@@ -91,7 +95,7 @@ export function QuestionField({ register, errors, control, field }: QuestionFiel
       {field.type === 'select' && field.options && (
         <select
           {...register(field.name as any)}
-          className="w-full px-4 py-2 bg-neutral-900 border border-neutral-800 rounded-lg text-neutral-100 focus:border-brand-600 focus:ring-1 focus:ring-brand-600 transition-colors"
+          className="w-full rounded-xl border border-neutral-800/60 bg-neutral-900/30 px-4 py-3 text-sm text-white transition-all focus:border-brand-500/60 focus:outline-none focus:ring-1 focus:ring-brand-500/30"
         >
           <option value="">Select an option</option>
           {field.options.map((option) => (
@@ -102,15 +106,14 @@ export function QuestionField({ register, errors, control, field }: QuestionFiel
         </select>
       )}
 
-      {/* Error message */}
+      {/* Error */}
       {errorMessage && (
-        <p className="mt-2 text-sm text-red-500">{errorMessage}</p>
+        <p className="mt-2 text-sm text-red-400">{errorMessage}</p>
       )}
     </div>
   )
 }
 
-// Helper to extract error message from nested errors object
 function getErrorMessage(errors: FieldErrors<AssessmentData>, fieldPath: string): string | undefined {
   const parts = fieldPath.split('.')
   let current: any = errors

@@ -141,21 +141,21 @@ export function AssessmentForm() {
   const CurrentStepComponent = steps[currentStep - 1]
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="mx-auto max-w-3xl">
       <StepIndicator current={currentStep} total={TOTAL_STEPS} stepLabels={stepLabels} />
 
       {/* Resume notice */}
       {showResumeNotice && (
-        <div className="mb-6 p-4 bg-brand-900/20 border border-brand-700 rounded-lg text-brand-200">
+        <div className="mb-6 rounded-xl border border-brand-700/30 bg-brand-950/30 p-4 text-brand-300">
           <p className="text-sm">
-            <strong>Progress restored:</strong> We found your saved assessment and resumed from where you left off.
+            <strong className="font-heading">Progress restored</strong> — We found your saved assessment and resumed from where you left off.
           </p>
         </div>
       )}
 
       <div className="space-y-6">
-        {/* Render current step component */}
-        <div className="bg-neutral-900 rounded-lg p-6 border border-neutral-800">
+        {/* Step content */}
+        <div className="rounded-2xl border border-neutral-800/60 bg-neutral-900/50 p-6 sm:p-8">
           <CurrentStepComponent
             register={register}
             errors={errors}
@@ -164,36 +164,35 @@ export function AssessmentForm() {
           />
         </div>
 
-        {/* Navigation buttons */}
-        <div className="flex items-center justify-between pt-4">
-          <button
-            type="button"
-            onClick={handleBack}
-            disabled={currentStep === 1}
-            className={`px-6 py-2 rounded-lg font-medium transition-colors ${
-              currentStep === 1
-                ? 'bg-neutral-800 text-neutral-600 cursor-not-allowed'
-                : 'bg-neutral-800 text-white hover:bg-neutral-700'
-            }`}
-          >
-            Back
-          </button>
+        {/* Navigation */}
+        <div className="flex items-center justify-between">
+          {currentStep > 1 ? (
+            <button
+              type="button"
+              onClick={handleBack}
+              className="rounded-full border border-neutral-700 px-6 py-2.5 text-sm font-semibold text-neutral-300 transition-all hover:border-neutral-500 hover:text-white cursor-pointer"
+            >
+              Back
+            </button>
+          ) : (
+            <div />
+          )}
 
           {currentStep < TOTAL_STEPS ? (
             <button
               type="button"
               onClick={handleNext}
-              className="px-6 py-2 rounded-lg font-medium bg-brand-600 text-white hover:bg-brand-700 transition-colors"
+              className="rounded-full bg-brand-500 px-7 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand-900/40 transition-all hover:-translate-y-0.5 hover:bg-brand-400 cursor-pointer"
             >
-              Next
+              Continue
             </button>
           ) : (
             <button
               type="button"
               onClick={handleFinalSubmit}
-              className="px-6 py-2 rounded-lg font-medium bg-brand-600 text-white hover:bg-brand-700 transition-colors"
+              className="rounded-full bg-brand-500 px-8 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-900/40 transition-all hover:-translate-y-0.5 hover:bg-brand-400 cursor-pointer"
             >
-              Submit Assessment
+              Get Recommendations
             </button>
           )}
         </div>

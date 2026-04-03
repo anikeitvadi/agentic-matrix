@@ -15,8 +15,8 @@ interface Step3Props {
 export function Step3Requirements({ register, errors, control, assessmentContext }: Step3Props) {
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-2">Requirements</h2>
-      <p className="text-neutral-400 mb-6">What do you need from an agentic AI platform?</p>
+      <h2 className="font-heading text-2xl font-bold text-white mb-1">Requirements</h2>
+      <p className="text-sm text-neutral-500 mb-6">What do you need from an agentic AI platform?</p>
 
       <QuestionField
         register={register}

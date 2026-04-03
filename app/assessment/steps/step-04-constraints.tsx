@@ -15,8 +15,8 @@ interface Step4Props {
 export function Step4Constraints({ register, errors, control }: Step4Props) {
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-2">Constraints</h2>
-      <p className="text-neutral-400 mb-6">Help us understand your practical limitations.</p>
+      <h2 className="font-heading text-2xl font-bold text-white mb-1">Constraints</h2>
+      <p className="text-sm text-neutral-500 mb-6">Help us understand your practical limitations.</p>
 
       <QuestionField
         register={register}
