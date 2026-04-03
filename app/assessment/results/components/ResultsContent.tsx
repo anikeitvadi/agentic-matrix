@@ -100,42 +100,43 @@ export function ResultsContent({ platforms }: ResultsContentProps) {
   }
 
   return (
-    <div className="space-y-10">
-      <div className="grid gap-6 xl:grid-cols-[1.45fr_0.9fr] xl:items-start">
-        <PlatformScores scores={scores} maxDisplay={3} />
-        <AssessmentSnapshot assessment={assessment} />
-      </div>
+    <div className="space-y-8">
+      {/* Top recommendation */}
+      <PlatformScores scores={scores} maxDisplay={3} />
 
+      {/* Decision memo */}
       <DecisionMemo scores={scores} />
 
-      <SectionDivider label="Support and share" />
-      <div className="grid gap-6 xl:grid-cols-[0.85fr_1.15fr] xl:items-start">
+      {/* Export + AI brief */}
+      <SectionDivider label="Export and explain" />
+      <div className="grid gap-4 lg:grid-cols-2">
         <DecisionPacketExport assessment={assessment} scores={scores} />
         <AIDecisionBrief assessment={assessment} scores={scores} />
       </div>
 
-      <SectionDivider label="Decision workspace" />
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[18rem_minmax(0,1fr)] xl:items-start">
-        <div className="xl:sticky xl:top-6">
-          <FilterPanel onFilterChange={handleFilterChange} />
-        </div>
-        <div className="min-w-0">
-          <ComparisonMatrix
-            scores={scores}
-            platforms={platforms}
-            filters={filters}
-          />
-        </div>
+      {/* Comparison */}
+      <SectionDivider label="Compare platforms" />
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[16rem_minmax(0,1fr)]">
+        <FilterPanel onFilterChange={handleFilterChange} />
+        <ComparisonMatrix
+          scores={scores}
+          platforms={platforms}
+          filters={filters}
+        />
       </div>
 
-      <SectionDivider label="Deep dive" />
+      {/* Cost */}
+      <SectionDivider label="Cost analysis" />
       <CostCalculator
         platforms={platforms}
         topPlatformIds={scores.slice(0, 5).map((s) => s.platformId)}
         assessment={assessment}
       />
 
+      {/* Audit */}
+      <SectionDivider label="Score audit" />
       <AuditTrail scores={scores} />
+
       <DataDisclaimer />
     </div>
   )

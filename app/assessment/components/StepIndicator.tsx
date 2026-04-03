@@ -12,17 +12,16 @@ export function StepIndicator({ current, total, stepLabels }: StepIndicatorProps
   return (
     <nav aria-label="Progress" className="mb-8">
       {/* Progress bar */}
-      <div className="mb-6 flex items-center justify-between">
-        <span className="font-mono text-xs text-neutral-500">
-          Step {current} of {total}
-        </span>
-        <span className="font-mono text-xs text-brand-400">{progress}%</span>
-      </div>
-      <div className="mb-6 h-1 w-full rounded-full bg-neutral-800">
-        <div
-          className="h-full rounded-full bg-gradient-to-r from-brand-600 to-brand-400 transition-all duration-500"
-          style={{ width: `${progress}%` }}
-        />
+      <div className="mb-6">
+        <div className="mb-2 text-right">
+          <span className="font-mono text-xs text-neutral-500">Step {current} of {total}</span>
+        </div>
+        <div className="h-1 w-full rounded-full bg-neutral-800">
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-brand-600 to-brand-400 transition-all duration-500"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
       </div>
 
       {/* Step circles */}

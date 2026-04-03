@@ -19,7 +19,7 @@ export default function AssessmentPage() {
             Platform Assessment
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-neutral-400">
-            4 questions. 3 minutes. A ranked recommendation backed by structured scoring,
+            4 steps. 3 minutes. A ranked recommendation backed by structured scoring,
             real pricing, and an auditable methodology.
           </p>
         </div>
