@@ -11,6 +11,7 @@ import { PlatformScores } from './PlatformScores'
 import { DecisionMemo } from './DecisionMemo'
 import { AIDecisionBrief } from './AIDecisionBrief'
 import { DecisionPacketExport } from './DecisionPacketExport'
+import { AssessmentSnapshot } from './AssessmentSnapshot'
 import { FilterPanel, type FilterValues } from './FilterPanel'
 import { ComparisonMatrix } from './ComparisonMatrix'
 import { AuditTrail } from './AuditTrail'
@@ -99,23 +100,26 @@ export function ResultsContent({ platforms }: ResultsContentProps) {
   }
 
   return (
-    <div className="space-y-8">
-      {/* Top Recommendations */}
-      <PlatformScores scores={scores} maxDisplay={5} />
+    <div className="space-y-10">
+      <div className="grid gap-6 xl:grid-cols-[1.45fr_0.9fr] xl:items-start">
+        <PlatformScores scores={scores} maxDisplay={3} />
+        <AssessmentSnapshot assessment={assessment} />
+      </div>
 
-      {/* Decision Brief */}
-      <SectionDivider label="Decision brief" />
       <DecisionMemo scores={scores} />
-      <AIDecisionBrief assessment={assessment} scores={scores} />
-      <DecisionPacketExport assessment={assessment} scores={scores} />
 
-      {/* Detailed Comparison */}
-      <SectionDivider label="Detailed comparison" />
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <div className="lg:col-span-1">
+      <SectionDivider label="Support and share" />
+      <div className="grid gap-6 xl:grid-cols-[0.85fr_1.15fr] xl:items-start">
+        <DecisionPacketExport assessment={assessment} scores={scores} />
+        <AIDecisionBrief assessment={assessment} scores={scores} />
+      </div>
+
+      <SectionDivider label="Decision workspace" />
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[18rem_minmax(0,1fr)] xl:items-start">
+        <div className="xl:sticky xl:top-6">
           <FilterPanel onFilterChange={handleFilterChange} />
         </div>
-        <div className="lg:col-span-3">
+        <div className="min-w-0">
           <ComparisonMatrix
             scores={scores}
             platforms={platforms}
@@ -124,18 +128,14 @@ export function ResultsContent({ platforms }: ResultsContentProps) {
         </div>
       </div>
 
-      {/* Score Audit */}
-      <SectionDivider label="Score audit" />
-      <AuditTrail scores={scores} />
-
-      {/* Cost Analysis */}
-      <SectionDivider label="Cost analysis" />
+      <SectionDivider label="Deep dive" />
       <CostCalculator
         platforms={platforms}
         topPlatformIds={scores.slice(0, 5).map((s) => s.platformId)}
         assessment={assessment}
       />
 
+      <AuditTrail scores={scores} />
       <DataDisclaimer />
     </div>
   )

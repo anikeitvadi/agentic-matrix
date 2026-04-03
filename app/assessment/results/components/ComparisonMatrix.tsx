@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, type ReactNode } from 'react'
 import {
   useReactTable,
   getCoreRowModel,
@@ -23,16 +23,6 @@ interface ComparisonMatrixProps {
 
 const columnHelper = createColumnHelper<PlatformScore>()
 
-/**
- * Comparison matrix using TanStack Table.
- *
- * Displays all platforms with sortable columns for:
- * - Platform name
- * - Total score (0-100)
- * - Individual criterion percentages (Integration, Compliance, Budget, Features, Stack)
- *
- * Filters are applied before rendering to reduce visible rows.
- */
 export function ComparisonMatrix({ scores, platforms, filters }: ComparisonMatrixProps) {
   const [sorting, setSorting] = useState<SortingState>([
     { id: 'totalScore', desc: true },
@@ -153,23 +143,33 @@ export function ComparisonMatrix({ scores, platforms, filters }: ComparisonMatri
   })
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold">Comparison Matrix</h2>
-        <p className="text-sm text-neutral-400">
-          {filteredData.length} of {scores.length} platforms
-        </p>
+    <div className="space-y-5">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <div>
+          <p className="paper-eyebrow">Comparison workbench</p>
+          <h2 className="mt-3 font-heading text-3xl text-white">Pressure-test the shortlist.</h2>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-neutral-400">
+            Sort the leading options by evidence, cost, risk, and requirement coverage. This is
+            for shortlisting and tradeoff review, not for replacing the top-line recommendation.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <StatusPill>{filteredData.length} shown</StatusPill>
+          <StatusPill>{scores.length} total platforms</StatusPill>
+          <StatusPill>Req gap = misses a hard gate</StatusPill>
+        </div>
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-neutral-800">
+      <div className="overflow-hidden rounded-[1.75rem] border border-neutral-800/70 bg-neutral-950/50">
+        <div className="overflow-x-auto">
         <table className="w-full border-collapse">
-          <thead className="bg-neutral-900">
+          <thead className="bg-neutral-950/95">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <th
                     key={header.id}
-                    className="p-3 text-left text-sm font-medium text-neutral-400 cursor-pointer hover:text-neutral-200 select-none"
+                    className="px-4 py-4 text-left text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500 cursor-pointer hover:text-neutral-200 select-none"
                     onClick={header.column.getToggleSortingHandler()}
                   >
                     <div className="flex items-center gap-1">
@@ -188,7 +188,7 @@ export function ComparisonMatrix({ scores, platforms, filters }: ComparisonMatri
               <tr>
                 <td
                   colSpan={columns.length}
-                  className="p-8 text-center text-neutral-400"
+                  className="p-10 text-center text-neutral-400"
                 >
                   No platforms match your filters. Try adjusting your criteria.
                 </td>
@@ -197,10 +197,10 @@ export function ComparisonMatrix({ scores, platforms, filters }: ComparisonMatri
               table.getRowModel().rows.map((row) => (
                 <tr
                   key={row.id}
-                  className="border-t border-neutral-800 hover:bg-neutral-900/50 transition-colors"
+                  className="border-t border-neutral-800/70 hover:bg-neutral-900/60 transition-colors"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="p-3 text-sm">
+                    <td key={cell.id} className="px-4 py-4 text-sm align-top">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
                   ))}
@@ -209,6 +209,7 @@ export function ComparisonMatrix({ scores, platforms, filters }: ComparisonMatri
             )}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   )
@@ -243,11 +244,12 @@ function SortIndicator({ isSorted }: { isSorted: false | 'asc' | 'desc' }) {
   )
 }
 
-/**
- * Format normalized value (0-1) as percentage string.
- */
-function formatPercent(value: number): string {
-  return `${Math.round(value * 100)}%`
+function StatusPill({ children }: { children: ReactNode }) {
+  return (
+    <span className="inline-flex items-center rounded-full border border-neutral-800/70 bg-neutral-950/70 px-3 py-1 text-xs font-medium text-neutral-300">
+      {children}
+    </span>
+  )
 }
 
 /**

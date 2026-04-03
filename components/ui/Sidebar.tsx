@@ -108,12 +108,10 @@ export function Sidebar() {
 
         {/* Logo */}
         <div className="border-b border-neutral-800 px-5 py-5">
-          <Link href="/" className="flex items-start gap-3" onClick={closeMobile}>
-            <div className="min-w-0">
-              <div className="font-serif text-xl leading-none text-white">Agentic Matrix</div>
-              <div className="mt-1 text-xs uppercase tracking-[0.24em] text-neutral-500">
-                Decision Toolkit
-              </div>
+          <Link href="/" className="block text-center" onClick={closeMobile}>
+            <div className="font-serif text-xl leading-none text-white">Agentic Matrix</div>
+            <div className="mt-1 text-xs uppercase tracking-[0.24em] text-neutral-500">
+              Decision Toolkit
             </div>
           </Link>
         </div>
