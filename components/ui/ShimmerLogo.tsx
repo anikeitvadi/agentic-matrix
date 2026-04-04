@@ -10,9 +10,9 @@ import { useRef, useEffect, useState } from 'react'
  */
 
 const LOGO_TEXT = 'AGENTIC MATRIX'
-const FONT_SIZE = 14
-const CHAR_WIDTH = 9.5
-const LINE_HEIGHT = 18
+const FONT_SIZE = 18
+const CHAR_WIDTH = 12
+const LINE_HEIGHT = 22
 const SHIMMER_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.:+=-~'
 
 export function ShimmerLogo() {
@@ -152,7 +152,7 @@ export function ShimmerLogo() {
       />
       {/* Fallback before canvas ready */}
       {!ready && (
-        <div className="font-mono text-sm font-bold text-neutral-300">AGENTIC MATRIX</div>
+        <div className="font-mono text-lg font-bold text-neutral-300">AGENTIC MATRIX</div>
       )}
       <div className="mt-1 text-[10px] uppercase tracking-[0.18em] text-neutral-500">
         Decision Toolkit
