@@ -126,172 +126,154 @@ export function buildDecisionPacketHtml({
     )
     .join('')
 
+  const winner = scores[0]
+  const winnerRisk = winner?.implementationRisk?.label ?? 'N/A'
+  const winnerConfidence = winner?.confidence?.label ?? 'N/A'
+  const winnerThesis = winner?.recommendationSummary?.decisionThesis ?? ''
+  const winnerAnnualCost = winner?.recommendationSummary?.estimatedAnnualCost
+  const winnerCostLabel = winnerAnnualCost !== null ? escapeHtml(formatCurrency(winnerAnnualCost)) : 'N/A'
+
   return `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Recommendation Packet</title>
+    <title>Agentic Matrix — Decision Packet</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <style>
-      body {
-        font-family: Georgia, "Times New Roman", serif;
-        margin: 0;
-        color: #111827;
-        background: #ffffff;
-      }
-      main {
-        max-width: 880px;
-        margin: 0 auto;
-        padding: 48px 32px 64px;
-      }
-      h1, h2, h3 {
-        margin: 0;
-        line-height: 1.2;
-      }
-      h1 {
-        font-size: 34px;
-      }
-      h2 {
-        font-size: 14px;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-        color: #4b5563;
-        margin-bottom: 16px;
-      }
-      h3 {
-        font-size: 20px;
-        margin-bottom: 10px;
-      }
-      p, li, td, th {
-        font-size: 15px;
-        line-height: 1.7;
-      }
-      .lede {
-        margin-top: 16px;
-        margin-bottom: 8px;
-        color: #374151;
-      }
-      .meta {
-        color: #6b7280;
-        font-size: 13px;
-      }
-      .section {
-        margin-top: 40px;
-      }
-      .grid {
-        display: grid;
-        grid-template-columns: 1.2fr 0.8fr;
-        gap: 20px;
-      }
-      .card {
-        border: 1px solid #e5e7eb;
-        border-radius: 16px;
-        padding: 18px 20px;
-        background: #f9fafb;
-        margin-bottom: 14px;
-      }
-      .card.dark {
-        background: #111827;
-        color: white;
-        border-color: #1f2937;
-      }
-      .score {
-        font-size: 14px;
-        color: #2563eb;
-      }
-      ul {
-        padding-left: 20px;
-        margin: 0;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 12px;
-      }
-      th, td {
-        border-bottom: 1px solid #e5e7eb;
-        text-align: left;
-        padding: 10px 0;
-        vertical-align: top;
-      }
-      th {
-        font-size: 12px;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        color: #6b7280;
-      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font-family: 'Inter', system-ui, sans-serif; color: #1a1a2e; background: #fff; font-size: 14px; line-height: 1.6; }
+      main { max-width: 800px; margin: 0 auto; padding: 48px 40px 60px; }
+
+      /* Header */
+      .header { border-bottom: 2px solid #0f766e; padding-bottom: 24px; margin-bottom: 32px; }
+      .header h1 { font-size: 24px; font-weight: 700; color: #0f172a; }
+      .header .date { font-size: 12px; color: #6b7280; margin-top: 4px; }
+      .header .summary { font-size: 15px; color: #374151; margin-top: 12px; line-height: 1.7; }
+
+      /* Section */
+      .section { margin-top: 28px; }
+      .section-title { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #0f766e; margin-bottom: 12px; }
+
+      /* Recommendation card */
+      .rec-card { background: #f0fdfa; border: 1px solid #99f6e4; border-radius: 8px; padding: 20px; }
+      .rec-card .platform { font-size: 20px; font-weight: 700; color: #0f172a; }
+      .rec-card .thesis { font-size: 12px; color: #0f766e; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 2px; }
+      .rec-card .rationale { font-size: 14px; color: #374151; margin-top: 10px; line-height: 1.7; }
+      .rec-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 14px; }
+      .metric { background: #fff; border: 1px solid #e5e7eb; border-radius: 6px; padding: 10px 12px; }
+      .metric .label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #6b7280; }
+      .metric .value { font-size: 18px; font-weight: 700; color: #0f172a; margin-top: 2px; }
+
+      /* Key strengths / caveats */
+      .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+      .tag { font-size: 12px; padding: 4px 10px; border-radius: 20px; font-weight: 500; }
+      .tag.green { background: #dcfce7; color: #166534; }
+      .tag.amber { background: #fef3c7; color: #92400e; }
+
+      /* Assessment table */
+      .assess-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 20px; }
+      .assess-item { font-size: 13px; padding: 4px 0; }
+      .assess-item .label { color: #6b7280; font-weight: 500; }
+      .assess-item .val { color: #1a1a2e; }
+
+      /* Alternatives */
+      .alt-card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 14px 16px; margin-bottom: 10px; }
+      .alt-card .name { font-size: 15px; font-weight: 600; }
+      .alt-card .gap { font-size: 12px; color: #6b7280; float: right; }
+      .alt-card .reason { font-size: 13px; color: #4b5563; margin-top: 6px; line-height: 1.6; }
+      .alt-card .stronger { font-size: 11px; color: #0f766e; margin-top: 6px; font-weight: 500; }
+
+      /* Scenarios */
+      .scenario { border-left: 3px solid #e5e7eb; padding: 10px 16px; margin-bottom: 10px; }
+      .scenario .title { font-size: 13px; font-weight: 600; color: #0f172a; }
+      .scenario .detail { font-size: 13px; color: #4b5563; margin-top: 4px; line-height: 1.6; }
+
+      /* Leaderboard */
+      table { width: 100%; border-collapse: collapse; }
+      th { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #6b7280; text-align: left; padding: 8px 0; border-bottom: 2px solid #e5e7eb; }
+      td { padding: 10px 0; border-bottom: 1px solid #f3f4f6; font-size: 13px; vertical-align: top; }
+      td:nth-child(3) { font-weight: 600; }
+
+      /* Footer */
+      .footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid #e5e7eb; font-size: 11px; color: #9ca3af; }
+
       @media print {
-        main {
-          padding: 24px 20px 32px;
-        }
-        .card {
-          break-inside: avoid;
-        }
+        main { padding: 20px; }
+        .rec-card, .alt-card, .scenario { break-inside: avoid; }
       }
     </style>
   </head>
   <body>
     <main>
-      <header>
+      <div class="header">
         <h1>Agentic Matrix — Decision Packet</h1>
-        <p class="meta">Generated ${escapeHtml(dateLabel)}</p>
-        <p class="lede">${escapeHtml(memo.winner.lead)}</p>
-      </header>
+        <div class="date">${escapeHtml(dateLabel)} &middot; Deterministic scoring &middot; Vendor-neutral</div>
+        <div class="summary">${escapeHtml(memo.winner.lead)}</div>
+      </div>
 
-      <section class="section">
-        <h2>Assessment Snapshot</h2>
-        <ul>
-          ${assessmentLines
-            .map((line) => `<li>${escapeHtml(line.replace(/^- /, ''))}</li>`)
-            .join('')}
-        </ul>
-      </section>
-
-      <section class="section grid">
-        <div>
-          <h2>Current Recommendation</h2>
-          <h3>${escapeHtml(memo.winner.platformName)} <span class="score">${memo.winner.totalScore}/100</span></h3>
-          <p>${escapeHtml(memo.winner.rationale)}</p>
-          <ul>
-            ${memo.winner.reasons.map((reason) => `<li>${escapeHtml(reason)}</li>`).join('')}
-          </ul>
-        </div>
-        <div>
-          <h2>Confidence</h2>
-          <div class="card">
-            <h3>${escapeHtml(memo.winner.confidenceLabel)}</h3>
-            <p>${escapeHtml(memo.winner.lead)}</p>
+      <div class="section">
+        <div class="section-title">Recommendation</div>
+        <div class="rec-card">
+          <div class="thesis">${escapeHtml(winnerThesis.replace(/-/g, ' '))}</div>
+          <div class="platform">${escapeHtml(memo.winner.platformName)}</div>
+          <div class="rationale">${escapeHtml(memo.winner.rationale)}</div>
+          <div class="rec-metrics">
+            <div class="metric"><div class="label">Decision Score</div><div class="value">${scores[0]?.decisionScore ?? memo.winner.totalScore}</div></div>
+            <div class="metric"><div class="label">Annual Est.</div><div class="value">${winnerCostLabel}</div></div>
+            <div class="metric"><div class="label">Risk</div><div class="value">${escapeHtml(winnerRisk)}</div></div>
+            <div class="metric"><div class="label">Confidence</div><div class="value">${escapeHtml(winnerConfidence)}</div></div>
+          </div>
+          <div class="tags">
+            ${memo.winner.reasons.map((r) => `<span class="tag green">${escapeHtml(r)}</span>`).join('')}
           </div>
         </div>
-      </section>
+      </div>
 
-      <section class="section">
-        <h2>Why Not The Next Best Options</h2>
-        ${alternatives || '<p>No runner-up platforms available.</p>'}
-      </section>
+      <div class="section">
+        <div class="section-title">Assessment Inputs</div>
+        <div class="assess-grid">
+          ${assessmentLines.map((line) => {
+            const parts = line.replace(/^- /, '').split(': ')
+            return `<div class="assess-item"><span class="label">${escapeHtml(parts[0])}:</span> <span class="val">${escapeHtml(parts.slice(1).join(': '))}</span></div>`
+          }).join('')}
+        </div>
+      </div>
 
-      <section class="section">
-        <h2>What Would Change The Recommendation</h2>
-        ${scenarios}
-      </section>
+      <div class="section">
+        <div class="section-title">Why Not The Alternatives</div>
+        ${memo.alternatives.map((alt) => `
+          <div class="alt-card">
+            <span class="gap">${alt.scoreGap > 0 ? '-' : ''}${alt.scoreGap} pts</span>
+            <div class="name">${escapeHtml(alt.platformName)}</div>
+            <div class="reason">${escapeHtml(alt.whyNot)}</div>
+            ${alt.strongerAreas.length > 0 ? `<div class="stronger">Stronger on: ${escapeHtml(alt.strongerAreas.join(', '))}</div>` : ''}
+          </div>
+        `).join('')}
+      </div>
 
-      <section class="section">
-        <h2>Top Ranked Platforms</h2>
+      <div class="section">
+        <div class="section-title">What Would Change This Recommendation</div>
+        ${memo.scenarios.map((s) => `
+          <div class="scenario">
+            <div class="title">${escapeHtml(s.title)}</div>
+            <div class="detail">${escapeHtml(s.detail)}</div>
+          </div>
+        `).join('')}
+      </div>
+
+      <div class="section">
+        <div class="section-title">Platform Leaderboard</div>
         <table>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Platform</th>
-              <th>Score</th>
-              <th>Annual Cost</th>
-              <th>Headline</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${topScores}
-          </tbody>
+          <thead><tr><th>#</th><th>Platform</th><th>Score</th><th>Annual Est.</th><th>Assessment</th></tr></thead>
+          <tbody>${topScores}</tbody>
         </table>
-      </section>
+      </div>
+
+      <div class="footer">
+        Generated by Agentic Matrix &middot; Deterministic scoring engine &middot; No vendor sponsorships or affiliate relationships &middot; ${escapeHtml(dateLabel)}
+      </div>
     </main>
   </body>
 </html>`
