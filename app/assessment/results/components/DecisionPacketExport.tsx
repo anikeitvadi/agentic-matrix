@@ -57,27 +57,25 @@ export function DecisionPacketExport({
   }
 
   const handlePrint = () => {
-    const printWindow = window.open('', '_blank', 'noopener,noreferrer')
-    if (!printWindow) {
-      setStatus('Pop-up blocked. Allow pop-ups to print the decision packet.')
-      return
-    }
-
     const html = buildDecisionPacketHtml({
       assessment,
       scores,
     })
 
-    printWindow.document.open()
-    printWindow.document.write(html)
-    printWindow.document.close()
-    printWindow.focus()
+    // Download as HTML file — user can open and print/save as PDF
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    const date = new Date().toISOString().slice(0, 10)
 
-    window.setTimeout(() => {
-      printWindow.print()
-    }, 250)
+    link.href = url
+    link.download = `agentic-matrix-decision-packet-${date}.html`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
 
-    setStatus('Opened printable packet in a new window.')
+    setStatus('Downloaded printable HTML. Open it and use Cmd+P / Ctrl+P to save as PDF.')
   }
 
   return (
@@ -106,7 +104,7 @@ export function DecisionPacketExport({
           onClick={handlePrint}
           className="rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-brand-500 cursor-pointer"
         >
-          Print / PDF
+          Save as PDF
         </button>
       </div>
       {status && (
