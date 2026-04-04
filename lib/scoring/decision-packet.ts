@@ -131,151 +131,192 @@ export function buildDecisionPacketHtml({
   const winnerConfidence = winner?.confidence?.label ?? 'N/A'
   const winnerThesis = winner?.recommendationSummary?.decisionThesis ?? ''
   const winnerAnnualCost = winner?.recommendationSummary?.estimatedAnnualCost
-  const winnerCostLabel = winnerAnnualCost !== null ? escapeHtml(formatCurrency(winnerAnnualCost)) : 'N/A'
+  const winnerCostLabel = winnerAnnualCost !== null ? escapeHtml(formatCurrency(winnerAnnualCost)) + '/yr' : 'Contact vendor'
+
+  // Build strengths and caveats for winner
+  const winnerStrengths = winner?.recommendationSummary?.strengths ?? memo.winner.reasons
+  const winnerCaveats = winner?.recommendationSummary?.caveats ?? []
+
+  // Build score bridge
+  const adjustments = winner?.decisionAdjustments ?? []
+  const adjustmentRows = adjustments.map(a =>
+    `<tr><td class="adj-label">${escapeHtml(a.factor)}</td><td class="adj-val">-${a.penalty}</td></tr>`
+  ).join('')
 
   return `<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Agentic Matrix — Decision Packet</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font-family: 'Inter', system-ui, sans-serif; color: #1a1a2e; background: #fff; font-size: 14px; line-height: 1.6; }
-      main { max-width: 800px; margin: 0 auto; padding: 48px 40px 60px; }
+<head>
+  <meta charset="utf-8" />
+  <title>Agentic Matrix — Platform Recommendation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Bricolage Grotesque', system-ui, sans-serif; color: #0f172a; background: #fff; }
+    main { max-width: 820px; margin: 0 auto; padding: 56px 48px 64px; }
 
-      /* Header */
-      .header { border-bottom: 2px solid #0f766e; padding-bottom: 24px; margin-bottom: 32px; }
-      .header h1 { font-size: 24px; font-weight: 700; color: #0f172a; }
-      .header .date { font-size: 12px; color: #6b7280; margin-top: 4px; }
-      .header .summary { font-size: 15px; color: #374151; margin-top: 12px; line-height: 1.7; }
+    /* Title block */
+    .title-block { margin-bottom: 40px; }
+    .title-block h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; }
+    .title-block .sub { font-size: 13px; color: #64748b; margin-top: 6px; font-weight: 400; }
 
-      /* Section */
-      .section { margin-top: 28px; }
-      .section-title { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #0f766e; margin-bottom: 12px; }
+    /* Divider */
+    hr { border: none; border-top: 1px solid #e2e8f0; margin: 32px 0; }
+    hr.thick { border-top: 2.5px solid #0f172a; margin: 8px 0 32px; }
 
-      /* Recommendation card */
-      .rec-card { background: #f0fdfa; border: 1px solid #99f6e4; border-radius: 8px; padding: 20px; }
-      .rec-card .platform { font-size: 20px; font-weight: 700; color: #0f172a; }
-      .rec-card .thesis { font-size: 12px; color: #0f766e; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 2px; }
-      .rec-card .rationale { font-size: 14px; color: #374151; margin-top: 10px; line-height: 1.7; }
-      .rec-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 14px; }
-      .metric { background: #fff; border: 1px solid #e5e7eb; border-radius: 6px; padding: 10px 12px; }
-      .metric .label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #6b7280; }
-      .metric .value { font-size: 18px; font-weight: 700; color: #0f172a; margin-top: 2px; }
+    /* Section label */
+    .label { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #94a3b8; margin-bottom: 14px; }
 
-      /* Key strengths / caveats */
-      .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-      .tag { font-size: 12px; padding: 4px 10px; border-radius: 20px; font-weight: 500; }
-      .tag.green { background: #dcfce7; color: #166534; }
-      .tag.amber { background: #fef3c7; color: #92400e; }
+    /* Lead recommendation */
+    .lead { margin-bottom: 36px; }
+    .lead .platform-name { font-size: 26px; font-weight: 800; letter-spacing: -0.01em; }
+    .lead .thesis { font-size: 13px; font-weight: 600; color: #0f766e; margin-top: 2px; text-transform: capitalize; }
+    .lead .narrative { font-size: 15px; line-height: 1.75; color: #334155; margin-top: 14px; }
 
-      /* Assessment table */
-      .assess-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 20px; }
-      .assess-item { font-size: 13px; padding: 4px 0; }
-      .assess-item .label { color: #6b7280; font-weight: 500; }
-      .assess-item .val { color: #1a1a2e; }
+    /* Metrics strip */
+    .metrics { display: flex; gap: 0; border-top: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; margin: 20px 0; }
+    .m { flex: 1; padding: 14px 0; text-align: center; border-right: 1px solid #e2e8f0; }
+    .m:last-child { border-right: none; }
+    .m .mv { font-size: 22px; font-weight: 800; color: #0f172a; }
+    .m .ml { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #94a3b8; margin-top: 2px; }
 
-      /* Alternatives */
-      .alt-card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 14px 16px; margin-bottom: 10px; }
-      .alt-card .name { font-size: 15px; font-weight: 600; }
-      .alt-card .gap { font-size: 12px; color: #6b7280; float: right; }
-      .alt-card .reason { font-size: 13px; color: #4b5563; margin-top: 6px; line-height: 1.6; }
-      .alt-card .stronger { font-size: 11px; color: #0f766e; margin-top: 6px; font-weight: 500; }
+    /* Evidence list */
+    .evidence { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+    .ev { font-size: 12px; font-weight: 500; padding: 3px 10px; border-radius: 3px; }
+    .ev.pos { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+    .ev.neg { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
 
-      /* Scenarios */
-      .scenario { border-left: 3px solid #e5e7eb; padding: 10px 16px; margin-bottom: 10px; }
-      .scenario .title { font-size: 13px; font-weight: 600; color: #0f172a; }
-      .scenario .detail { font-size: 13px; color: #4b5563; margin-top: 4px; line-height: 1.6; }
+    /* Two-col layout */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
 
-      /* Leaderboard */
-      table { width: 100%; border-collapse: collapse; }
-      th { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #6b7280; text-align: left; padding: 8px 0; border-bottom: 2px solid #e5e7eb; }
-      td { padding: 10px 0; border-bottom: 1px solid #f3f4f6; font-size: 13px; vertical-align: top; }
-      td:nth-child(3) { font-weight: 600; }
+    /* Assessment inputs */
+    .inputs { font-size: 13px; line-height: 2; color: #475569; }
+    .inputs strong { color: #0f172a; font-weight: 600; }
 
-      /* Footer */
-      .footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid #e5e7eb; font-size: 11px; color: #9ca3af; }
+    /* Score bridge */
+    .bridge { font-size: 13px; }
+    .bridge table { width: 100%; }
+    .bridge td { padding: 4px 0; }
+    .bridge .adj-label { color: #64748b; }
+    .bridge .adj-val { text-align: right; color: #dc2626; font-weight: 600; font-variant-numeric: tabular-nums; }
+    .bridge .total td { font-weight: 700; border-top: 1.5px solid #0f172a; padding-top: 8px; }
+    .bridge .total .adj-val { color: #0f172a; }
 
-      @media print {
-        main { padding: 20px; }
-        .rec-card, .alt-card, .scenario { break-inside: avoid; }
-      }
-    </style>
-  </head>
-  <body>
-    <main>
-      <div class="header">
-        <h1>Agentic Matrix — Decision Packet</h1>
-        <div class="date">${escapeHtml(dateLabel)} &middot; Deterministic scoring &middot; Vendor-neutral</div>
-        <div class="summary">${escapeHtml(memo.winner.lead)}</div>
+    /* Alternatives */
+    .alt { margin-bottom: 18px; }
+    .alt .alt-name { font-size: 16px; font-weight: 700; }
+    .alt .alt-gap { font-size: 12px; color: #94a3b8; font-weight: 500; margin-left: 8px; }
+    .alt .alt-why { font-size: 13px; color: #475569; line-height: 1.65; margin-top: 4px; }
+    .alt .alt-edge { font-size: 12px; color: #0f766e; font-weight: 500; margin-top: 4px; }
+
+    /* Scenarios */
+    .scenario { margin-bottom: 16px; padding-left: 16px; border-left: 2.5px solid #e2e8f0; }
+    .scenario .sc-title { font-size: 14px; font-weight: 700; color: #0f172a; }
+    .scenario .sc-body { font-size: 13px; color: #475569; line-height: 1.65; margin-top: 3px; }
+
+    /* Leaderboard */
+    table.lb { width: 100%; border-collapse: collapse; font-size: 13px; }
+    table.lb th { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #94a3b8; text-align: left; padding: 8px 0; border-bottom: 1.5px solid #0f172a; }
+    table.lb td { padding: 10px 0; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+    table.lb td:nth-child(1) { font-weight: 700; width: 24px; color: #94a3b8; }
+    table.lb td:nth-child(3) { font-weight: 700; font-variant-numeric: tabular-nums; }
+
+    /* Footer */
+    .footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid #e2e8f0; font-size: 11px; color: #94a3b8; line-height: 1.6; }
+
+    @media print {
+      main { padding: 32px 24px; }
+      .alt, .scenario, .lead { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="title-block">
+      <h1>Platform Recommendation</h1>
+      <hr class="thick" />
+      <div class="sub">Agentic Matrix &middot; ${escapeHtml(dateLabel)} &middot; Deterministic scoring &middot; Vendor-neutral analysis</div>
+    </div>
+
+    <div class="lead">
+      <div class="label">Current Recommendation</div>
+      <div class="platform-name">${escapeHtml(memo.winner.platformName)}</div>
+      <div class="thesis">${escapeHtml(winnerThesis.replace(/-/g, ' '))}</div>
+      <div class="narrative">${escapeHtml(memo.winner.lead)}</div>
+      <div class="narrative" style="margin-top: 8px;">${escapeHtml(memo.winner.rationale)}</div>
+
+      <div class="metrics">
+        <div class="m"><div class="mv">${scores[0]?.decisionScore ?? memo.winner.totalScore}</div><div class="ml">Decision Score</div></div>
+        <div class="m"><div class="mv">${scores[0]?.fitScore ?? '—'}</div><div class="ml">Fit Score</div></div>
+        <div class="m"><div class="mv">${winnerCostLabel}</div><div class="ml">Annual Estimate</div></div>
+        <div class="m"><div class="mv">${escapeHtml(winnerRisk)}</div><div class="ml">Impl. Risk</div></div>
+        <div class="m"><div class="mv">${escapeHtml(winnerConfidence)}</div><div class="ml">Evidence</div></div>
       </div>
 
-      <div class="section">
-        <div class="section-title">Recommendation</div>
-        <div class="rec-card">
-          <div class="thesis">${escapeHtml(winnerThesis.replace(/-/g, ' '))}</div>
-          <div class="platform">${escapeHtml(memo.winner.platformName)}</div>
-          <div class="rationale">${escapeHtml(memo.winner.rationale)}</div>
-          <div class="rec-metrics">
-            <div class="metric"><div class="label">Decision Score</div><div class="value">${scores[0]?.decisionScore ?? memo.winner.totalScore}</div></div>
-            <div class="metric"><div class="label">Annual Est.</div><div class="value">${winnerCostLabel}</div></div>
-            <div class="metric"><div class="label">Risk</div><div class="value">${escapeHtml(winnerRisk)}</div></div>
-            <div class="metric"><div class="label">Confidence</div><div class="value">${escapeHtml(winnerConfidence)}</div></div>
-          </div>
-          <div class="tags">
-            ${memo.winner.reasons.map((r) => `<span class="tag green">${escapeHtml(r)}</span>`).join('')}
-          </div>
-        </div>
+      <div class="evidence">
+        ${winnerStrengths.map(s => `<span class="ev pos">${escapeHtml(s)}</span>`).join('')}
+        ${winnerCaveats.map(c => `<span class="ev neg">${escapeHtml(c)}</span>`).join('')}
       </div>
+    </div>
 
-      <div class="section">
-        <div class="section-title">Assessment Inputs</div>
-        <div class="assess-grid">
-          ${assessmentLines.map((line) => {
+    <hr />
+
+    <div class="two-col">
+      <div>
+        <div class="label">Assessment Inputs</div>
+        <div class="inputs">
+          ${assessmentLines.map(line => {
             const parts = line.replace(/^- /, '').split(': ')
-            return `<div class="assess-item"><span class="label">${escapeHtml(parts[0])}:</span> <span class="val">${escapeHtml(parts.slice(1).join(': '))}</span></div>`
+            return `<strong>${escapeHtml(parts[0])}:</strong> ${escapeHtml(parts.slice(1).join(': '))}<br/>`
           }).join('')}
         </div>
       </div>
-
-      <div class="section">
-        <div class="section-title">Why Not The Alternatives</div>
-        ${memo.alternatives.map((alt) => `
-          <div class="alt-card">
-            <span class="gap">${alt.scoreGap > 0 ? '-' : ''}${alt.scoreGap} pts</span>
-            <div class="name">${escapeHtml(alt.platformName)}</div>
-            <div class="reason">${escapeHtml(alt.whyNot)}</div>
-            ${alt.strongerAreas.length > 0 ? `<div class="stronger">Stronger on: ${escapeHtml(alt.strongerAreas.join(', '))}</div>` : ''}
-          </div>
-        `).join('')}
+      <div>
+        <div class="label">Score Bridge</div>
+        <div class="bridge">
+          <table>
+            <tr><td>Fit score (SAW)</td><td class="adj-val" style="color: #0f172a;">${scores[0]?.fitScore ?? '—'}</td></tr>
+            ${adjustmentRows}
+            <tr class="total"><td>Decision score</td><td class="adj-val">${scores[0]?.decisionScore ?? memo.winner.totalScore}</td></tr>
+          </table>
+        </div>
       </div>
+    </div>
 
-      <div class="section">
-        <div class="section-title">What Would Change This Recommendation</div>
-        ${memo.scenarios.map((s) => `
-          <div class="scenario">
-            <div class="title">${escapeHtml(s.title)}</div>
-            <div class="detail">${escapeHtml(s.detail)}</div>
-          </div>
-        `).join('')}
-      </div>
+    <hr />
 
-      <div class="section">
-        <div class="section-title">Platform Leaderboard</div>
-        <table>
-          <thead><tr><th>#</th><th>Platform</th><th>Score</th><th>Annual Est.</th><th>Assessment</th></tr></thead>
-          <tbody>${topScores}</tbody>
-        </table>
+    <div class="label">Why Not The Alternatives</div>
+    ${memo.alternatives.map(alt => `
+      <div class="alt">
+        <span class="alt-name">${escapeHtml(alt.platformName)}</span>
+        <span class="alt-gap">${alt.scoreGap > 0 ? '-' : ''}${alt.scoreGap} pts vs winner</span>
+        <div class="alt-why">${escapeHtml(alt.whyNot)}</div>
+        ${alt.strongerAreas.length > 0 ? `<div class="alt-edge">Stronger on: ${escapeHtml(alt.strongerAreas.join(', '))}</div>` : ''}
       </div>
+    `).join('')}
 
-      <div class="footer">
-        Generated by Agentic Matrix &middot; Deterministic scoring engine &middot; No vendor sponsorships or affiliate relationships &middot; ${escapeHtml(dateLabel)}
+    <hr />
+
+    <div class="label">What Would Change This Recommendation</div>
+    ${memo.scenarios.map(s => `
+      <div class="scenario">
+        <div class="sc-title">${escapeHtml(s.title)}</div>
+        <div class="sc-body">${escapeHtml(s.detail)}</div>
       </div>
-    </main>
-  </body>
+    `).join('')}
+
+    <hr />
+
+    <div class="label">Platform Leaderboard</div>
+    <table class="lb">
+      <thead><tr><th>#</th><th>Platform</th><th>Score</th><th>Annual Est.</th><th>Assessment</th></tr></thead>
+      <tbody>${topScores}</tbody>
+    </table>
+
+    <div class="footer">
+      Agentic Matrix &middot; No vendor sponsorships, affiliate payments, or compensation of any kind &middot; Scoring is deterministic and auditable &middot; ${escapeHtml(dateLabel)}
+    </div>
+  </main>
+</body>
 </html>`
 }
 
