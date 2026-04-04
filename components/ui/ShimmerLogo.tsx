@@ -9,12 +9,12 @@ import { useRef, useEffect, useState } from 'react'
  */
 
 const LOGO_TEXT = 'AGENTIC MATRIX'
-const FONT_SIZE = 17
+const FONT_SIZE = 19
 const SHIMMER_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.:+=-~'
 
 const FONTS = [
   `${FONT_SIZE}px "JetBrains Mono", "SF Mono", monospace`,
-  `italic ${FONT_SIZE}px "JetBrains Mono", "SF Mono", monospace`,
+  `500 ${FONT_SIZE}px "JetBrains Mono", "SF Mono", monospace`,
   `bold ${FONT_SIZE}px "JetBrains Mono", "SF Mono", monospace`,
 ]
 const MEASURE_FONT = `bold ${FONT_SIZE}px "JetBrains Mono", "SF Mono", monospace`
