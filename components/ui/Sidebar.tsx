@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { PretextLogo } from './PretextLogo'
 
 const navItems = [
   {
@@ -108,10 +109,13 @@ export function Sidebar() {
 
         {/* Logo */}
         <div className="border-b border-neutral-800 px-5 py-5">
-          <Link href="/" className="block text-center" onClick={closeMobile}>
-            <div className="font-serif text-xl leading-none text-white">Agentic Matrix</div>
-            <div className="mt-1 text-xs uppercase tracking-[0.24em] text-neutral-500">
-              Decision Toolkit
+          <Link href="/" className="flex items-center gap-3" onClick={closeMobile}>
+            <PretextLogo size={38} />
+            <div>
+              <div className="font-heading text-lg font-bold leading-tight text-white">Agentic Matrix</div>
+              <div className="text-[10px] uppercase tracking-[0.2em] text-neutral-500">
+                Decision Toolkit
+              </div>
             </div>
           </Link>
         </div>
