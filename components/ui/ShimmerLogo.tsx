@@ -3,17 +3,21 @@
 import { useRef, useEffect, useState } from 'react'
 
 /**
- * Shimmer Logo — "AGENTIC MATRIX" rendered with subtle character shimmer.
- * Each character periodically shifts between typographic variants
- * (weight/style) creating a gentle living texture. Inspired by the
- * variable-typographic-ascii Pretext demo but restrained for navigation.
+ * Shimmer Logo — "AGENTIC MATRIX" with subtle living typography.
+ * Characters shift weight/brightness and occasionally glitch.
+ * Uses Space Grotesk to match the app's heading font.
  */
 
 const LOGO_TEXT = 'AGENTIC MATRIX'
-const FONT_SIZE = 18
-const CHAR_WIDTH = 12
-const LINE_HEIGHT = 22
+const FONT_SIZE = 17
 const SHIMMER_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.:+=-~'
+
+const FONTS = [
+  `${FONT_SIZE}px "Space Grotesk", system-ui, sans-serif`,
+  `italic ${FONT_SIZE}px "Space Grotesk", system-ui, sans-serif`,
+  `bold ${FONT_SIZE}px "Space Grotesk", system-ui, sans-serif`,
+]
+const MEASURE_FONT = `bold ${FONT_SIZE}px "Space Grotesk", system-ui, sans-serif`
 
 export function ShimmerLogo() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -32,8 +36,21 @@ export function ShimmerLogo() {
     if (!ctx) return
 
     const dpr = window.devicePixelRatio || 2
-    const w = LOGO_TEXT.length * CHAR_WIDTH + 4
-    const h = LINE_HEIGHT + 2
+
+    // Measure total text width with bold font (widest variant)
+    ctx.font = MEASURE_FONT
+    const totalWidth = ctx.measureText(LOGO_TEXT).width
+
+    // Measure individual character positions
+    const charPositions: number[] = []
+    let x = 0
+    for (let i = 0; i < LOGO_TEXT.length; i++) {
+      charPositions.push(x)
+      x += ctx.measureText(LOGO_TEXT[i]).width
+    }
+
+    const w = Math.ceil(totalWidth) + 4
+    const h = FONT_SIZE + 6
 
     canvas.width = w * dpr
     canvas.height = h * dpr
@@ -41,18 +58,17 @@ export function ShimmerLogo() {
     canvas.style.height = `${h}px`
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
 
-    // Precompute character brightness values for shimmer effect
-    const fonts = [
-      `${FONT_SIZE}px "JetBrains Mono", "SF Mono", monospace`,
-      `italic ${FONT_SIZE}px "JetBrains Mono", "SF Mono", monospace`,
-      `bold ${FONT_SIZE}px "JetBrains Mono", "SF Mono", monospace`,
-    ]
-
     let running = true
     let tick = 0
+    let lastFrame = 0
 
-    function animate() {
+    function render(time: number) {
       if (!running) return
+      if (time - lastFrame < 50) { // ~20fps
+        frameRef.current = requestAnimationFrame(render)
+        return
+      }
+      lastFrame = time
       tick++
 
       ctx!.clearRect(0, 0, w, h)
@@ -61,81 +77,37 @@ export function ShimmerLogo() {
         const char = LOGO_TEXT[i]
         if (char === ' ') continue
 
-        const x = i * CHAR_WIDTH + 2
-        const y = FONT_SIZE
+        const cx = charPositions[i] + 2
+        const cy = FONT_SIZE
 
-        // Each character has its own phase offset for organic shimmer
-        const phase = (tick * 0.02 + i * 0.7) % (Math.PI * 2)
-        const shimmerAmount = Math.sin(phase) * 0.5 + 0.5 // 0-1
+        // Organic shimmer per character
+        const phase = (tick * 0.03 + i * 0.8) % (Math.PI * 2)
+        const shimmer = Math.sin(phase) * 0.5 + 0.5
 
-        // Occasionally glitch a character to a random one
-        const glitchChance = Math.sin(tick * 0.005 + i * 1.3)
-        const isGlitching = glitchChance > 0.97
+        // Rare glitch
+        const glitch = Math.sin(tick * 0.007 + i * 1.5) > 0.96
 
-        // Pick font variant based on shimmer phase
-        const fontIdx = shimmerAmount > 0.7 ? 2 : shimmerAmount > 0.3 ? 0 : 1
-        ctx!.font = fonts[fontIdx]
+        // Font variant
+        const fontIdx = shimmer > 0.7 ? 2 : shimmer > 0.4 ? 0 : 1
+        ctx!.font = FONTS[fontIdx]
 
-        // Color: teal with varying brightness
-        const brightness = 140 + Math.floor(shimmerAmount * 80) // 140-220
-        const alpha = 0.7 + shimmerAmount * 0.3 // 0.7-1.0
+        const b = 160 + Math.floor(shimmer * 60)
+        const a = 0.75 + shimmer * 0.25
 
-        if (isGlitching) {
-          // Brief glitch: random character from shimmer set
-          const glitchChar = SHIMMER_CHARS[Math.floor(Math.random() * SHIMMER_CHARS.length)]
-          ctx!.fillStyle = `rgba(71, 180, 167, ${alpha * 0.5})`
-          ctx!.fillText(glitchChar, x, y)
+        if (glitch) {
+          const gc = SHIMMER_CHARS[Math.floor(Math.random() * SHIMMER_CHARS.length)]
+          ctx!.fillStyle = `rgba(71, 180, 167, ${a * 0.4})`
+          ctx!.fillText(gc, cx, cy)
         } else {
-          ctx!.fillStyle = `rgba(${brightness}, ${Math.min(255, brightness + 40)}, ${Math.min(255, brightness + 20)}, ${alpha})`
-          ctx!.fillText(char, x, y)
+          ctx!.fillStyle = `rgba(${b}, ${Math.min(255, b + 50)}, ${Math.min(255, b + 30)}, ${a})`
+          ctx!.fillText(char, cx, cy)
         }
       }
 
-      frameRef.current = requestAnimationFrame(animate)
+      frameRef.current = requestAnimationFrame(render)
     }
 
-    // Run at ~20fps for subtle effect, not 60fps
-    let lastFrame = 0
-    function throttledAnimate(time: number) {
-      if (!running) return
-      if (time - lastFrame > 50) { // ~20fps
-        lastFrame = time
-        tick++
-
-        ctx!.clearRect(0, 0, w, h)
-
-        for (let i = 0; i < LOGO_TEXT.length; i++) {
-          const char = LOGO_TEXT[i]
-          if (char === ' ') continue
-
-          const x = i * CHAR_WIDTH + 2
-          const y = FONT_SIZE
-
-          const phase = (tick * 0.03 + i * 0.8) % (Math.PI * 2)
-          const shimmer = Math.sin(phase) * 0.5 + 0.5
-
-          const glitch = Math.sin(tick * 0.007 + i * 1.5) > 0.96
-
-          const fontIdx = shimmer > 0.7 ? 2 : shimmer > 0.4 ? 0 : 1
-          ctx!.font = fonts[fontIdx]
-
-          const b = 160 + Math.floor(shimmer * 60)
-          const a = 0.75 + shimmer * 0.25
-
-          if (glitch) {
-            const gc = SHIMMER_CHARS[Math.floor(Math.random() * SHIMMER_CHARS.length)]
-            ctx!.fillStyle = `rgba(71, 180, 167, ${a * 0.4})`
-            ctx!.fillText(gc, x, y)
-          } else {
-            ctx!.fillStyle = `rgba(${b}, ${Math.min(255, b + 50)}, ${Math.min(255, b + 30)}, ${a})`
-            ctx!.fillText(char, x, y)
-          }
-        }
-      }
-      frameRef.current = requestAnimationFrame(throttledAnimate)
-    }
-
-    frameRef.current = requestAnimationFrame(throttledAnimate)
+    frameRef.current = requestAnimationFrame(render)
 
     return () => {
       running = false
@@ -150,11 +122,10 @@ export function ShimmerLogo() {
         className={`transition-opacity duration-500 ${ready ? 'opacity-100' : 'opacity-0'}`}
         aria-label="Agentic Matrix"
       />
-      {/* Fallback before canvas ready */}
       {!ready && (
-        <div className="font-mono text-lg font-bold text-neutral-300">AGENTIC MATRIX</div>
+        <div className="font-heading text-lg font-bold text-neutral-300">AGENTIC MATRIX</div>
       )}
-      <div className="mt-1 text-[10px] uppercase tracking-[0.18em] text-neutral-500">
+      <div className="mt-1.5 font-heading text-xs uppercase tracking-[0.18em] text-neutral-500">
         Decision Toolkit
       </div>
     </div>
