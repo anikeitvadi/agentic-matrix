@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { ShimmerLogo } from './ShimmerLogo'
 
 const navItems = [
   {
@@ -107,12 +108,9 @@ export function Sidebar() {
         </button>
 
         {/* Logo */}
-        <div className="border-b border-neutral-800 px-5 py-5">
+        <div className="border-b border-neutral-800 px-5 py-4">
           <Link href="/" className="block" onClick={closeMobile}>
-            <div className="font-heading text-lg font-bold leading-tight text-white">Agentic Matrix</div>
-            <div className="mt-1 text-[10px] uppercase tracking-[0.2em] text-neutral-500">
-              Decision Toolkit
-            </div>
+            <ShimmerLogo />
           </Link>
         </div>
 
