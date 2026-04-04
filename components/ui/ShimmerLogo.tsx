@@ -13,11 +13,11 @@ const FONT_SIZE = 17
 const SHIMMER_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.:+=-~'
 
 const FONTS = [
-  `${FONT_SIZE}px "Space Grotesk", system-ui, sans-serif`,
-  `italic ${FONT_SIZE}px "Space Grotesk", system-ui, sans-serif`,
-  `bold ${FONT_SIZE}px "Space Grotesk", system-ui, sans-serif`,
+  `${FONT_SIZE}px "JetBrains Mono", "SF Mono", monospace`,
+  `italic ${FONT_SIZE}px "JetBrains Mono", "SF Mono", monospace`,
+  `bold ${FONT_SIZE}px "JetBrains Mono", "SF Mono", monospace`,
 ]
-const MEASURE_FONT = `bold ${FONT_SIZE}px "Space Grotesk", system-ui, sans-serif`
+const MEASURE_FONT = `bold ${FONT_SIZE}px "JetBrains Mono", "SF Mono", monospace`
 
 export function ShimmerLogo() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
