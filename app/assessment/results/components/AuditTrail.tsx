@@ -136,7 +136,7 @@ export function AuditTrail({ scores }: AuditTrailProps) {
               {selectedScore.platformName} - Score Details
             </h3>
             <p className="text-sm text-neutral-400">
-              Total Score: {selectedScore.totalScore}/100
+              Fit Score: {selectedScore.fitScore} → Decision Score: {selectedScore.decisionScore}/100
             </p>
           </div>
 
@@ -204,17 +204,46 @@ export function AuditTrail({ scores }: AuditTrailProps) {
               </tbody>
               <tfoot>
                 <tr className="bg-neutral-800/50">
-                  <td className="px-4 py-3 font-medium">Total</td>
+                  <td className="px-4 py-3 font-medium">Fit Score</td>
                   <td className="px-4 py-3 text-center">-</td>
                   <td className="px-4 py-3 text-center font-medium">100%</td>
                   <td className="px-4 py-3 text-center">
-                    <span className="font-bold text-brand-400 text-lg">
-                      {selectedScore.totalScore}
+                    <span className="font-bold text-white text-lg">
+                      {selectedScore.fitScore}
                     </span>
                     <span className="text-neutral-500 text-sm"> pts</span>
                   </td>
-                  <td className="px-4 py-3 hidden lg:table-cell"></td>
+                  <td className="px-4 py-3 hidden lg:table-cell text-sm text-neutral-500">
+                    Theoretical match quality before adjustments
+                  </td>
                 </tr>
+                {selectedScore.decisionAdjustments.length > 0 && (
+                  <>
+                    {selectedScore.decisionAdjustments.map((adj) => (
+                      <tr key={adj.factor} className="border-t border-neutral-800/50">
+                        <td className="px-4 py-2 text-sm text-red-400">{adj.factor}</td>
+                        <td className="px-4 py-2 text-center">-</td>
+                        <td className="px-4 py-2 text-center">-</td>
+                        <td className="px-4 py-2 text-center text-sm text-red-400">-{adj.penalty}</td>
+                        <td className="px-4 py-2 hidden lg:table-cell text-sm text-neutral-500">{adj.reasoning}</td>
+                      </tr>
+                    ))}
+                    <tr className="bg-neutral-800/50 border-t border-neutral-700">
+                      <td className="px-4 py-3 font-medium">Decision Score</td>
+                      <td className="px-4 py-3 text-center">-</td>
+                      <td className="px-4 py-3 text-center">-</td>
+                      <td className="px-4 py-3 text-center">
+                        <span className="font-bold text-brand-400 text-lg">
+                          {selectedScore.decisionScore}
+                        </span>
+                        <span className="text-neutral-500 text-sm"> pts</span>
+                      </td>
+                      <td className="px-4 py-3 hidden lg:table-cell text-sm text-neutral-500">
+                        Final ranking score after risk, confidence, and gate adjustments
+                      </td>
+                    </tr>
+                  </>
+                )}
               </tfoot>
             </table>
           </div>
