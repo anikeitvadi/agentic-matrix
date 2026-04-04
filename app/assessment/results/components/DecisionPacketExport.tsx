@@ -62,20 +62,31 @@ export function DecisionPacketExport({
       scores,
     })
 
-    // Download as HTML file — user can open and print/save as PDF
+    // Open as blob URL in new tab — more reliable than window.open('')
     const blob = new Blob([html], { type: 'text/html;charset=utf-8' })
     const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    const date = new Date().toISOString().slice(0, 10)
+    const tab = window.open(url, '_blank')
 
-    link.href = url
-    link.download = `agentic-matrix-decision-packet-${date}.html`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
+    if (tab) {
+      // Auto-trigger print after content loads
+      tab.addEventListener('load', () => {
+        setTimeout(() => tab.print(), 300)
+      })
+      setStatus('Opened decision packet — use Save as PDF in the print dialog.')
+    } else {
+      // Fallback: download the file
+      const link = document.createElement('a')
+      const date = new Date().toISOString().slice(0, 10)
+      link.href = url
+      link.download = `agentic-matrix-decision-packet-${date}.html`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      setStatus('Downloaded decision packet. Open it and use Cmd+P to save as PDF.')
+    }
 
-    setStatus('Downloaded printable HTML. Open it and use Cmd+P / Ctrl+P to save as PDF.')
+    // Clean up after a delay
+    setTimeout(() => URL.revokeObjectURL(url), 60000)
   }
 
   return (

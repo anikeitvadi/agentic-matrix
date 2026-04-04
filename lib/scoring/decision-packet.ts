@@ -91,7 +91,7 @@ export function buildDecisionPacketHtml({
         <tr>
           <td>${index + 1}</td>
           <td>${escapeHtml(score.platformName)}</td>
-          <td>${score.totalScore}/100</td>
+          <td>${score.decisionScore}/100</td>
           <td>${annualCost !== null ? escapeHtml(formatCurrency(annualCost)) : 'N/A'}</td>
           <td>${escapeHtml(score.recommendationSummary.headline)}</td>
         </tr>
@@ -233,7 +233,7 @@ export function buildDecisionPacketHtml({
   <body>
     <main>
       <header>
-        <h1>Agentic Decisions Recommendation Packet</h1>
+        <h1>Agentic Matrix — Decision Packet</h1>
         <p class="meta">Generated ${escapeHtml(dateLabel)}</p>
         <p class="lede">${escapeHtml(memo.winner.lead)}</p>
       </header>
