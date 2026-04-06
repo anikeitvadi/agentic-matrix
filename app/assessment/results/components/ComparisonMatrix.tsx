@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, type ReactNode } from 'react'
+import { useState, useMemo } from 'react'
 import {
   useReactTable,
   getCoreRowModel,
@@ -13,7 +13,7 @@ import Link from 'next/link'
 import type { PlatformScore } from '@/lib/scoring/types'
 import type { Platform } from '@/.velite'
 import type { FilterValues } from './FilterPanel'
-import { isEstimatedAnnualCostInDisplayRange } from '@/lib/assessment/budget-ranges'
+import { isEstimatedAnnualCostInDisplayRange, type BudgetFilterRange } from '@/lib/assessment/budget-ranges'
 
 interface ComparisonMatrixProps {
   scores: PlatformScore[]
@@ -235,14 +235,6 @@ function SortIndicator({ isSorted }: { isSorted: false | 'asc' | 'desc' }) {
   )
 }
 
-function StatusPill({ children }: { children: ReactNode }) {
-  return (
-    <span className="inline-flex items-center rounded-full border border-neutral-800/70 bg-neutral-950/70 px-3 py-1 text-xs font-medium text-neutral-300">
-      {children}
-    </span>
-  )
-}
-
 /**
  * Apply filters to platform scores.
  *
@@ -265,7 +257,7 @@ function applyFilters(
       const annualCost = score.recommendationSummary?.estimatedAnnualCost
       if (annualCost == null) return false // Exclude if no cost estimate
 
-      if (!isEstimatedAnnualCostInDisplayRange(annualCost, filters.budgetRange as any)) {
+      if (!isEstimatedAnnualCostInDisplayRange(annualCost, filters.budgetRange as BudgetFilterRange)) {
         return false
       }
     }
@@ -291,8 +283,8 @@ function applyFilters(
         // Cloud provider match
         if (cloudNative.some((c: string) => c.toLowerCase() === stackLower)) return true
         // On-premise / hybrid match
-        if (stackLower === 'on-premise' && (hasSelfHosted || deploymentOptions.includes('on-prem' as any) || deploymentOptions.includes('vpc' as any))) return true
-        if (stackLower === 'hybrid' && (deploymentOptions.includes('hybrid-cloud' as any) || hasSelfHosted)) return true
+        if (stackLower === 'on-premise' && (hasSelfHosted || deploymentOptions.includes('on-prem') || deploymentOptions.includes('vpc'))) return true
+        if (stackLower === 'hybrid' && (deploymentOptions.includes('hybrid-cloud') || hasSelfHosted)) return true
         return false
       })
 

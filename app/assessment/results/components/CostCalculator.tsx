@@ -47,7 +47,7 @@ export function CostCalculator({ platforms, topPlatformIds = [], assessment }: C
   const [usageParams, setUsageParams] = useState<UsageParameters>(initialUsage)
 
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>('yearly')
-  const [expandedPlatformId, setExpandedPlatformId] = useState<string | null>(null) // kept for cost card click highlight
+  const [, setExpandedPlatformId] = useState<string | null>(null) // kept for cost card click highlight
 
   // Show top recommended platforms in score order (not file order)
   const platformsToCalculate = useMemo(() => {
@@ -73,7 +73,7 @@ export function CostCalculator({ platforms, topPlatformIds = [], assessment }: C
           const complexity = derivePlatformComplexity(platform, assessment ?? {})
 
           return calculatePlatformCost(
-            platform as any, // Type assertion - Platform type matches PlatformForCost
+            platform as Parameters<typeof calculatePlatformCost>[0],
             {
               ...usageParams,
               complexity,

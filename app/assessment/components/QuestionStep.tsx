@@ -1,12 +1,12 @@
 'use client'
 
 import { UseFormRegister, FieldErrors, Control } from 'react-hook-form'
-import type { AssessmentData } from '../schemas/assessment-schema'
+import type { AssessmentFormValues } from '../schemas/assessment-schema'
 
 interface QuestionStepProps {
-  register: UseFormRegister<AssessmentData>
-  errors: FieldErrors<AssessmentData>
-  control: Control<AssessmentData>
+  register: UseFormRegister<AssessmentFormValues>
+  errors: FieldErrors<AssessmentFormValues>
+  control: Control<AssessmentFormValues>
 }
 
 interface FieldConfig {
@@ -23,7 +23,7 @@ interface QuestionFieldProps extends QuestionStepProps {
   field: FieldConfig
 }
 
-export function QuestionField({ register, errors, control, field }: QuestionFieldProps) {
+export function QuestionField({ register, errors, control: _control, field }: QuestionFieldProps) {
   const errorMessage = getErrorMessage(errors, field.name)
 
   return (
@@ -48,7 +48,7 @@ export function QuestionField({ register, errors, control, field }: QuestionFiel
               <input
                 type="radio"
                 value={option.value}
-                {...register(field.name as any)}
+                {...register(field.name as keyof AssessmentFormValues)}
                 className="h-4 w-4 border-neutral-600 bg-neutral-800 text-brand-500 focus:ring-brand-500 focus:ring-2 focus:ring-offset-0"
               />
               <span className="text-sm text-neutral-300 group-has-[:checked]:text-brand-300 transition-colors">
@@ -70,7 +70,7 @@ export function QuestionField({ register, errors, control, field }: QuestionFiel
               <input
                 type="checkbox"
                 value={option.value}
-                {...register(field.name as any)}
+                {...register(field.name as keyof AssessmentFormValues)}
                 className="h-4 w-4 rounded border-neutral-600 bg-neutral-800 text-brand-500 focus:ring-brand-500 focus:ring-2 focus:ring-offset-0"
               />
               <span className="text-sm text-neutral-300 group-has-[:checked]:text-brand-300 transition-colors">
@@ -85,7 +85,7 @@ export function QuestionField({ register, errors, control, field }: QuestionFiel
       {field.type === 'text' && (
         <input
           type="text"
-          {...register(field.name as any)}
+          {...register(field.name as keyof AssessmentFormValues)}
           placeholder={field.placeholder}
           className="w-full rounded-xl border border-neutral-800/60 bg-neutral-900/30 px-4 py-3 text-sm text-white placeholder-neutral-600 transition-all focus:border-brand-500/60 focus:outline-none focus:ring-1 focus:ring-brand-500/30"
         />
@@ -94,7 +94,7 @@ export function QuestionField({ register, errors, control, field }: QuestionFiel
       {/* Select dropdown */}
       {field.type === 'select' && field.options && (
         <select
-          {...register(field.name as any)}
+          {...register(field.name as keyof AssessmentFormValues)}
           className="w-full rounded-xl border border-neutral-800/60 bg-neutral-900/30 px-4 py-3 text-sm text-white transition-all focus:border-brand-500/60 focus:outline-none focus:ring-1 focus:ring-brand-500/30"
         >
           <option value="">Select an option</option>
@@ -114,14 +114,14 @@ export function QuestionField({ register, errors, control, field }: QuestionFiel
   )
 }
 
-function getErrorMessage(errors: FieldErrors<AssessmentData>, fieldPath: string): string | undefined {
+function getErrorMessage(errors: FieldErrors<AssessmentFormValues>, fieldPath: string): string | undefined {
   const parts = fieldPath.split('.')
-  let current: any = errors
+  let current: Record<string, unknown> | undefined = errors as Record<string, unknown>
 
   for (const part of parts) {
     if (!current || !current[part]) return undefined
-    current = current[part]
+    current = current[part] as Record<string, unknown> | undefined
   }
 
-  return current?.message
+  return current?.message as string | undefined
 }

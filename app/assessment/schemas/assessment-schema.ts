@@ -26,6 +26,13 @@ export const assessmentSchema = z.object({
 export type AssessmentData = z.infer<typeof assessmentSchema>
 
 /**
+ * Flat form values type — the assessment form registers fields with flat keys
+ * (e.g. "useCase", not "step1.useCase"), so this union represents what
+ * useForm actually holds at runtime.
+ */
+export type AssessmentFormValues = Step1Data & Step2Data & Step3Data & Step4Data
+
+/**
  * Export individual step types for convenience
  */
 export type { Step1Data, Step2Data, Step3Data, Step4Data }

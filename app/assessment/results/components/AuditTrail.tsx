@@ -4,8 +4,6 @@ import { useState, useMemo } from 'react'
 import type { PlatformScore } from '@/lib/scoring/types'
 import {
   explainComparison,
-  getCriterionLabel,
-  getCriterionDescription,
   getScoreBreakdown,
 } from '@/lib/scoring/audit-trail'
 

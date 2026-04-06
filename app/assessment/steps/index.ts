@@ -31,7 +31,7 @@ export function getStepSchema(stepNumber: number) {
 /**
  * Validate step data using Zod schema
  */
-export function validateStep(stepNumber: number, data: any) {
+export function validateStep(stepNumber: number, data: Record<string, unknown>) {
   const schema = getStepSchema(stepNumber)
   const result = schema.safeParse(data)
 

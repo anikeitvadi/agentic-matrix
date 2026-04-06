@@ -6,7 +6,7 @@ import { useForm, useWatch } from 'react-hook-form'
 import useFormPersist from 'react-hook-form-persist'
 import { StepIndicator } from './StepIndicator'
 import { steps, stepLabels, validateStep } from '../steps'
-import type { AssessmentData } from '../schemas/assessment-schema'
+import type { AssessmentData, AssessmentFormValues } from '../schemas/assessment-schema'
 import type { AssessmentContext } from '@/lib/assessment/conditional-logic'
 import {
   saveCurrentStep,
@@ -23,7 +23,7 @@ export function AssessmentForm() {
 
   // Use lazy initialization to avoid hydration mismatch
   const [currentStep, setCurrentStep] = useState(() => 1)
-  const [formData, setFormData] = useState<Partial<AssessmentData>>({})
+  const [formData, setFormData] = useState<Partial<AssessmentFormValues>>({})
   const [showResumeNotice, setShowResumeNotice] = useState(false)
 
   const {
@@ -35,7 +35,7 @@ export function AssessmentForm() {
     clearErrors,
     watch,
     setValue,
-  } = useForm<any>({
+  } = useForm<AssessmentFormValues>({
     mode: 'onBlur',
     defaultValues: formData,
   })
@@ -80,7 +80,7 @@ export function AssessmentForm() {
       // Set form errors from Zod validation
       clearErrors()
       validation.errors.forEach((err) => {
-        setError(err.path, { message: err.message })
+        setError(err.path as keyof AssessmentFormValues, { message: err.message })
       })
       return
     }
@@ -119,15 +119,9 @@ export function AssessmentForm() {
     if (!validation.success) {
       clearErrors()
       validation.errors.forEach((err) => {
-        setError(err.path, { message: err.message })
+        setError(err.path as keyof AssessmentFormValues, { message: err.message })
       })
       return
-    }
-
-    // Combine all step data for final submission
-    const completeData = {
-      ...formData,
-      [`step${currentStep}`]: currentValues,
     }
 
     // Clear step progress tracking (NOT form data - results page needs it)

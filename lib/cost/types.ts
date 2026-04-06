@@ -6,8 +6,6 @@
  * Used by cost calculators to estimate platform costs based on usage parameters.
  */
 
-import type { Platform } from '.velite'
-
 /**
  * The pricing model used by a platform.
  *

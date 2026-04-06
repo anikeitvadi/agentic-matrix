@@ -45,7 +45,7 @@ function fakeImport(specifier: string): Promise<Record<string, unknown>> {
 const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor
 
 export function BlueprintContent({ code }: BlueprintContentProps) {
-  const [Component, setComponent] = React.useState<React.ComponentType<any> | null>(null)
+  const [Component, setComponent] = React.useState<React.ComponentType<Record<string, unknown>> | null>(null)
   const [error, setError] = React.useState<string | null>(null)
 
   React.useEffect(() => {
@@ -65,10 +65,11 @@ export function BlueprintContent({ code }: BlueprintContentProps) {
           patchedCode + '\nreturn _createMdxContent;'
         )
 
+        const runtime = jsxRuntime as Record<string, unknown>
         const opts = {
-          Fragment: (jsxRuntime as any).Fragment,
-          jsx: (jsxRuntime as any).jsx,
-          jsxs: (jsxRuntime as any).jsxs,
+          Fragment: runtime.Fragment,
+          jsx: runtime.jsx,
+          jsxs: runtime.jsxs,
           baseUrl: '.',
         }
 

@@ -9,7 +9,7 @@ import { describe, it, expect } from 'vitest'
 import { existsSync } from 'fs'
 import { resolve } from 'path'
 import { scoreAllPlatforms } from '../score-platform'
-import { deriveWeights, DEFAULT_WEIGHTS } from '../weights'
+import { deriveWeights } from '../weights'
 import type { ScoringContext } from '../types'
 
 // These tests require generated velite output — skip gracefully on fresh checkout

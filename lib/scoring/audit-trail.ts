@@ -6,7 +6,6 @@
  */
 
 import type { AuditEntry, PlatformScore, Criterion } from './types'
-import { CRITERION_DIRECTIONS } from './normalize'
 
 /**
  * Human-readable labels for each criterion.

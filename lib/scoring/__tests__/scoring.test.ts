@@ -8,7 +8,7 @@
 import { describe, it, expect } from 'vitest'
 import { deriveWeights, DEFAULT_WEIGHTS } from '../weights'
 import { calculateSAW, scorePlatform, scoreAllPlatforms } from '../score-platform'
-import type { WeightConfig, ScoringContext } from '../types'
+import type { ScoringContext } from '../types'
 import type { Platform } from '.velite'
 
 // Mock platform data matching velite schema — cast to satisfy generated Platform type

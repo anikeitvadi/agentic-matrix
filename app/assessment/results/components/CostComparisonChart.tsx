@@ -10,7 +10,6 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  Cell,
 } from 'recharts'
 import type { CostEstimate } from '@/lib/cost/types'
 import { formatCurrency } from '@/lib/cost/format'

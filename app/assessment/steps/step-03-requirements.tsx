@@ -2,17 +2,17 @@
 
 import { UseFormRegister, FieldErrors, Control } from 'react-hook-form'
 import { QuestionField } from '../components/QuestionStep'
-import type { AssessmentData } from '../schemas/assessment-schema'
+import type { AssessmentFormValues } from '../schemas/assessment-schema'
 import type { AssessmentContext } from '@/lib/assessment/conditional-logic'
 
 interface Step3Props {
-  register: UseFormRegister<AssessmentData>
-  errors: FieldErrors<AssessmentData>
-  control: Control<AssessmentData>
+  register: UseFormRegister<AssessmentFormValues>
+  errors: FieldErrors<AssessmentFormValues>
+  control: Control<AssessmentFormValues>
   assessmentContext: AssessmentContext
 }
 
-export function Step3Requirements({ register, errors, control, assessmentContext }: Step3Props) {
+export function Step3Requirements({ register, errors, control, assessmentContext: _assessmentContext }: Step3Props) {
   return (
     <div>
       <h2 className="font-heading text-2xl font-bold text-white mb-1">Requirements</h2>
