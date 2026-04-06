@@ -385,8 +385,8 @@ describe('TCO Calculator', () => {
     pricing: {
       model: 'subscription' as const,
       tiers: [
-        { name: 'Professional', monthlyPrice: 995, includedUnits: 5000, unitType: 'tasks' },
-        { name: 'Enterprise', monthlyPrice: 3495, includedUnits: 25000, unitType: 'tasks' },
+        { name: 'Professional', monthlyPrice: 995, includedUnits: 5000, unitType: 'tasks' as const },
+        { name: 'Enterprise', monthlyPrice: 3495, includedUnits: 25000, unitType: 'tasks' as const },
       ],
     },
   }

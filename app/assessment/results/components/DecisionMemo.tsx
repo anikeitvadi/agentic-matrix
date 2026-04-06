@@ -48,7 +48,7 @@ export function DecisionMemo({ scores }: DecisionMemoProps) {
             <div className="rounded-2xl bg-neutral-950 px-5 py-4 text-right text-white">
               <div className="text-3xl font-bold">{memo.winner.totalScore}</div>
               <div className="text-xs uppercase tracking-[0.18em] text-neutral-400">
-                weighted score
+                decision score
               </div>
             </div>
           </div>

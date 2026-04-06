@@ -9,8 +9,10 @@ import { describe, it, expect } from 'vitest'
 import { deriveWeights, DEFAULT_WEIGHTS } from '../weights'
 import { calculateSAW, scorePlatform, scoreAllPlatforms } from '../score-platform'
 import type { WeightConfig, ScoringContext } from '../types'
+import type { Platform } from '.velite'
 
-// Mock platform data matching velite schema
+// Mock platform data matching velite schema — cast to satisfy generated Platform type
+// while keeping test fixtures minimal
 const mockPlatforms = [
   {
     slug: 'zapier',
@@ -27,6 +29,9 @@ const mockPlatforms = [
       complianceCerts: ['soc2'],
       supportedIntegrations: ['slack', 'salesforce', 'hubspot', 'jira', 'github'],
       useCaseStrengths: ['customer-support', 'workflow-automation'],
+      zeroDataRetention: false,
+      bringYourOwnKey: false,
+      deploymentOptions: ['saas' as const],
     },
     pricing: { model: 'subscription' as const, details: '$20-$69/month', tiers: [{ name: 'Professional', monthlyPrice: 20, includedUnits: 750, unitType: 'tasks' as const }] },
     description: 'Automation platform',
@@ -49,6 +54,9 @@ const mockPlatforms = [
       complianceCerts: ['soc2', 'gdpr'],
       supportedIntegrations: ['slack', 'github', 'jira'],
       useCaseStrengths: ['customer-support', 'data-extraction', 'workflow-automation'],
+      zeroDataRetention: false,
+      bringYourOwnKey: false,
+      deploymentOptions: ['saas' as const, 'on-prem' as const],
     },
     pricing: { model: 'hybrid' as const, details: 'Free self-hosted, cloud from $24/month', tiers: [{ name: 'Community', monthlyPrice: 0, includedUnits: 0, unitType: 'tasks' as const }] },
     description: 'Open source automation',
@@ -71,6 +79,9 @@ const mockPlatforms = [
       complianceCerts: ['soc2', 'hipaa'],
       supportedIntegrations: ['slack', 'salesforce', 'sap', 'oracle', 'workday', 'jira', 'github'],
       useCaseStrengths: ['customer-support', 'workflow-automation'],
+      zeroDataRetention: false,
+      bringYourOwnKey: false,
+      deploymentOptions: ['saas' as const],
     },
     pricing: { model: 'subscription' as const, details: 'Custom pricing, $50k-$130k/year', tiers: [{ name: 'Professional', monthlyPrice: 1999, includedUnits: 10000, unitType: 'tasks' as const }] },
     description: 'Enterprise automation',
@@ -78,7 +89,7 @@ const mockPlatforms = [
     officialDocs: 'https://workato.com/docs',
     body: '',
   },
-]
+] as unknown as Platform[]
 
 describe('Weight Derivation', () => {
   describe('DEFAULT_WEIGHTS', () => {

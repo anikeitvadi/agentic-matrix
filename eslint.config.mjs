@@ -32,12 +32,9 @@ export default tseslint.config(
         'warn',
         { 'ts-ignore': 'allow-with-description' },
       ],
-      // setState in effects is valid for hydrating from localStorage
+      // Downgrade react-hooks errors to warnings for valid patterns
       'react-hooks/set-state-in-effect': 'warn',
-      // Incompatible library warnings are informational
-      'react-hooks/incompatible-library': 'warn',
-      // React compiler memoization preservation is informational
-      'react-compiler/react-compiler': 'warn',
+      'react-hooks/preserve-manual-memoization': 'warn',
     },
   },
 

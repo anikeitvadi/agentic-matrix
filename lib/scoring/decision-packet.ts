@@ -43,7 +43,7 @@ export function buildDecisionPacketMarkdown({
     .join('\n')
 
   return [
-    '# Agentic Decisions Recommendation Packet',
+    '# Agentic Matrix Recommendation Packet',
     '',
     `Generated: ${dateLabel}`,
     '',
@@ -97,33 +97,6 @@ export function buildDecisionPacketHtml({
         </tr>
       `
     })
-    .join('')
-
-  const alternatives = memo.alternatives
-    .map((alternative) => {
-      const strongerAreas =
-        alternative.strongerAreas.length > 0
-          ? `<p class="meta">Stronger on: ${escapeHtml(alternative.strongerAreas.join(', '))}</p>`
-          : ''
-      return `
-        <div class="card">
-          <h3>${escapeHtml(alternative.platformName)} <span class="score">-${alternative.scoreGap} pts</span></h3>
-          <p>${escapeHtml(alternative.whyNot)}</p>
-          ${strongerAreas}
-        </div>
-      `
-    })
-    .join('')
-
-  const scenarios = memo.scenarios
-    .map(
-      (scenario) => `
-        <div class="card dark">
-          <h3>${escapeHtml(scenario.title)}</h3>
-          <p>${escapeHtml(scenario.detail)}</p>
-        </div>
-      `
-    )
     .join('')
 
   const winner = scores[0]

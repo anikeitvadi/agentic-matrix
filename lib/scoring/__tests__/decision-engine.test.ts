@@ -6,13 +6,18 @@
  */
 
 import { describe, it, expect } from 'vitest'
+import { existsSync } from 'fs'
+import { resolve } from 'path'
 import { scoreAllPlatforms } from '../score-platform'
 import { deriveWeights, DEFAULT_WEIGHTS } from '../weights'
 import type { ScoringContext } from '../types'
 
-// Use the real platform data from velite
-import platformsData from '../../../.velite/platforms.json'
-const platforms = platformsData as any[]
+// These tests require generated velite output — skip gracefully on fresh checkout
+const velitePath = resolve(__dirname, '../../../.velite/platforms.json')
+const hasVelite = existsSync(velitePath)
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const platforms: any[] = hasVelite ? require(velitePath) : []
 
 function scoreWithProfile(assessment: Record<string, unknown>) {
   const weightConfig = deriveWeights(assessment)
@@ -24,7 +29,9 @@ function scoreWithProfile(assessment: Record<string, unknown>) {
   return scoreAllPlatforms(platforms, context)
 }
 
-describe('Two-Layer Decision Model', () => {
+const describeIfVelite = hasVelite ? describe : describe.skip
+
+describeIfVelite('Two-Layer Decision Model', () => {
   describe('fitScore vs decisionScore', () => {
     it('should produce both fitScore and decisionScore', () => {
       const results = scoreWithProfile({})
@@ -124,7 +131,7 @@ describe('Two-Layer Decision Model', () => {
   })
 })
 
-describe('Buyer Profile Scenarios', () => {
+describeIfVelite('Buyer Profile Scenarios', () => {
   describe('Profile A: Scrappy startup', () => {
     const results = scoreWithProfile({
       budgetRange: 'under-10k',

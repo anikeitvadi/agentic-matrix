@@ -5,7 +5,8 @@ import {
 } from '../decision-packet'
 import type { PlatformScore } from '../types'
 
-function makeScore(platformName: string, totalScore: number, annualCost: number): PlatformScore {
+function makeScore(platformName: string, fitScore: number, annualCost: number): PlatformScore {
+  const decisionScore = fitScore - 4 // simulate small penalty
   const criteria = [
     'integrationFit',
     'complianceMatch',
@@ -23,9 +24,43 @@ function makeScore(platformName: string, totalScore: number, annualCost: number)
   return {
     platformId: platformName.toLowerCase(),
     platformName,
-    totalScore,
+    totalScore: decisionScore,
+    fitScore,
+    decisionScore,
+    decisionAdjustments: [
+      { factor: 'Evidence gaps', penalty: 4, reasoning: 'Limited production references' },
+    ],
     criteriaScores: criteria,
     auditTrail: [],
+    gateFailures: [],
+    passedAllGates: true,
+    implementationRisk: {
+      score: 72,
+      label: 'Medium',
+      factors: [],
+    },
+    confidence: {
+      score: 65,
+      label: 'Medium',
+      evidenceBasis: ['Published pricing', 'SOC 2 cert'],
+      assumptions: ['Team ramp-up time estimated'],
+    },
+    evidence: {
+      annualCostEstimate: annualCost,
+      hardRequirementsMet: 4,
+      hardRequirementsTotal: 5,
+      certsMissing: [],
+      integrationsMet: ['aws'],
+      integrationsMissing: [],
+      deploymentOptions: ['cloud'],
+      modelFlexibility: 'multi-model',
+      observability: 'built-in',
+      vendorViability: 'established',
+      ecosystemMaturity: 'growing',
+      heuristicFlags: [],
+      costConfidence: 'Medium',
+      assumptionLevel: 'Low',
+    },
     recommendationSummary: {
       matchCount: 4,
       totalSignals: 5,
@@ -34,6 +69,11 @@ function makeScore(platformName: string, totalScore: number, annualCost: number)
       strengths: ['Compliance: SOC 2', 'Stack fit: AWS'],
       caveats: ['Estimated annual platform cost exceeds your stated budget'],
       estimatedAnnualCost: annualCost,
+      fitScore,
+      decisionScore,
+      decisionThesis: 'best-balanced-choice',
+      costConfidence: 'Medium',
+      assumptionLevel: 'Low',
     },
   }
 }
@@ -60,9 +100,9 @@ describe('decision packet builders', () => {
       generatedAt: new Date('2026-03-24'),
     })
 
-    expect(markdown).toContain('# Agentic Decisions Recommendation Packet')
+    expect(markdown).toContain('# Agentic Matrix Recommendation Packet')
     expect(markdown).toContain('## Assessment Snapshot')
-    expect(markdown).toContain('**WinnerOS** (84/100')
+    expect(markdown).toContain('**WinnerOS** (80/100')
     expect(markdown).toContain('### Why Not The Next Best Options')
     expect(markdown).toContain('Top Ranked Platforms')
   })
@@ -75,8 +115,22 @@ describe('decision packet builders', () => {
     })
 
     expect(html).toContain('<!doctype html>')
-    expect(html).toContain('Agentic Decisions Recommendation Packet')
+    expect(html).toContain('Platform Recommendation')
     expect(html).toContain('WinnerOS')
-    expect(html).toContain('What Would Change The Recommendation')
+    expect(html).toContain('80/100')
+    expect(html).toContain('What Would Change This Recommendation')
+  })
+
+  it('renders decision score and fit score in html metrics', () => {
+    const html = buildDecisionPacketHtml({
+      assessment,
+      scores,
+      generatedAt: new Date('2026-03-24'),
+    })
+
+    expect(html).toContain('Decision Score')
+    expect(html).toContain('Fit Score')
+    expect(html).toContain('Score Bridge')
+    expect(html).toContain('Evidence gaps')
   })
 })

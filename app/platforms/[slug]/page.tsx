@@ -28,7 +28,7 @@ export async function generateMetadata({
   }
 
   return {
-    title: `${platform.title} | Agentic Decisions`,
+    title: `${platform.title} | Agentic Matrix`,
     description: platform.description,
   }
 }

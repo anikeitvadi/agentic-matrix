@@ -33,10 +33,17 @@ function makeScore({
     'stackCompatibility',
   ] as const
 
+  const decisionScore = totalScore - 3
+
   return {
     platformId,
     platformName,
-    totalScore,
+    totalScore: decisionScore,
+    fitScore: totalScore,
+    decisionScore,
+    decisionAdjustments: [
+      { factor: 'Evidence gaps', penalty: 3, reasoning: 'Limited references' },
+    ],
     criteriaScores: criterionNames.map((name) => ({
       name,
       weight: 0.2,
@@ -45,6 +52,26 @@ function makeScore({
       higherIsBetter: true,
     })),
     auditTrail: [],
+    gateFailures: [],
+    passedAllGates: true,
+    implementationRisk: { score: 70, label: 'Medium' as const, factors: [] },
+    confidence: { score: 60, label: 'Medium' as const, evidenceBasis: [], assumptions: [] },
+    evidence: {
+      annualCostEstimate: annualCost,
+      hardRequirementsMet: strengths.length,
+      hardRequirementsTotal: 5,
+      certsMissing: [],
+      integrationsMet: [],
+      integrationsMissing: [],
+      deploymentOptions: ['saas'],
+      modelFlexibility: 'multi-provider',
+      observability: 'basic',
+      vendorViability: 'established',
+      ecosystemMaturity: 'growing',
+      heuristicFlags: [],
+      costConfidence: 'Medium' as const,
+      assumptionLevel: 'Low' as const,
+    },
     recommendationSummary: {
       matchCount: strengths.length,
       totalSignals: 5,
@@ -53,6 +80,11 @@ function makeScore({
       strengths,
       caveats,
       estimatedAnnualCost: annualCost,
+      fitScore: totalScore,
+      decisionScore,
+      decisionThesis: 'best-balanced-choice' as const,
+      costConfidence: 'Medium' as const,
+      assumptionLevel: 'Low' as const,
     },
   }
 }
