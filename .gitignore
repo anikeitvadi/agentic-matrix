@@ -1,3 +1,9 @@
+# Claude Code
+.claude/
+
+# Planning docs
+.planning/
+
 # Dependencies
 node_modules/
 /.pnp
