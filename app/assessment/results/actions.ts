@@ -1,5 +1,6 @@
 'use server'
 
+import { headers } from 'next/headers'
 import { generateObject } from 'ai'
 import { openai } from '@ai-sdk/openai'
 import { z } from 'zod'
@@ -7,6 +8,30 @@ import {
   RECOMMENDATION_BRIEF_SYSTEM_PROMPT,
   buildRecommendationBriefPrompt,
 } from '@/lib/assessment/ai-prompts'
+
+// ── Rate limiting ────────────────────────────────────────────────────
+// Simple sliding-window rate limiter: max requests per IP within a window.
+// In-memory — resets on redeploy, which is fine for a portfolio project.
+
+const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000 // 1 hour
+const RATE_LIMIT_MAX_REQUESTS = 10           // per IP per window
+
+const requestLog = new Map<string, number[]>()
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now()
+  const timestamps = requestLog.get(ip) ?? []
+  const recent = timestamps.filter((t) => now - t < RATE_LIMIT_WINDOW_MS)
+  requestLog.set(ip, recent)
+  if (recent.length >= RATE_LIMIT_MAX_REQUESTS) return true
+  recent.push(now)
+  return false
+}
+
+async function getClientIp(): Promise<string> {
+  const hdrs = await headers()
+  return hdrs.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
+}
 
 const recommendationBriefSchema = z.object({
   executiveSummary: z.string().describe('2-3 sentence summary of the decision'),
@@ -84,6 +109,11 @@ function sanitizeAssessmentForBrief(
 export async function generateRecommendationBrief(
   input: RecommendationBriefInput
 ): Promise<{ brief: RecommendationBrief } | { error: string }> {
+  const ip = await getClientIp()
+  if (isRateLimited(ip)) {
+    return { error: 'Rate limit reached. Please try again later.' }
+  }
+
   try {
     const sanitizedInput = {
       assessment: sanitizeAssessmentForBrief(input.assessment),
