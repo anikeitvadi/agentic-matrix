@@ -4,7 +4,7 @@ Vendor-neutral AI platform evaluation tool. 19 platforms, deterministic scoring,
 
 I built this because choosing an AI agent platform right now is a mess. You're reading 30 vendor pages, comparing pricing models that don't even use the same units, and making a gut call at the end anyway. This replaces that with a structured evaluation that gives you an auditable, explainable recommendation in under 2 minutes.
 
-[Live Demo](https://agentic-matrix.vercel.app) <!-- Update with actual URL after deploy -->
+[Live Demo](https://agentic-matrix.vercel.app)
 
 ---
 
