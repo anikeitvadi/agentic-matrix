@@ -1,8 +1,8 @@
 # Agentic Matrix
 
-Vendor-neutral AI platform evaluation tool. 19 platforms, deterministic scoring, real pricing data, hard/soft requirement gating. No keyword matching, no vibes — every recommendation traces back to a specific capability flag, compliance cert, or cost data point.
+AI platform evaluation tool. Compares 19 agentic AI platforms using deterministic scoring, real pricing data, and hard/soft requirement gating. No keyword matching, no vibes — every recommendation traces back to a specific capability flag, compliance cert, or cost data point.
 
-I built this because choosing an AI agent platform right now is a mess. You're reading 30 vendor pages, comparing pricing models that don't even use the same units, and making a gut call at the end anyway. This replaces that with a structured evaluation that gives you an auditable, explainable recommendation in under 2 minutes.
+I built this because choosing an AI agent platform right now is a mess. You're reading 30 vendor pages, comparing pricing models that don't even use the same units, and making a gut call at the end anyway. This replaces that with a structured evaluation that actually explains why it's recommending what it's recommending.
 
 [Live Demo](https://agentic-matrix.vercel.app)
 
@@ -32,18 +32,18 @@ Assessment Inputs
 
 **Decision Score** — Fit score minus penalties for things that matter in production: evidence gaps, implementation risk, business friction. This is what determines the final ranking.
 
-**Hard Gates** — Missing a required compliance cert? Over 2x budget ceiling? You get ranked below every platform that passes, regardless of score. No exceptions.
+**Hard Gates** — Missing a required compliance cert? Over 2x budget ceiling? You get ranked below every platform that passes, regardless of score.
 
 Every score is auditable. Expand any platform and see exactly how each criterion was calculated, what data drove it, and what would change the outcome.
 
 ## What You Get
 
-- **Decision memo** — winner rationale, "why not" for every alternative, sensitivity scenarios that would flip the recommendation
+- **Decision memo** — who won, why, what would flip the recommendation
 - **AI decision brief** — OpenAI synthesis on top of the deterministic output, for when you need to hand something to a VP
-- **Exportable decision packet** — print-ready HTML with score bridge, cost analysis, and full audit trail
-- **Cost calculator** — real TCO projections (12/24/36 month) across token-based and subscription pricing models
-- **Comparison matrix** — sortable, filterable by budget/deployment/tier
-- **Implementation risk + confidence scoring** per platform
+- **Exportable decision packet** — print-ready HTML with score breakdown, cost analysis, audit trail
+- **Cost calculator** — TCO projections (12/24/36 month) using real token and subscription pricing
+- **Comparison matrix** — sort, filter, compare side by side
+- **Risk and confidence scores** for every platform
 
 ## Architecture
 
@@ -88,7 +88,7 @@ content/
 ## Running Locally
 
 ```bash
-git clone https://github.com/ankeitvadi/agentic-matrix.git
+git clone https://github.com/anikeitvadi/agentic-matrix.git
 cd agentic-matrix
 npm install
 npm run dev
