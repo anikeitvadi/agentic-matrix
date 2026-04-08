@@ -4,7 +4,7 @@ AI platform evaluation tool. Compares 19 agentic AI platforms using deterministi
 
 I built this because choosing an AI agent platform right now is a mess. You're reading 30 vendor pages, comparing pricing models that don't even use the same units, and making a gut call at the end anyway. This replaces that with a structured evaluation that actually explains why it's recommending what it's recommending.
 
-[Live Demo](https://agentic-matrix.vercel.app)
+[Live Demo](https://agenticmatrix.vercel.app)
 
 ---
 
