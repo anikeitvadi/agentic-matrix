@@ -7,7 +7,7 @@ capabilities:
   - Constitutional AI safety framework
   - Model Context Protocol (MCP)
   - Long context windows (up to 1M tokens)
-  - Claude Opus 4.6 and Sonnet 4.6 models
+  - Claude Opus 4.7, Opus 4.6, and Sonnet 4.6 models
   - Tool use and function calling
   - Extended thinking mode
   - SOC2 compliance
@@ -39,6 +39,9 @@ pricing:
     inputPricePerMillion: 3
     outputPricePerMillion: 15
     modelVariants:
+      - name: Claude Opus 4.7
+        inputPrice: 5
+        outputPrice: 25
       - name: Claude Sonnet 4.6
         inputPrice: 3
         outputPrice: 15
@@ -51,7 +54,7 @@ pricing:
   enterpriseContact: true
 officialDocs: https://docs.anthropic.com
 pricingPage: https://claude.com/pricing
-lastVerified: 2026-03-31
+lastVerified: 2026-04-29
 ---
 
 Anthropic's Claude platform distinguishes itself through its safety-first approach using Constitutional AI, making it particularly attractive for enterprises in regulated industries. The recent introduction of Model Context Protocol (MCP) provides a standardized way to connect Claude to external tools and data sources, addressing a key integration challenge in agent development.

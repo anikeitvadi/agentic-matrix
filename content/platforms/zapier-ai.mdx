@@ -33,7 +33,7 @@ evaluationContext:
   documentationQuality: adequate
 pricing:
   model: subscription
-  details: "Free tier: 100 tasks/month. Professional: $19.99/month for 750 tasks. Team: $69/month. Every step in a multi-step Zap consumes one task."
+  details: "Zap plans: Professional $19.99/month (750 tasks), Team $69/month (2,000 tasks). Separate AI Agents add-on: Free (400 agent activities/month), Pro (1,500 activities). All plans include Tables, Forms, Zapier MCP. Total cost can reach $150-200/month with agents + chatbots stacked."
   tiers:
     - name: Professional
       monthlyPrice: 20
@@ -43,10 +43,18 @@ pricing:
       monthlyPrice: 69
       includedUnits: 2000
       unitType: tasks
+    - name: AI Agents Free
+      monthlyPrice: 0
+      includedUnits: 400
+      unitType: tasks
+    - name: AI Agents Pro
+      monthlyPrice: 50
+      includedUnits: 1500
+      unitType: tasks
   enterpriseContact: true
 officialDocs: https://zapier.com/developer
 pricingPage: https://zapier.com/pricing
-lastVerified: 2026-03-31
+lastVerified: 2026-04-29
 ---
 
 Zapier is the most widely adopted automation platform with 7,000+ app integrations, now expanding into AI agent territory with Zapier Central. The AI layer lets users describe automations in natural language, and the platform generates the multi-step Zap workflow — dramatically reducing the time from idea to working automation.

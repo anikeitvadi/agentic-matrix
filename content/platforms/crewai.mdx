@@ -34,13 +34,17 @@ evaluationContext:
   documentationQuality: adequate
 pricing:
   model: hybrid
-  details: "Open-source framework is free. Cloud plans: Basic $99/month (100 executions), Standard $500/month (1,000 executions). Enterprise up to $120K/year."
+  details: "Open-source framework is free. CrewAI Cloud: Free tier (50 executions/month), paid plans from $99/month. CrewAI Cloud includes hosted backend, graphical Studio, and observability."
   tiers:
     - name: Open Source
       monthlyPrice: 0
       includedUnits: 0
       unitType: tasks
-    - name: Basic Cloud
+    - name: Cloud Free
+      monthlyPrice: 0
+      includedUnits: 50
+      unitType: tasks
+    - name: Cloud Starter
       monthlyPrice: 99
       includedUnits: 100
       unitType: tasks
@@ -52,10 +56,10 @@ pricing:
     inputPricePerMillion: 0
     outputPricePerMillion: 0
   enterpriseContact: true
-  infrastructureCosts: "Open-source is free. LLM API costs are separate. CrewAI Enterprise adds observability, managed deployment, and support."
+  infrastructureCosts: "Open-source is free. CrewAI Cloud includes hosted backend, graphical Studio, and observability. Free tier: 50 executions/month. LLM API costs are separate. CrewAI Enterprise adds managed deployment and support."
 officialDocs: https://docs.crewai.com/
 pricingPage: https://www.crewai.com/pricing
-lastVerified: 2026-03-31
+lastVerified: 2026-04-29
 ---
 
 CrewAI is an open-source Python framework designed specifically for multi-agent orchestration. Its central abstraction is the "crew"—a team of agents, each assigned a distinct role, goal, and backstory, working together to accomplish a set of tasks. This role-based design maps naturally to real-world organizational structures: a research agent gathers information, an analyst agent synthesizes findings, and a writer agent produces the final output.

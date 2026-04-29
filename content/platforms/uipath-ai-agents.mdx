@@ -1,7 +1,7 @@
 ---
 slug: uipath-ai-agents
 title: UiPath AI Agents
-description: Leading RPA platform expanding into AI agents, combining robotic process automation with generative AI for end-to-end intelligent automation.
+description: Leading RPA platform evolved to "agentic automation" positioning, combining robotic process automation with generative AI. Agent Units as new consumption metric for AI agent execution.
 tier: vertical
 capabilities:
   - RPA + AI agent hybrid
@@ -9,6 +9,7 @@ capabilities:
   - Process mining integration
   - Attended and unattended robots
   - Enterprise orchestrator
+  - Agent Units consumption metric
   - SOC2 compliance
   - HIPAA eligible
 structuredCapabilities:
@@ -33,9 +34,13 @@ evaluationContext:
   documentationQuality: comprehensive
 pricing:
   model: subscription
-  details: "Per-robot licensing. Automation Developer at $420/month, Unattended Robot at $1,380/month."
+  details: "Basic plan $25/month. Standard and Enterprise custom. Agent Units as new consumption metric for AI agent execution. Per-robot licensing also available."
   tiers:
-    - name: Automation Developer (Pro)
+    - name: Basic
+      monthlyPrice: 25
+      includedUnits: 1
+      unitType: users
+    - name: Standard
       monthlyPrice: 420
       includedUnits: 1
       unitType: users
@@ -44,10 +49,10 @@ pricing:
       includedUnits: 1
       unitType: users
   enterpriseContact: true
-  infrastructureCosts: Pricing is per-robot, not per-user. Enterprise deployments typically need 10-50+ robots. UiPath Automation Cloud hosting included in subscription, or self-hosted on customer infrastructure.
+  infrastructureCosts: "Basic plan at $25/month entry point. Agent Units consumed per AI agent execution. Enterprise deployments typically need 10-50+ robots. UiPath Automation Cloud hosting included in subscription, or self-hosted on customer infrastructure."
 officialDocs: https://docs.uipath.com
 pricingPage: https://www.uipath.com/pricing
-lastVerified: 2026-03-31
+lastVerified: 2026-04-29
 ---
 
 UiPath is the dominant RPA platform, now integrating generative AI to evolve from rule-based automation into intelligent agent behavior. The key differentiator is combining screen-level automation (clicking buttons, filling forms, moving data between legacy systems) with AI reasoning — something pure LLM-based agent platforms cannot do.

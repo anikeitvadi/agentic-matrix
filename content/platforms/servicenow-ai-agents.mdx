@@ -1,7 +1,7 @@
 ---
 slug: servicenow-ai-agents
 title: ServiceNow AI Agents
-description: IT service management platform with AI agents for automated incident resolution, workflow automation, and enterprise service delivery across IT, HR, and customer service.
+description: IT service management platform with AI agents for automated incident resolution, workflow automation, and enterprise service delivery across IT, HR, and customer service. Three-tier pricing (Foundation, Advanced, Prime) with Context Engine embedded across all products.
 tier: vertical
 capabilities:
   - Now Assist generative AI
@@ -10,6 +10,7 @@ capabilities:
   - Document Intelligence
   - Workflow automation
   - CMDB and knowledge base integration
+  - Context Engine (embedded in all products)
   - SOC2 compliance
   - HIPAA eligible
   - ISO27001 certified
@@ -35,24 +36,30 @@ evaluationContext:
   documentationQuality: comprehensive
 pricing:
   model: subscription
-  details: "Base ITSM licensing plus 50-60% uplift for Now Assist AI capabilities. Implementation typically costs 3-5x annual license."
+  details: "Three-tier AI pricing announced April 2026: Foundation (gen AI tasks), Advanced (deterministic + AI agent workflows), Prime (full role replacement). Base ITSM licensing plus uplift for AI capabilities."
   tiers:
-    - name: Pro
+    - name: Foundation
       monthlyPrice: 5000
       includedUnits: 50
       unitType: users
-    - name: Enterprise
-      monthlyPrice: 17500
+    - name: Advanced
+      monthlyPrice: 12500
+      includedUnits: 75
+      unitType: users
+    - name: Prime
+      monthlyPrice: 25000
       includedUnits: 100
       unitType: users
   enterpriseContact: true
-  infrastructureCosts: "Now Assist GenAI requires Pro Plus tier (50-60% uplift on base license). Implementation and consulting typically 3-5x annual software cost. Acquired Armis (2026) for security-integrated agent capabilities."
+  infrastructureCosts: "Three-tier AI pricing (April 2026): Foundation = gen AI tasks, Advanced = deterministic + AI agent workflows, Prime = full role replacement with autonomous agents. Context Engine embedded across all tiers. Implementation and consulting typically 3-5x annual software cost."
 officialDocs: https://docs.servicenow.com/bundle/now-platform/page/administer/now-assist/concept/now-assist.html
 pricingPage: https://www.servicenow.com/products/now-platform/pricing.html
-lastVerified: 2026-03-30
+lastVerified: 2026-04-29
 ---
 
 ServiceNow AI Agents combines the platform's deep enterprise service management expertise with generative AI through Now Assist. Agents can resolve IT incidents autonomously, route requests intelligently, and generate knowledge articles—all while maintaining the audit trails and approval workflows enterprises require.
+
+As of April 2026, ServiceNow offers three distinct AI pricing tiers: **Foundation** (generative AI tasks like summarization and content generation), **Advanced** (deterministic workflows combined with AI agent capabilities), and **Prime** (full role replacement with autonomous agents that can handle end-to-end processes). The Context Engine, now embedded across all products, provides agents with deep understanding of organizational data, relationships, and business context.
 
 The platform's strength is its unified data model: agents understand relationships between users, assets, incidents, and changes through the CMDB. This contextual awareness enables intelligent automation that considers impact and dependencies. Virtual Agent handles conversational interactions across channels while Now Assist provides generative capabilities for content creation and summarization.
 

@@ -1,7 +1,7 @@
 ---
 slug: autogen
 title: AutoGen
-description: Microsoft Research's open-source multi-agent conversation framework enabling complex agent interactions with customizable topologies and built-in human-in-the-loop patterns.
+description: Microsoft Research's open-source multi-agent conversation framework (now in maintenance mode). Successor is Microsoft Agent Framework 1.0 GA, merging AutoGen + Semantic Kernel.
 tier: developer-first
 capabilities:
   - Multi-agent conversation framework
@@ -10,6 +10,8 @@ capabilities:
   - Code execution sandbox
   - Human-in-the-loop patterns
   - Microsoft Research backed
+  - MCP support (via Microsoft Agent Framework)
+  - A2A protocol support
 structuredCapabilities:
   hasRAG: false
   hasMultiModal: false
@@ -38,11 +40,13 @@ pricing:
     outputPricePerMillion: 0
   infrastructureCosts: Framework is free and open-source (MIT license). Costs come from your chosen LLM provider (OpenAI, Anthropic, etc.). AutoGen Studio provides a no-code UI for prototyping agent teams. Self-hosted infrastructure typically $50-200/month.
 officialDocs: https://microsoft.github.io/autogen/
-lastVerified: 2026-03-31
+lastVerified: 2026-04-29
 ---
 
 AutoGen, developed by Microsoft Research, is an open-source framework for building multi-agent systems where multiple AI agents collaborate through structured conversations. Unlike single-agent frameworks, AutoGen's core abstraction is the conversation — agents take turns, delegate tasks, critique each other's outputs, and converge on solutions through multi-turn dialogue.
 
-The framework supports flexible agent topologies: sequential chains, round-robin discussions, hierarchical delegation, and custom conversation patterns. AutoGen Studio provides a visual interface for prototyping agent teams without code, lowering the barrier for experimentation. The built-in code execution sandbox enables agents to write, run, and iterate on code safely — particularly valuable for data analysis and software engineering use cases.
+**Important: As of April 2026, AutoGen (v0.7.x) is in maintenance mode.** Microsoft Agent Framework 1.0, which went GA on April 3, 2026, is the official successor — it merges AutoGen's multi-agent patterns with Semantic Kernel's enterprise orchestration into a unified platform. AutoGen remains community-maintained and functional, but active development has shifted to the new framework. Teams starting new projects should evaluate Microsoft Agent Framework directly; existing AutoGen users have a documented migration path.
+
+The framework supports flexible agent topologies: sequential chains, round-robin discussions, hierarchical delegation, and custom conversation patterns. AutoGen Studio provides a visual interface for prototyping agent teams without code, lowering the barrier for experimentation. The built-in code execution sandbox enables agents to write, run, and iterate on code safely — particularly valuable for data analysis and software engineering use cases. The successor Microsoft Agent Framework adds MCP support and A2A (Agent-to-Agent) protocol compatibility.
 
 AutoGen excels when your problem benefits from multiple perspectives or decomposition into sub-tasks handled by specialized agents. Research teams, data science groups, and engineering organizations building complex reasoning systems find it compelling. The tradeoff is that multi-agent systems are inherently harder to debug and control than single-agent approaches — conversation management, token costs (multiple agents multiply API calls), and ensuring convergence require careful design. Best suited for teams with Python expertise who want maximum control over agent interaction patterns.

@@ -21,7 +21,7 @@ structuredCapabilities:
   supportedIntegrations: [slack, hubspot, salesforce, gmail]
   useCaseStrengths: [customer-support, sales-routing, workflow-automation, knowledge-qa]
   zeroDataRetention: false
-  bringYourOwnKey: false
+  bringYourOwnKey: true
   deploymentOptions: [saas]
 evaluationContext:
   modelFlexibility: single-provider
@@ -32,7 +32,7 @@ evaluationContext:
   documentationQuality: adequate
 pricing:
   model: subscription
-  details: "Free: 200 actions/month. Pro: $19/month. Team: $234/month."
+  details: "Split pricing: Actions + Vendor Credits (no markup on vendor credits). Free: 200 actions/month, Pro: $19/seat/month (7K actions), Team: $234/seat/month. BYOK supported on paid plans."
   tiers:
     - name: Free
       monthlyPrice: 0
@@ -40,20 +40,20 @@ pricing:
       unitType: tasks
     - name: Pro
       monthlyPrice: 19
-      includedUnits: 1000
+      includedUnits: 7000
       unitType: tasks
     - name: Team
       monthlyPrice: 234
-      includedUnits: 5000
+      includedUnits: 15000
       unitType: tasks
   enterpriseContact: true
 officialDocs: https://docs.relevanceai.com
 pricingPage: https://relevanceai.com/pricing
-lastVerified: 2026-03-31
+lastVerified: 2026-04-29
 ---
 
 Relevance AI offers a no-code approach to building AI agents, targeting business teams and operations leaders who want to automate workflows without engineering dependencies. The platform lets users chain together AI actions, API calls, data transformations, and conditional logic into multi-step tool chains — essentially visual programming for AI automation.
 
 The knowledge base integration enables agents to reference company documents, FAQs, and databases when responding to queries, making it practical for customer-facing use cases. Teams can create custom API tools that agents use, bridging the gap between AI capabilities and existing business systems without writing integration code. The collaborative workspace lets multiple team members build, test, and iterate on agent behaviors together.
 
-Relevance AI is strongest for mid-market teams who need to ship AI automation quickly without a dedicated engineering team. Common use cases include lead qualification, content generation workflows, customer research synthesis, and internal knowledge Q&A. The limitation is depth — complex multi-agent orchestration, custom model fine-tuning, and enterprise-scale data pipelines are better served by developer-first platforms. The free tier (100 tasks/month) is generous enough for proof-of-concept before committing to a paid plan.
+Relevance AI is strongest for mid-market teams who need to ship AI automation quickly without a dedicated engineering team. Common use cases include lead qualification, content generation workflows, customer research synthesis, and internal knowledge Q&A. The limitation is depth — complex multi-agent orchestration, custom model fine-tuning, and enterprise-scale data pipelines are better served by developer-first platforms. The free tier (200 actions/month) is generous enough for proof-of-concept before committing to a paid plan. BYOK is supported on paid plans, and vendor credits (for LLM usage) are passed through at cost with no markup.
