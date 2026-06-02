@@ -11,6 +11,10 @@ capabilities:
   - Workflow automation
   - CMDB and knowledge base integration
   - Context Engine (embedded in all products)
+  - Autonomous Workforce AI specialists (Knowledge 2026)
+  - AI Control Tower (GA May 2026, expanded August 2026)
+  - Action Fabric MCP Server
+  - Build Agent GA (ServiceNow Studio, Cursor, Windsurf, Claude Code, GitHub Copilot)
   - SOC2 compliance
   - HIPAA eligible
   - ISO27001 certified
@@ -19,7 +23,7 @@ structuredCapabilities:
   hasMultiModal: false
   hasLowCode: true
   hasSelfHosted: false
-  hasMultiAgent: false
+  hasMultiAgent: true
   cloudNative: [servicenow]
   complianceCerts: [soc2, hipaa, iso27001, fedramp]
   supportedIntegrations: [slack, teams, jira, salesforce, servicenow]
@@ -54,12 +58,14 @@ pricing:
   infrastructureCosts: "Three-tier AI pricing (April 2026): Foundation = gen AI tasks, Advanced = deterministic + AI agent workflows, Prime = full role replacement with autonomous agents. Context Engine embedded across all tiers. Implementation and consulting typically 3-5x annual software cost."
 officialDocs: https://docs.servicenow.com/bundle/now-platform/page/administer/now-assist/concept/now-assist.html
 pricingPage: https://www.servicenow.com/products/now-platform/pricing.html
-lastVerified: 2026-04-29
+lastVerified: 2026-06-02
 ---
 
 ServiceNow AI Agents combines the platform's deep enterprise service management expertise with generative AI through Now Assist. Agents can resolve IT incidents autonomously, route requests intelligently, and generate knowledge articles—all while maintaining the audit trails and approval workflows enterprises require.
 
-As of April 2026, ServiceNow offers three distinct AI pricing tiers: **Foundation** (generative AI tasks like summarization and content generation), **Advanced** (deterministic workflows combined with AI agent capabilities), and **Prime** (full role replacement with autonomous agents that can handle end-to-end processes). The Context Engine, now embedded across all products, provides agents with deep understanding of organizational data, relationships, and business context.
+At **Knowledge 2026** (May), ServiceNow announced the **Autonomous Workforce** expansion — AI "specialists" that complete entire business processes end-to-end. IT specialists arrive in June 2026, with security and risk specialists previewing the same month. The **AI Control Tower** went GA in May 2026 (expanded version planned for August), providing centralized governance and monitoring for all deployed AI agents. **Action Fabric**, a new MCP Server, lets any AI agent tap into ServiceNow actions regardless of platform. **Build Agent** is now GA in ServiceNow Studio and extends to external IDEs including Cursor, Windsurf, Claude Code, and GitHub Copilot.
+
+ServiceNow offers three distinct AI pricing tiers: **Foundation** (generative AI tasks like summarization and content generation), **Advanced** (deterministic workflows combined with AI agent capabilities), and **Prime** (full role replacement with autonomous agents that can handle end-to-end processes). The Context Engine, now embedded across all products, provides agents with deep understanding of organizational data, relationships, and business context.
 
 The platform's strength is its unified data model: agents understand relationships between users, assets, incidents, and changes through the CMDB. This contextual awareness enables intelligent automation that considers impact and dependencies. Virtual Agent handles conversational interactions across channels while Now Assist provides generative capabilities for content creation and summarization.
 

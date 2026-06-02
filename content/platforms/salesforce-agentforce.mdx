@@ -7,8 +7,11 @@ capabilities:
   - Native CRM data access
   - Pre-built agent templates (Sales, Service, Commerce)
   - Einstein Trust Layer
-  - Flow orchestration integration
+  - Multi-agent orchestration (agents as unified team)
+  - Flow Builder agent integration
   - Slack and omnichannel deployment
+  - Tableau MCP for data-expert agents
+  - Customer Engagement Agent (24/7 buyer qualification)
   - Industry-specific agents (Financial Services, Healthcare, Manufacturing)
   - SOC2 compliance
   - HIPAA eligible
@@ -18,7 +21,7 @@ structuredCapabilities:
   hasMultiModal: false
   hasLowCode: true
   hasSelfHosted: false
-  hasMultiAgent: false
+  hasMultiAgent: true
   cloudNative: [salesforce]
   complianceCerts: [soc2, hipaa, gdpr]
   supportedIntegrations: [slack, salesforce, jira, teams]
@@ -54,10 +57,12 @@ pricing:
   infrastructureCosts: "Requires existing Salesforce licenses. Heavy AI usage tier (Agentforce 1 Sales) is $550/user/month. Flex Credits consumed per autonomous action. Employee-facing agents use $5/user/month Agentforce User License. Enterprise Edition customers get 200,000 free Flex Credits via Salesforce Foundations."
 officialDocs: https://help.salesforce.com/s/articleView?id=sf.agentforce.htm
 pricingPage: https://www.salesforce.com/agentforce/pricing/
-lastVerified: 2026-04-29
+lastVerified: 2026-06-02
 ---
 
 Salesforce Agentforce represents the evolution of Einstein AI into autonomous agents that can take action across the entire Salesforce ecosystem. Agents have native access to Customer 360 data, meaning they understand customer context without complex integration work. The Trust Layer provides enterprise governance including audit trails, data masking, and toxicity detection.
+
+As of mid-2026, Agentforce supports **multi-agent orchestration**: agents work together as a unified team, coordinating across sales, service, and commerce processes. Agents are now usable directly in **Flow Builder**, making it easy to embed autonomous AI steps into existing automation flows. The new **Customer Engagement Agent** provides 24/7 buyer qualification, and **Tableau MCP** enables data-expert agents that can analyze and surface insights from Tableau datasets. Note that **Agentforce Vibes** transitioned to paid access on June 1, 2026, requiring Flex Credits or a paid license.
 
 Pre-built agent templates accelerate deployment for common use cases: Sales agents qualify leads and update opportunities, Service agents resolve cases and escalate appropriately, Commerce agents assist with product recommendations and order management. Custom agents can be built using low-code tools or Apex for complex scenarios.
 

@@ -5,6 +5,7 @@ description: The most popular open-source agent framework, offering Python-nativ
 tier: developer-first
 capabilities:
   - Python-native framework
+  - LangGraph 1.0 GA (durable state, built-in persistence)
   - LangGraph stateful orchestration
   - LangSmith observability and tracing
   - Tool and function calling
@@ -42,10 +43,12 @@ pricing:
   infrastructureCosts: "Framework is free. LangSmith: Developer free (5K traces), Plus $39/seat/month (10K traces), Enterprise custom. LangGraph Platform tied to LangSmith plans. LLM costs from your chosen provider. Self-hosted infrastructure: $100-500/month."
 officialDocs: https://python.langchain.com/docs/
 pricingPage: https://www.langchain.com/pricing
-lastVerified: 2026-04-29
+lastVerified: 2026-06-02
 ---
 
 LangChain is the most widely adopted open-source framework for building LLM-powered applications, with LangGraph extending it into the domain of stateful, multi-step agent orchestration. Together they provide the primitives for constructing agents that can reason over tools, manage conversation memory, retrieve documents, and coordinate complex workflows—all in Python (with a growing JavaScript/TypeScript ecosystem as well).
+
+**LangGraph 1.0 GA** has been released, bringing **durable state** — execution persists automatically across restarts without manual checkpointing. Built-in persistence and first-class API support for human-in-the-loop patterns are now standard. Note that `langgraph.prebuilt` has been deprecated (moved to `langchain.agents`), with full backward compatibility otherwise.
 
 The core strength of the LangChain/LangGraph stack is flexibility. Because it is a framework rather than a managed platform, developers choose their own LLM provider, vector store, hosting environment, and deployment strategy. LangGraph introduces a graph-based execution model where each node represents an agent step and edges define control flow, making it straightforward to implement cycles, conditional branching, and human-in-the-loop checkpoints. LangSmith, the companion observability product, provides tracing, evaluation, and dataset management so teams can debug and improve agents in production.
 

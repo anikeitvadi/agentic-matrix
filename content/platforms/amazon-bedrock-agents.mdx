@@ -16,6 +16,8 @@ capabilities:
   - AgentCore managed harness
   - Agent Registry (preview)
   - OpenAI models on Bedrock (preview)
+  - AgentCore Payments via Coinbase/Stripe wallets (preview)
+  - Amazon WorkSpaces for AI agents (preview)
 structuredCapabilities:
   hasRAG: true
   hasMultiModal: true
@@ -56,11 +58,11 @@ pricing:
   infrastructureCosts: Standard pricing shown. Batch/Flex tier is 50% lower. Additional charges for Knowledge Bases storage and retrieval.
 officialDocs: https://docs.aws.amazon.com/bedrock/
 pricingPage: https://aws.amazon.com/bedrock/pricing/
-lastVerified: 2026-04-29
+lastVerified: 2026-06-02
 ---
 
 Amazon Bedrock Agents provides a fully managed service for building AI agents within the AWS ecosystem. The platform offers access to multiple foundation models—including Anthropic Claude, Meta Llama, Amazon Titan, and Mistral—allowing organizations to choose the best model for each use case without vendor lock-in.
 
-The Knowledge Bases feature enables agents to retrieve context from enterprise data stored in S3, with automatic chunking, embedding, and vector storage. Action groups allow agents to call AWS Lambda functions, enabling integration with any AWS service or external API. Guardrails provide configurable safety controls including content filtering, topic blocking, and PII redaction. The new AgentCore managed harness provides a CLI-driven workflow with filesystem persistence for suspend/resume capabilities, while Agent Registry (preview) enables centralized agent discovery and governance across teams.
+The Knowledge Bases feature enables agents to retrieve context from enterprise data stored in S3, with automatic chunking, embedding, and vector storage. Action groups allow agents to call AWS Lambda functions, enabling integration with any AWS service or external API. Guardrails provide configurable safety controls including content filtering, topic blocking, and PII redaction. The new AgentCore managed harness provides a CLI-driven workflow with filesystem persistence for suspend/resume capabilities, while Agent Registry (preview) enables centralized agent discovery and governance across teams. AgentCore Payments (preview) enables autonomous agent payments through Coinbase and Stripe wallets, and Amazon WorkSpaces for AI agents (preview) allows agents to interact with desktop applications directly.
 
 Best suited for organizations with significant AWS investments seeking to add AI agent capabilities without leaving their cloud environment. The IAM integration provides granular access control, while VPC support ensures data never leaves the customer's network. Strong adoption in technology, financial services, and healthcare where AWS is already the primary cloud provider.

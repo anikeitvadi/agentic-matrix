@@ -1,15 +1,17 @@
 ---
 slug: google-vertex-ai
-title: Google Vertex AI Agent Builder
-description: Google Cloud's native agent platform powered by Gemini models, featuring grounding with Google Search and comprehensive enterprise data connectors.
+title: Google Gemini Enterprise Agent Platform
+description: Google Cloud's native agent platform (rebranded from Vertex AI Agent Builder) powered by Gemini models, featuring grounding with Google Search, Managed Agents, and comprehensive enterprise data connectors.
 tier: enterprise-os
 capabilities:
-  - Gemini model access (2.5 Pro, 2.5 Flash, 2.0 Flash)
+  - Gemini model access (3.5 Flash, 2.5 Pro, 2.5 Flash, 2.0 Flash)
   - Grounding with Google Search
   - Vertex AI integration
   - Multi-modal support (text, images, video)
   - Enterprise data connectors
   - Agent evaluation and monitoring
+  - Managed Agents in Gemini API (public preview)
+  - Vertex AI Extensions deprecated (shutdown Nov 2026)
   - SOC2 compliance
   - HIPAA eligible
   - ISO27001 certified
@@ -43,16 +45,19 @@ pricing:
       - name: Gemini 1.5 Pro
         inputPrice: 1.25
         outputPrice: 5
+      - name: Gemini 3.5 Flash
+        inputPrice: 0.15
+        outputPrice: 0.60
       - name: Gemini 2.0 Flash
         inputPrice: 0.15
         outputPrice: 0.60
   enterpriseContact: true
 officialDocs: https://cloud.google.com/vertex-ai/docs
 pricingPage: https://cloud.google.com/vertex-ai/pricing
-lastVerified: 2026-04-29
+lastVerified: 2026-06-02
 ---
 
-Vertex AI Agent Builder—rebranded as the Gemini Enterprise Agent Platform at Cloud Next 2026—brings Google's Gemini models into a comprehensive platform for building enterprise agents on Google Cloud. The platform's standout feature is grounding with Google Search, enabling agents to provide current information and cite sources—addressing a common limitation of standalone language models.
+Now officially the Gemini Enterprise Agent Platform (rebranded from Vertex AI Agent Builder), this platform brings Google's Gemini models into a comprehensive platform for building enterprise agents on Google Cloud. Gemini 3.5 Flash, released May 19 with GA globally including EU endpoints, delivers fast inference at low cost. Managed Agents in the Gemini API are now in public preview, and Vertex AI Extensions are deprecated with shutdown scheduled for November 2026. The platform's standout feature is grounding with Google Search, enabling agents to provide current information and cite sources—addressing a common limitation of standalone language models.
 
 Native integration with Vertex AI's broader ML platform provides access to custom model fine-tuning, AutoML capabilities, and enterprise data connectors for BigQuery, Cloud Storage, and third-party systems. Multi-modal support extends beyond text to images and video, enabling agents that can process and reason about diverse content types.
 

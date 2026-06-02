@@ -12,6 +12,9 @@ capabilities:
   - Python-native framework
   - CrewAI Enterprise observability
   - Tool ecosystem and custom tools
+  - Flow state export and event emitter observability
+  - Responses API support (Azure OpenAI)
+  - Tavily Research tools, You.com MCP tools
 structuredCapabilities:
   hasRAG: false
   hasMultiModal: false
@@ -59,8 +62,10 @@ pricing:
   infrastructureCosts: "Open-source is free. CrewAI Cloud includes hosted backend, graphical Studio, and observability. Free tier: 50 executions/month. LLM API costs are separate. CrewAI Enterprise adds managed deployment and support."
 officialDocs: https://docs.crewai.com/
 pricingPage: https://www.crewai.com/pricing
-lastVerified: 2026-04-29
+lastVerified: 2026-06-02
 ---
+
+As of v1.14.6 (May 28, 2026), CrewAI adds flow state export and an event emitter for improved observability, Responses API support for Azure OpenAI, Tavily Research and You.com MCP tools, and Python 3.10 compatibility.
 
 CrewAI is an open-source Python framework designed specifically for multi-agent orchestration. Its central abstraction is the "crew"—a team of agents, each assigned a distinct role, goal, and backstory, working together to accomplish a set of tasks. This role-based design maps naturally to real-world organizational structures: a research agent gathers information, an analyst agent synthesizes findings, and a writer agent produces the final output.
 
