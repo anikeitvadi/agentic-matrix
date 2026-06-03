@@ -6,7 +6,7 @@ import { useForm, useWatch } from 'react-hook-form'
 import useFormPersist from 'react-hook-form-persist'
 import { StepIndicator } from './StepIndicator'
 import { steps, stepLabels, validateStep } from '../steps'
-import type { AssessmentData, AssessmentFormValues } from '../schemas/assessment-schema'
+import type { AssessmentFormValues } from '../schemas/assessment-schema'
 import type { AssessmentContext } from '@/lib/assessment/conditional-logic'
 import {
   saveCurrentStep,
